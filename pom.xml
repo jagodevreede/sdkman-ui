@@ -20,7 +20,24 @@
         <junit.version>5.10.2</junit.version>
         <assertj.version>3.25.3</assertj.version>
         <mockito.version>5.11.0</mockito.version>
+        <slf4j.version>2.0.12</slf4j.version>
+
+        <javafx.plugin.version>0.0.8</javafx.plugin.version>
+        <gluonfx.plugin.version>1.0.22</gluonfx.plugin.version>
     </properties>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.gluonhq</groupId>
+                    <artifactId>gluonfx-maven-plugin</artifactId>
+                    <version>${gluonfx.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <dependencyManagement>
         <dependencies>
@@ -28,6 +45,16 @@
                 <groupId>io.github.jagodevreede</groupId>
                 <artifactId>sdkman-api</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>

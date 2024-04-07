@@ -17,8 +17,6 @@
 
     <properties>
         <javafx.version>22</javafx.version>
-        <javafx.plugin.version>0.0.8</javafx.plugin.version>
-        <gluonfx.plugin.version>1.0.22</gluonfx.plugin.version>
         <charm.version>6.2.3</charm.version>
         <attach.version>4.0.19</attach.version>
         <native.maven.plugin.version>0.10.1</native.maven.plugin.version>
@@ -29,6 +27,14 @@
         <dependency>
             <groupId>io.github.jagodevreede</groupId>
             <artifactId>sdkman-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -72,7 +78,6 @@
             <plugin>
                 <groupId>com.gluonhq</groupId>
                 <artifactId>gluonfx-maven-plugin</artifactId>
-                <version>${gluonfx.plugin.version}</version>
                 <configuration>
                     <mainClass>${main.class}</mainClass>
                 </configuration>
