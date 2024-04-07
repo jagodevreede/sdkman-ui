@@ -100,6 +100,7 @@
             <Label layoutX="14.0" layoutY="25.0" text="Global version:" />
             <Label fx:id="global_version_label" layoutX="100.0" layoutY="25.0" text="Unkown" />
             <Label fx:id="selected_item_label" layoutX="14.0" layoutY="6.0" text="N/A" />
+            <CheckBox fx:id="showInstalledOnly" layoutX="451.0" layoutY="6.0" mnemonicParsing="false" text="Show installed only" />
          </children>
       </AnchorPane>
       <TableView fx:id="table" layoutX="221.0" layoutY="42.0" prefHeight="540.0" prefWidth="579.0">
