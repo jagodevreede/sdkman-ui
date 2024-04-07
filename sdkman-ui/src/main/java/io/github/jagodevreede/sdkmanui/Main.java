@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.Objects;
 
 public class Main extends Application {
-    private static Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     @Override
     public void start(Stage stage) throws Exception {

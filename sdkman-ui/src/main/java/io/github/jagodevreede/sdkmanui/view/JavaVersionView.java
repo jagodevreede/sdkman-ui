@@ -4,10 +4,7 @@ import io.github.jagodevreede.sdkman.api.domain.JavaVersion;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -42,9 +39,20 @@ public class JavaVersionView {
             alert.setTitle("Set local SDK");
             alert.setHeaderText("Are you sure that you want to set " + javaVersion.identifier() + " as your local SDK?");
 
+            ButtonType buttonTypeCancel = new ButtonType("Cancel");
+
+            ButtonType buttonYes = new ButtonType("Yes", ButtonBar.ButtonData.CANCEL_CLOSE);
+            ButtonType buttonYesAndClose = new ButtonType("Yes, and close", ButtonBar.ButtonData.YES);
+
+            alert.getButtonTypes().setAll(buttonTypeCancel, buttonYes, buttonYesAndClose);
+
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                // ... user chose OK
+            if (result.get() == buttonYesAndClose){
+                // ... user chose "One"
+            } else if (result.get() == buttonYes) {
+                // ... user chose "Two"
+            } else {
+                // ... user chose CANCEL or closed the dialog
             }
         });
         this.vendor = new SimpleStringProperty(javaVersion.vendor());

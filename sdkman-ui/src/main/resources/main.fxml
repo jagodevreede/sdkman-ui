@@ -109,5 +109,6 @@
           <TableColumn prefWidth="75.0" text="C2" />
         </columns>
       </TableView>
+      <ProgressIndicator fx:id="progressSpinner" layoutX="450.0" layoutY="300.0" scaleX="2.0" scaleY="2.0" />
    </children>
 </AnchorPane>

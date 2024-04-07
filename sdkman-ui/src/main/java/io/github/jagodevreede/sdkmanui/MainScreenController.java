@@ -2,16 +2,16 @@ package io.github.jagodevreede.sdkmanui;
 
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
+import io.github.jagodevreede.sdkmanui.service.TaskRunner;
 import io.github.jagodevreede.sdkmanui.view.JavaVersionView;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
@@ -27,6 +27,8 @@ public class MainScreenController implements Initializable {
     Label global_version_label;
     @FXML
     CheckBox showInstalledOnly;
+    @FXML
+    ProgressIndicator progressSpinner;
 
     ObservableList<JavaVersionView> tableData;
 
@@ -34,6 +36,7 @@ public class MainScreenController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        ServiceRegistry.INSTANCE.setProgressIndicator(progressSpinner);
         table.getColumns().clear();
         api = ServiceRegistry.INSTANCE.getApi();
 
@@ -50,27 +53,40 @@ public class MainScreenController implements Initializable {
     }
 
     private void loadData() {
-        try {
-            String javaGlobalVersionInUse = api.resolveCurrentVersion("java");
-            setGlobalVersionLabel(javaGlobalVersionInUse);
-            tableData = FXCollections.observableArrayList(
-                    api.getJavaVersions().stream()
-                            .filter(j -> !showInstalledOnly.isSelected() || j.installed())
-                            .map(j -> new JavaVersionView(j, javaGlobalVersionInUse)).toList()
-            );
-
-            table.setItems(tableData);
-        } catch (IOException | InterruptedException e) {
-            ServiceRegistry.INSTANCE.getPopupView().showError(e);
+        if (tableData != null) {
+            tableData.clear();
         }
+        progressSpinner.setVisible(true);
+        TaskRunner.run(new Task() {
+            @Override
+            protected Object call() throws Exception {
+                try {
+                    String javaGlobalVersionInUse = api.resolveCurrentVersion("java");
+                    setGlobalVersionLabel(javaGlobalVersionInUse);
+                    tableData = FXCollections.observableArrayList(
+                            api.getJavaVersions().stream()
+                                    .filter(j -> !showInstalledOnly.isSelected() || j.installed())
+                                    .map(j -> new JavaVersionView(j, javaGlobalVersionInUse)).toList()
+                    );
+
+                    table.setItems(tableData);
+                    progressSpinner.setVisible(false);
+                } catch (IOException | InterruptedException e) {
+                    ServiceRegistry.INSTANCE.getPopupView().showError(e);
+                }
+                return null;
+            }
+        });
     }
 
     private void setGlobalVersionLabel(String javaGlobalVersionInUse) {
-        if (javaGlobalVersionInUse != null) {
-            global_version_label.setText(javaGlobalVersionInUse);
-        } else {
-            global_version_label.setText("No global version in use");
-        }
+        Platform.runLater(() -> {
+            if (javaGlobalVersionInUse != null) {
+                global_version_label.setText(javaGlobalVersionInUse);
+            } else {
+                global_version_label.setText("No global version in use");
+            }
+        });
     }
 
     private static TableColumn<JavaVersionView, String> getTableColumn(String title, String property) {

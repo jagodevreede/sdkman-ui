@@ -7,12 +7,11 @@ public record JavaVersion(String vendor, String version, String dist, String ide
     }
 
 
-
     @Override
     public int compareTo(Object o) {
         // first by vendor then version, then identifier
-        int cmp = this.vendor.compareTo(((JavaVersion) o).dist);
-        if (cmp != 0) return cmp * - 1;
+        int cmp = this.dist.compareTo(((JavaVersion) o).dist);
+        if (cmp != 0) return cmp;
 
         cmp = this.version.compareTo(((JavaVersion) o).version);
         if (cmp != 0) return cmp;
