@@ -9,6 +9,7 @@ import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -73,6 +74,18 @@ public class SdkManApi {
 
         result.sort(JavaVersion::compareTo);
         return result;
+    }
+
+    public void changeGlobal(String candidate, String toIdentifier) throws IOException {
+        File toFolder = new File(baseFolder, "candidates/" + candidate + "/" + toIdentifier);
+        if (!toFolder.exists()) {
+            throw new IllegalArgumentException("No such identifier for candidate " + candidate + ": " + toIdentifier);
+        }
+        File currentFolder = new File(baseFolder, "candidates/" + candidate + "/current");
+        if (currentFolder.exists()) {
+            currentFolder.delete();
+        }
+        Files.createSymbolicLink(currentFolder.toPath(), toFolder.toPath());
     }
 
     public List<String> getLocalInstalledVersions(String candidate) {

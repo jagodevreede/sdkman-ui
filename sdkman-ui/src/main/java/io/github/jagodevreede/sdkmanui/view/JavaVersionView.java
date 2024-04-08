@@ -1,6 +1,9 @@
 package io.github.jagodevreede.sdkmanui.view;
 
+import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.JavaVersion;
+import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
@@ -10,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public class JavaVersionView {
@@ -29,10 +33,26 @@ public class JavaVersionView {
             alert.setTitle("Set global SDK");
             alert.setHeaderText("Are you sure that you want to set " + javaVersion.identifier() + " as your global SDK?");
 
+            ButtonType buttonTypeCancel = new ButtonType("Cancel");
+
+            ButtonType buttonYes = new ButtonType("Yes", ButtonBar.ButtonData.CANCEL_CLOSE);
+            ButtonType buttonYesAndClose = new ButtonType("Yes, and close", ButtonBar.ButtonData.YES);
+
+            alert.getButtonTypes().setAll(buttonTypeCancel, buttonYes, buttonYesAndClose);
+
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                // ... user chose OK
+            if (result.get() == buttonYesAndClose || result.get() == buttonYes) {
+                SdkManApi api = ServiceRegistry.INSTANCE.getApi();
+                try {
+                    api.changeGlobal("java", javaVersion.identifier());
+                } catch (IOException e) {
+                    ServiceRegistry.INSTANCE.getPopupView().showError(e);
+                }
+                if (result.get() == buttonYesAndClose){
+                    Platform.exit();
+                }
             }
+            alert.close();
         });
         useAction = createImageButton("/images/use_icon.png", false, (event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -59,10 +79,14 @@ public class JavaVersionView {
         this.version = new SimpleStringProperty(javaVersion.version());
         this.dist = new SimpleStringProperty(javaVersion.dist());
         this.identifier = new SimpleStringProperty(javaVersion.identifier());
-        this.actions = new HBox(
-                globalAction,
-                useAction
-        );
+        if (javaVersion.installed()) {
+            this.actions = new HBox(
+                    globalAction,
+                    useAction
+            );
+        } else {
+            this.actions = new HBox();
+        }
         this.installed = new CheckBox();
         this.installed.setSelected(javaVersion.installed());
     }
