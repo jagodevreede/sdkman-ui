@@ -41,7 +41,7 @@ public class JavaVersionView {
             alert.getButtonTypes().setAll(buttonTypeCancel, buttonYes, buttonYesAndClose);
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == buttonYesAndClose || result.get() == buttonYes) {
+            if (result.isPresent() && (result.get() == buttonYesAndClose || result.get() == buttonYes)) {
                 SdkManApi api = ServiceRegistry.INSTANCE.getApi();
                 try {
                     api.changeGlobal("java", javaVersion.identifier());
@@ -67,13 +67,18 @@ public class JavaVersionView {
             alert.getButtonTypes().setAll(buttonTypeCancel, buttonYes, buttonYesAndClose);
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == buttonYesAndClose){
-                // ... user chose "One"
-            } else if (result.get() == buttonYes) {
-                // ... user chose "Two"
-            } else {
-                // ... user chose CANCEL or closed the dialog
+            if (result.isPresent() && (result.get() == buttonYesAndClose || result.get() == buttonYes)) {
+                SdkManApi api = ServiceRegistry.INSTANCE.getApi();
+                try {
+                    api.createExitScript("java", javaVersion.identifier());
+                } catch (IOException e) {
+                    ServiceRegistry.INSTANCE.getPopupView().showError(e);
+                }
+                if (result.get() == buttonYesAndClose){
+                    Platform.exit();
+                }
             }
+            alert.close();
         });
         this.vendor = new SimpleStringProperty(javaVersion.vendor());
         this.version = new SimpleStringProperty(javaVersion.version());

@@ -227,6 +227,9 @@
   "name":"java.util.Date"
 },
 {
+  "name":"javafx.animation.KeyValue"
+},
+{
   "name":"javafx.fxml.FXMLLoader"
 },
 {
@@ -260,7 +263,9 @@
     {"name":"setLayoutX","parameterTypes":["double"] }, 
     {"name":"setLayoutY","parameterTypes":["double"] }, 
     {"name":"setOnMouseClicked","parameterTypes":["javafx.event.EventHandler"] }, 
-    {"name":"setPickOnBounds","parameterTypes":["boolean"] }
+    {"name":"setPickOnBounds","parameterTypes":["boolean"] }, 
+    {"name":"setScaleX","parameterTypes":["double"] }, 
+    {"name":"setScaleY","parameterTypes":["double"] }
   ]
 },
 {
@@ -273,6 +278,16 @@
 },
 {
   "name":"javafx.scene.Scene"
+},
+{
+  "name":"javafx.scene.control.ButtonBase",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"javafx.scene.control.CheckBox",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"javafx.scene.control.Control",
@@ -289,9 +304,16 @@
   "queryAllDeclaredMethods":true,
   "methods":[
     {"name":"setFont","parameterTypes":["javafx.scene.text.Font"] }, 
+    {"name":"setMnemonicParsing","parameterTypes":["boolean"] }, 
     {"name":"setText","parameterTypes":["java.lang.String"] }, 
     {"name":"setTextFill","parameterTypes":["javafx.scene.paint.Paint"] }
   ]
+},
+{
+  "name":"javafx.scene.control.ProgressIndicator",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"javafx.scene.control.TableColumn",

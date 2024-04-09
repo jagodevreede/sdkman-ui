@@ -14,11 +14,17 @@
   "bundles":[
     {
       "name":"com.sun.javafx.tk.quantum.QuantumMessagesBundle",
-      "locales":[""]
+      "locales":[
+        "", 
+        "und"
+      ]
     }, 
     {
       "name":"com/sun/javafx/scene/control/skin/resources/controls",
-      "locales":[""]
+      "locales":[
+        "", 
+        "und"
+      ]
     }
   ]
 }

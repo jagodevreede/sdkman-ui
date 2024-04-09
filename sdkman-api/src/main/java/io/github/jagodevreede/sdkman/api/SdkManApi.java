@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.net.http.HttpClient.newHttpClient;
 
@@ -106,6 +108,25 @@ public class SdkManApi {
             }
         }
         return null;
+    }
+
+    private String updatePathForCandidate(String candidate, String identifier) {
+        var paths = System.getenv("PATH").split(OsHelper.getPathSeparator());
+        var pathName = baseFolder + "/candidates/" + candidate;
+        return Stream.of(paths).map(path -> {
+            if (path.startsWith(pathName)) {
+                return baseFolder + "/candidates/" + candidate + "/" + identifier + "/bin";
+            }
+            return path;
+        }).toList().stream().collect(Collectors.joining(OsHelper.getPathSeparator()));
+    }
+
+    public void createExitScript(String candidate, String identifier) throws IOException {
+        if (OsHelper.hasShell()) {
+            try (var writer = Files.newBufferedWriter(new File(baseFolder, "tmp/exit-script.sh").toPath())) {
+                writer.write("export PATH=" + updatePathForCandidate(candidate, identifier));
+            }
+        }
     }
 
     public String getPlatformName() {
