@@ -20,24 +20,26 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Gluon's GraalVM
-        uses: gluonhq/setup-graalvm@4.0
+      - uses: robinraju/release-downloader@v1.10
         with:
-          # GraalVM version. Default: latest
-          graalvm: '22.1.0.1-Final'
-          # Java version. Since GraalVM 22, either java11 or java17, before GraalVM 22, empty. Default: java17
-          jdk: 'java17'
-          # Architecture flag. Available options are 'x86_64' (default) and 'aarch64'. The latter is available only for M1 self-hosted runners since GraalVM 22.1.
-          arch: 'x86_64'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install libraries
+          repository: "gluonhq/graal"
+          tag: "gluon-22.1.0.1-Final"
+          fileName: "*java17-linux-gluon*.tar.gz"
+      - name: Extract JDK
         run: |
-          sudo apt update
-          sudo apt install libasound2-dev libavcodec-dev libavformat-dev libavutil-dev libgl-dev libgtk-3-dev libpango1.0-dev libxtst-dev
+          mkdir -p ~/jdk
+          tar -xzf *java17-linux-gluon*.tar.gz -C ~/jdk --strip-components=1
+          ls -lah ~/jdk/
+
+#      - name: Install libraries
+#        run: |
+#          sudo apt update
+#          sudo apt install libasound2-dev libavcodec-dev libavformat-dev libavutil-dev libgl-dev libgtk-3-dev libpango1.0-dev libxtst-dev
       - name: Verify Java and Maven
         run: ./mvnw -version
+        env:
+          JAVA_HOME: ~/jdk
+          GRAALVM_HOME: ~/jdk
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
