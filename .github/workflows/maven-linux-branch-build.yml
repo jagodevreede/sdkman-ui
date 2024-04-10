@@ -33,6 +33,13 @@ jobs:
           ls -lah ~/jdk/bin/
           ~/jdk/bin/java -version
           ./mvnw -version
+      - name: Test
+        run: |
+          ls ~/
+          ls -lah ~/jdk/
+          ls -lah ~/jdk/bin/
+          ~/jdk/bin/java -version
+          ./mvnw -version
 
 #      - name: Install libraries
 #        run: |
