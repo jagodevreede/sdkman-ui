@@ -34,10 +34,13 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - uses: sdkman/sdkman-action@main
+      - uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
         id: sdkman
       - name: Verify Java and Maven
-        run: ./mvn -version
+        run: ./mvnw -version
+        env:
+          JAVA_HOME: ~/.sdkman/candidates/java/current
+          GRAALVM_HOME: ~/.sdkman/candidates/java/current
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
@@ -49,6 +52,9 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Build with Maven
         run: ./mvnw -B clean install
+        env:
+          JAVA_HOME: ~/.sdkman/candidates/java/current
+          GRAALVM_HOME: ~/.sdkman/candidates/java/current
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       - name: Update dependency graph
