@@ -14,6 +14,10 @@ on:
     branches:
       - '**'
 
+env:
+  JAVA_HOME: /home/runner/jdk
+  GRAALVM_HOME: /home/runner/jdk
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,8 +31,8 @@ jobs:
           fileName: "*java17-linux-gluon*.tar.gz"
       - name: Extract JDK
         run: |
-          mkdir -p ~/jdk
-          tar -xzf *java17-linux-gluon*.tar.gz -C ~/jdk --strip-components=1
+          mkdir -p $JAVA_HOME
+          tar -xzf *java17-linux-gluon*.tar.gz -C $JAVA_HOME --strip-components=1
 
 #      - name: Install libraries
 #        run: |
@@ -36,9 +40,6 @@ jobs:
 #          sudo apt install libasound2-dev libavcodec-dev libavformat-dev libavutil-dev libgl-dev libgtk-3-dev libpango1.0-dev libxtst-dev
       - name: Verify Java and Maven
         run: ./mvnw -version
-        env:
-          JAVA_HOME: /home/runner/jdk
-          GRAALVM_HOME: /home/runner/jdk
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
@@ -50,9 +51,6 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Build with Maven
         run: ./mvnw -B clean install
-        env:
-          JAVA_HOME: /home/runner/jdk
-          GRAALVM_HOME: /home/runner/jdk
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       - name: Update dependency graph
