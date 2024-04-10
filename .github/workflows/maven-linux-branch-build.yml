@@ -12,7 +12,7 @@ name: Java CI with Maven
 on:
   push:
     branches:
-      - '**'
+      - 'main'
 
 jobs:
   build:
