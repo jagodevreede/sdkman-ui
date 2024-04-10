@@ -29,20 +29,6 @@ jobs:
         run: |
           mkdir -p ~/jdk
           tar -xzf *java17-linux-gluon*.tar.gz -C ~/jdk --strip-components=1
-          ls -lah ~/jdk/
-          ls -lah ~/jdk/bin/
-          ~/jdk/bin/java -version
-          ./mvnw -version
-      - name: Test
-        run: |
-          ls ~/
-          ls -lah ~/jdk/
-          ls -lah ~/jdk/bin/
-          ~/jdk/bin/java -version
-          ./mvnw -version
-        env:
-          JAVA_HOME: /home/runner/jdk
-          GRAALVM_HOME: /home/runner/jdk
 
 #      - name: Install libraries
 #        run: |
@@ -51,8 +37,8 @@ jobs:
       - name: Verify Java and Maven
         run: ./mvnw -version
         env:
-          JAVA_HOME: ~/jdk
-          GRAALVM_HOME: ~/jdk
+          JAVA_HOME: /home/runner/jdk
+          GRAALVM_HOME: /home/runner/jdk
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
@@ -64,6 +50,9 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Build with Maven
         run: ./mvnw -B clean install
+        env:
+          JAVA_HOME: /home/runner/jdk
+          GRAALVM_HOME: /home/runner/jdk
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       - name: Update dependency graph
