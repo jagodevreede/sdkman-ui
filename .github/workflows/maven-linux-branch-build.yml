@@ -30,6 +30,7 @@ jobs:
           mkdir -p ~/jdk
           tar -xzf *java17-linux-gluon*.tar.gz -C ~/jdk --strip-components=1
           ls -lah ~/jdk/
+          ls -lah ~/jdk/bin/
 
 #      - name: Install libraries
 #        run: |
