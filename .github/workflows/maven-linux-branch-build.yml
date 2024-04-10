@@ -20,11 +20,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: sdkman/sdkman-action@v1-preview-2
+      - uses: sdkman/sdkman-action@main
         id: sdkman
+      - name: Verify Java
+        run: java -version
 
       - name: Build with Maven
-        run: mvn -B clean install
+        run: ./mvnw -B clean install
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       - name: Update dependency graph
