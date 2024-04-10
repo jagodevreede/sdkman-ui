@@ -31,6 +31,8 @@ jobs:
           tar -xzf *java17-linux-gluon*.tar.gz -C ~/jdk --strip-components=1
           ls -lah ~/jdk/
           ls -lah ~/jdk/bin/
+          ~/jdk/bin/java -version
+          ./mvnw -version
 
 #      - name: Install libraries
 #        run: |
