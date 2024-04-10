@@ -40,6 +40,9 @@ jobs:
           ls -lah ~/jdk/bin/
           ~/jdk/bin/java -version
           ./mvnw -version
+        env:
+          JAVA_HOME: /home/runner/jdk
+          GRAALVM_HOME: /home/runner/jdk
 
 #      - name: Install libraries
 #        run: |
