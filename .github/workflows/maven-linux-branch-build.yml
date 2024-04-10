@@ -20,11 +20,33 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Cache skdman binaries
+        id: cache-sdkman
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-skdman
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.sdkman
+          save-always: true
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/.sdkmanrc') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - uses: sdkman/sdkman-action@main
         id: sdkman
-      - name: Verify Java
-        run: java -version
+      - name: Verify Java and Maven
+        run: ./mvn -version
 
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          save-always: true
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: Build with Maven
         run: ./mvnw -B clean install
 
