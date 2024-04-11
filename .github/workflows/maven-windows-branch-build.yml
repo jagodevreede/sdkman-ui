@@ -1,9 +1,9 @@
-name: Linux branch build
+name: Windoww branch build
 
 on:
   push:
     branches:
-      - 'main'
+      - '**'
 
 env:
   JAVA_HOME: /home/runner/jdk
@@ -11,22 +11,29 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
+#      - name: Add msbuild to PATH
+#        uses: microsoft/setup-msbuild@v1.0.2
+#      - name: Visual Studio shell
+#        uses: egor-tensin/vs-shell@v1
       - uses: robinraju/release-downloader@v1.10
         with:
           repository: "gluonhq/graal"
           tag: "gluon-22.1.0.1-Final"
-          fileName: "*java17-linux-gluon*.tar.gz"
+          fileName: "*java17-windows-gluon-*.zip "
       - name: Extract JDK
         run: |
-          mkdir -p $JAVA_HOME
-          tar -xzf *java17-linux-gluon*.tar.gz -C $JAVA_HOME --strip-components=1
-      - name: Install libraries
-        run: |
-          sudo apt install libasound2-dev libavcodec-dev libavformat-dev libavutil-dev libgl-dev libgtk-3-dev libpango1.0-dev libxtst-dev
+          mkdir -p %JAVA_HOME%
+          echo %HOME%
+          cd %JAVA_HOME%
+          unzip -j *java17-linux-gluon*.zip
+          dir
+          cd %HOME%
+      - name: Make staging directory
+        run: mkdir staging
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
