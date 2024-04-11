@@ -49,6 +49,8 @@ jobs:
         run: ./mvnw -B clean install
       - name: Build native
         run: ./mvnw gluonfx:build -f sdkman-ui
+        # Run only on main branch
+        if: ${{ github.ref == 'refs/heads/main' }}
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       - name: Update dependency graph
