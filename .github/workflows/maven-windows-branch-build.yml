@@ -16,10 +16,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-#      - name: Add msbuild to PATH
-#        uses: microsoft/setup-msbuild@v1.0.2
-#      - name: Visual Studio shell
-#        uses: egor-tensin/vs-shell@v1
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: Visual Studio shell
+        uses: egor-tensin/vs-shell@v1
       - uses: robinraju/release-downloader@v1.10
         with:
           repository: "gluonhq/graal"
@@ -45,7 +45,14 @@ jobs:
       - name: Build native
         run: ./mvnw gluonfx:build -f sdkman-ui
         # Run only on main branch
-        if: ${{ github.ref == 'refs/heads/main' }}
+#        if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Copy native app to staging
+        run: cp -r sdkman-ui/target/gluonfx/x86_64-windows/*.exe staging
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Package
+          path: staging
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       - name: Update dependency graph
