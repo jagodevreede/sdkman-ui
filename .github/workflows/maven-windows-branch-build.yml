@@ -16,6 +16,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Create tag
+        uses: rickstaa/action-create-tag@v1
+        id: "tag_create"
+        with:
+          tag: "latest_build"
+          force_push_tag: true
+          message: "Latest release"
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
       - name: Visual Studio shell
@@ -47,12 +54,22 @@ jobs:
         # Run only on main branch
 #        if: ${{ github.ref == 'refs/heads/main' }}
       - name: Copy native app to staging
-        run: cp -r sdkman-ui/target/gluonfx/x86_64-windows/*.exe staging
-      - name: Upload
-        uses: actions/upload-artifact@v2
+        run: |
+          cp -r sdkman-ui/target/gluonfx/x86_64-windows/*.exe staging
+          cd staging
+          get-childitem *.exe | foreach { rename-item $_ skdman-ui-x86_64-latest_build.exe }
+          cd ..
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: Package
-          path: staging
+          release_name: "Latest build"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: staging/skdman-ui-x86_64-latest_build.exe
+          asset_name: skdman-ui-x86_64-latest_build.exe
+          prerelease: true
+          tag: latest_build
+          overwrite: true
+          body: "This is my release text"
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       - name: Update dependency graph
