@@ -6,8 +6,9 @@ on:
       - '**'
 
 env:
-  JAVA_HOME: d:\a\jdk
-  GRAALVM_HOME: d:\a\jdk
+  JAVA_HOME: D:\a\sdkman-ui\sdkman-ui\jdk
+  GRAALVM_HOME: D:\a\sdkman-ui\sdkman-ui\jdk
+  gluon_version: 22.1.0.1-Final
 
 jobs:
   build:
@@ -22,15 +23,12 @@ jobs:
       - uses: robinraju/release-downloader@v1.10
         with:
           repository: "gluonhq/graal"
-          tag: "gluon-22.1.0.1-Final"
+          tag: "gluon-${{ env.gluon_version }}"
           fileName: "*java17-windows-gluon-*.zip"
       - name: Extract JDK
         run: |
-          mkdir -p $env:JAVA_HOME
-          cd $env:JAVA_HOME
-          unzip -j ../*java17-windows-gluon*.zip
-          dir
-          cd ..
+          unzip graalvm-svm-java17-windows-gluon-${{ env.gluon_version }}.zip
+          Rename-Item -path "graalvm-svm-java17-windows-gluon-${{ env.gluon_version }}" jdk
       - name: Make staging directory
         run: mkdir staging
 
