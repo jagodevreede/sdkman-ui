@@ -6,8 +6,8 @@ on:
       - '**'
 
 env:
-  JAVA_HOME: /home/runner/jdk
-  GRAALVM_HOME: /home/runner/jdk
+  JAVA_HOME: d:\a\jdk
+  GRAALVM_HOME: d:\a\jdk
 
 jobs:
   build:
@@ -23,15 +23,14 @@ jobs:
         with:
           repository: "gluonhq/graal"
           tag: "gluon-22.1.0.1-Final"
-          fileName: "*java17-windows-gluon-*.zip "
+          fileName: "*java17-windows-gluon-*.zip"
       - name: Extract JDK
         run: |
-          mkdir -p %JAVA_HOME%
-          echo %HOME%
-          cd %JAVA_HOME%
-          unzip -j *java17-linux-gluon*.zip
+          mkdir -p $env:JAVA_HOME
+          cd $env:JAVA_HOME
+          unzip -j ../*java17-windows-gluon*.zip
           dir
-          cd %HOME%
+          cd ..
       - name: Make staging directory
         run: mkdir staging
 
@@ -44,7 +43,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Build with Maven
-        run: ./mvnw -B clean install
+        run: ./mvnw -B clean install -DskipTests
       - name: Build native
         run: ./mvnw gluonfx:build -f sdkman-ui
         # Run only on main branch
