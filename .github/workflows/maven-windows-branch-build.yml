@@ -66,7 +66,7 @@ jobs:
           prerelease: true
           tag: latest_build
           overwrite: true
-          body: "This is my release text"
+          body: "This is the latest build of skdman-ui, it should only be used for testing. Absolutely no guarantees are given. Please use at your own risk."
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       - name: Update dependency graph
