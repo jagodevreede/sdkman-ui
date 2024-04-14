@@ -121,10 +121,22 @@ public class SdkManApi {
         }).toList().stream().collect(Collectors.joining(OsHelper.getPathSeparator()));
     }
 
+    public File getExitScriptFile() {
+        if (OsHelper.hasShell()) {
+            return new File(baseFolder, "tmp/exit-script.sh");
+        } else {
+            return new File(baseFolder, "tmp/exit-script.cmd");
+        }
+    }
+
     public void createExitScript(String candidate, String identifier) throws IOException {
         if (OsHelper.hasShell()) {
-            try (var writer = Files.newBufferedWriter(new File(baseFolder, "tmp/exit-script.sh").toPath())) {
+            try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
                 writer.write("export PATH=" + updatePathForCandidate(candidate, identifier));
+            }
+        } else {
+            try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
+                writer.write("set PATH=" + updatePathForCandidate(candidate, identifier));
             }
         }
     }
@@ -141,6 +153,21 @@ public class SdkManApi {
             return realPath.substring(candidatesFolder.getAbsolutePath().length() + 1).replace("/bin", "");
         }
         return null;
+    }
+
+    /** Always create an exit file, as that is being called after the program exits. */
+    public void registerShutdownHook() {
+        Thread printingHook = new Thread(() -> {
+            File exitScriptFile = getExitScriptFile();
+            if (!exitScriptFile.exists()) {
+                try {
+                    exitScriptFile.createNewFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);}
+            }
+
+        });
+        Runtime.getRuntime().addShutdownHook(printingHook);
     }
 
 }

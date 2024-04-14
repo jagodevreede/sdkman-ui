@@ -59,4 +59,17 @@ public class PopupView {
             }
         });
     }
+
+    public void showInformation(String message) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information");
+                alert.setHeaderText(message);
+
+                alert.showAndWait();
+            }
+        });
+    }
 }

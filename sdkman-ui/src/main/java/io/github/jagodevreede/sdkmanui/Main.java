@@ -19,6 +19,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         logger.debug("Starting SDKMAN UI");
+        ServiceRegistry.INSTANCE.getApi().registerShutdownHook();
         ServiceRegistry.INSTANCE.setPrimaryStage(stage);
 
         URL mainFxml = Main.class.getClassLoader().getResource("main.fxml");

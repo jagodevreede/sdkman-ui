@@ -1,4 +1,4 @@
-name: Windoww branch build
+name: Windows branch build
 
 on:
   push:

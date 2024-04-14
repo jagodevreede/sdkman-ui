@@ -11,7 +11,7 @@
         <file>
             <source>${project.build.directory}/gluonfx/x86_64-windows/sdkman-ui.exe</source>
             <outputDirectory>/</outputDirectory>
-            <destName>sdkman-ui-testname.exe</destName>
+            <destName>sdkman-ui.exe</destName>
         </file>
         <file>
             <source>${project.basedir}/src/main/scripts/sdkui.cmd</source>
