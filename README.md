@@ -1,6 +1,10 @@
 # sdkman-ui
 
+This project aims to offer a Graphical User Interface for [SDKMAN](https://sdkman.io/). And a out of the box
+implementation for windows.
+
 ## Sneek peak at UI (osx):
+
 ![Ui sneek peak](https://jagodevreede.github.io/sdkman-ui-images/Animatie.gif)
 
 # build steps:

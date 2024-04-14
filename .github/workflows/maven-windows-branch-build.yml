@@ -48,19 +48,16 @@ jobs:
         run: ./mvnw -B clean install -DskipTests
       - name: Build native
         run: ./mvnw gluonfx:build -f sdkman-ui
-      - name: Copy native app to staging
+      - name: Assamble zip
         run: |
-          cp -r sdkman-ui/target/gluonfx/x86_64-windows/*.exe staging
-          cd staging
-          get-childitem *.exe | foreach { rename-item $_ skdman-ui-x86_64-latest_build.exe }
-          cd ..
+          ./mvnw org.apache.maven.plugins:maven-assembly-plugin:single@assemble-windows -f sdkman-ui
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           release_name: "Latest build"
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: staging/skdman-ui-x86_64-latest_build.exe
-          asset_name: skdman-ui-x86_64-latest_build.exe
+          file: sdkman-ui/sdkman-ui/target/sdkman-ui-windows_x86_64-latest_build.zip
+          asset_name: sdkman-ui-windows_x86_64-latest_build.zip
           prerelease: true
           tag: latest_build
           overwrite: true

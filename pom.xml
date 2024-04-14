@@ -28,7 +28,6 @@
         <gluonfx.plugin.version>1.0.22</gluonfx.plugin.version>
     </properties>
 
-
     <build>
         <pluginManagement>
             <plugins>
