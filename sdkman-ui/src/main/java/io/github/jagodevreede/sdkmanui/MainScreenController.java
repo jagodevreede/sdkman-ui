@@ -52,21 +52,24 @@ public class MainScreenController implements Initializable {
         showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
     }
 
-    private void loadData() {
+    public void loadData() {
         if (tableData != null) {
             tableData.clear();
         }
         progressSpinner.setVisible(true);
-        TaskRunner.run(new Task() {
+        MainScreenController thiz = this;
+        TaskRunner.run(new Task<Void>() {
             @Override
-            protected Object call() throws Exception {
+            protected Void call() throws Exception {
                 try {
                     String javaGlobalVersionInUse = api.resolveCurrentVersion("java");
+                    String javaPathVersionInUse = api.getCurrentCandidateFromPath("java");
                     setGlobalVersionLabel(javaGlobalVersionInUse);
+                    setPathVersionLabel(javaPathVersionInUse);
                     tableData = FXCollections.observableArrayList(
                             api.getJavaVersions().stream()
                                     .filter(j -> !showInstalledOnly.isSelected() || j.installed())
-                                    .map(j -> new JavaVersionView(j, javaGlobalVersionInUse)).toList()
+                                    .map(j -> new JavaVersionView(j, javaGlobalVersionInUse, javaPathVersionInUse, thiz)).toList()
                     );
 
                     table.setItems(tableData);
@@ -75,6 +78,20 @@ public class MainScreenController implements Initializable {
                     ServiceRegistry.INSTANCE.getPopupView().showError(e);
                 }
                 return null;
+            }
+        });
+    }
+
+    private void setPathVersionLabel(String javaPathVersionInUse) {
+        Platform.runLater(() -> {
+            if (javaPathVersionInUse != null) {
+                if ("current".equals(javaPathVersionInUse)) {
+                    selected_item_label.setText("Using global version in shell");
+                } else {
+                    selected_item_label.setText("Using " + javaPathVersionInUse + " in shell");
+                }
+            } else {
+                selected_item_label.setText("No path version in use");
             }
         });
     }

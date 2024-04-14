@@ -12,10 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,6 +29,7 @@ public class SdkManApi {
 
     private final CachedHttpClient client;
     private final String baseFolder;
+    private Map<String, String> changes = new HashMap<>();
 
     public SdkManApi(String baseFolder) {
         this.baseFolder = baseFolder;
@@ -100,6 +98,9 @@ public class SdkManApi {
     }
 
     public String getCurrentCandidateFromPath(String candidate) {
+        if (changes.containsKey(candidate)) {
+            return changes.get(candidate);
+        }
         var paths = System.getenv("PATH").split(OsHelper.getPathSeparator());
         var pathName = baseFolder + "/candidates/" + candidate;
         for (var path : paths) {
@@ -130,6 +131,7 @@ public class SdkManApi {
     }
 
     public void createExitScript(String candidate, String identifier) throws IOException {
+        changes.put(candidate, identifier);
         if (OsHelper.hasShell()) {
             try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
                 writer.write("export PATH=" + updatePathForCandidate(candidate, identifier));

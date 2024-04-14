@@ -2,6 +2,7 @@ package io.github.jagodevreede.sdkmanui.view;
 
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.JavaVersion;
+import io.github.jagodevreede.sdkmanui.MainScreenController;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -26,9 +27,11 @@ public class JavaVersionView {
     private final CheckBox installed;
     private final Button globalAction;
     private final Button useAction;
+    private final MainScreenController controller;
 
-    public JavaVersionView(JavaVersion javaVersion, String globalIdentifierInUse) {
-        globalAction = createImageButton("/images/global_icon.png", javaVersion.identifier().equals(globalIdentifierInUse), (event) -> {
+    public JavaVersionView(JavaVersion javaVersion, String javaGlobalVersionInUse, String javaPathVersionInUse, MainScreenController controller) {
+        this.controller = controller;
+        globalAction = createImageButton("/images/global_icon.png", javaVersion.identifier().equals(javaGlobalVersionInUse), (event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Set global SDK");
             alert.setHeaderText("Are you sure that you want to set " + javaVersion.identifier() + " as your global SDK?");
@@ -50,11 +53,13 @@ public class JavaVersionView {
                 }
                 if (result.get() == buttonYesAndClose){
                     Platform.exit();
+                } else {
+                    controller.loadData();
                 }
             }
             alert.close();
         });
-        useAction = createImageButton("/images/use_icon.png", false, (event) -> {
+        useAction = createImageButton("/images/use_icon.png", javaVersion.identifier().equals(javaPathVersionInUse), (event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Set local SDK");
             alert.setHeaderText("Are you sure that you want to set " + javaVersion.identifier() + " as your local SDK?");
@@ -76,6 +81,8 @@ public class JavaVersionView {
                 }
                 if (result.get() == buttonYesAndClose){
                     Platform.exit();
+                } else {
+                    controller.loadData();
                 }
             }
             alert.close();
