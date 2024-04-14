@@ -56,7 +56,7 @@ jobs:
         with:
           release_name: "Latest build"
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: sdkman-ui/sdkman-ui/target/sdkman-ui-windows_x86_64-latest_build.zip
+          file: sdkman-ui/target/sdkman-ui-windows_x86_64-latest_build.zip
           asset_name: sdkman-ui-windows_x86_64-latest_build.zip
           prerelease: true
           tag: latest_build
