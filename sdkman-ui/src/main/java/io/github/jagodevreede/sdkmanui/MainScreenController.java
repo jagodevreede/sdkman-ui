@@ -11,7 +11,6 @@ import io.github.jagodevreede.sdkmanui.view.PopupView;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -77,34 +76,30 @@ public class MainScreenController implements Initializable {
         MainScreenController thiz = this;
         final double finalCurrentScroll = currentScroll;
         log.info("current scroll {}", currentScroll);
-        TaskRunner.run(new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                try {
-                    String javaGlobalVersionInUse = api.resolveCurrentVersion("java");
-                    String javaPathVersionInUse = api.getCurrentCandidateFromPath("java");
-                    setGlobalVersionLabel(javaGlobalVersionInUse);
-                    setPathVersionLabel(javaPathVersionInUse);
-                    tableData = FXCollections.observableArrayList(
-                            api.getJavaVersions().stream()
-                                    .filter(j -> !showInstalledOnly.isSelected() || j.installed())
-                                    .map(j -> new JavaVersionView(j, javaGlobalVersionInUse, javaPathVersionInUse, thiz)).toList()
-                    );
-
+        TaskRunner.run(() -> {
+            try {
+                String javaGlobalVersionInUse = api.resolveCurrentVersion("java");
+                String javaPathVersionInUse = api.getCurrentCandidateFromPath("java");
+                setGlobalVersionLabel(javaGlobalVersionInUse);
+                setPathVersionLabel(javaPathVersionInUse);
+                tableData = FXCollections.observableArrayList(
+                        api.getJavaVersions().stream()
+                                .filter(j -> !showInstalledOnly.isSelected() || j.installed())
+                                .map(j -> new JavaVersionView(j, javaGlobalVersionInUse, javaPathVersionInUse, thiz)).toList()
+                );
+                Platform.runLater(() -> {
                     table.setItems(tableData);
-                    progressSpinner.setVisible(false);
                     ScrollBar verticalBar = (ScrollBar) table.lookup(".scroll-bar:vertical");
                     if (verticalBar != null) {
                         log.info(" scrollbar");
-                        if (verticalBar.getMax()< finalCurrentScroll) {
+                        if (verticalBar.getMax() < finalCurrentScroll) {
                             log.info("scrolling to {}", finalCurrentScroll);
                             Platform.runLater(() -> verticalBar.setValue(finalCurrentScroll));
                         }
                     }
-                } catch (IOException | InterruptedException e) {
-                    ServiceRegistry.INSTANCE.getPopupView().showError(e);
-                }
-                return null;
+                });
+            } catch (IOException | InterruptedException e) {
+                ServiceRegistry.INSTANCE.getPopupView().showError(e);
             }
         });
     }

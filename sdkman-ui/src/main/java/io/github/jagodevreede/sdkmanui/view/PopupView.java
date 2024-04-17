@@ -10,7 +10,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,14 +19,15 @@ import java.util.Optional;
 
 public class PopupView {
     private static Logger logger = LoggerFactory.getLogger(PopupView.class);
-    private final Stage primaryStage;
 
-    public PopupView(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
+    private Alert currentShownAlert;
 
     public void showError(Throwable e) {
         logger.warn(e.getMessage(), e);
+        Alert currentShownAlertNow = currentShownAlert;
+        if (currentShownAlertNow != null && currentShownAlertNow.isShowing()) {
+            Platform.runLater(currentShownAlertNow::close);
+        }
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Exception occurred");
@@ -58,6 +58,7 @@ public class PopupView {
             // Set expandable Exception into the dialog pane.
             alert.getDialogPane().setExpandableContent(expContent);
 
+            currentShownAlert = alert;
             alert.showAndWait();
         });
     }
@@ -68,6 +69,7 @@ public class PopupView {
             alert.setTitle("Information");
             alert.setHeaderText(message);
 
+            currentShownAlert = alert;
             alert.showAndWait();
         });
     }
@@ -83,6 +85,8 @@ public class PopupView {
             ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
             alert.getButtonTypes().setAll(buttonTypeCancel);
+            currentShownAlert = alert;
+
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == buttonTypeCancel) {
@@ -92,5 +96,6 @@ public class PopupView {
         return new ProgressWindow(progressBar, alert);
     }
 
-    public record ProgressWindow(ProgressBar progressBar, Alert alert) {}
+    public record ProgressWindow(ProgressBar progressBar, Alert alert) {
+    }
 }

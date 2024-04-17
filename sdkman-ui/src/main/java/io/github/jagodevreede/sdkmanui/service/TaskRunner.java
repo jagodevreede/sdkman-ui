@@ -9,7 +9,10 @@ public class TaskRunner {
         ProgressIndicator progressSpinner = ServiceRegistry.INSTANCE.getProgressSpinner();
         progressSpinner.setVisible(true);
         task.setOnSucceeded(e -> clearProgressSpinner());
-        task.setOnFailed(e -> clearProgressSpinner());
+        task.setOnFailed(e -> {
+            clearProgressSpinner();
+            new GlobalExceptionHandler().uncaughtException(Thread.currentThread(), task.getException());
+        });
         var t = new Thread(task);
         t.setUncaughtExceptionHandler(new GlobalExceptionHandler());
         t.start();
@@ -20,12 +23,6 @@ public class TaskRunner {
             protected Void call() throws Exception {
                 task.run();
                 return null;
-            }
-
-            @Override
-            protected void failed() {
-                super.failed();
-                new GlobalExceptionHandler().uncaughtException(Thread.currentThread(), getException());
             }
         });
     }

@@ -27,7 +27,7 @@ public class ServiceRegistry {
     }
 
     public void setPrimaryStage(Stage primaryStage) {
-        popupView = new PopupView(primaryStage);
+        popupView = new PopupView();
     }
 
     public PopupView getPopupView() {
