@@ -38,19 +38,28 @@ public class SdkManApi {
     private final CachedHttpClient client;
     private final String baseFolder;
     private Map<String, String> changes = new HashMap<>();
+    private boolean offline;
 
     public SdkManApi(String baseFolder) {
         this.baseFolder = baseFolder;
         this.client = new CachedHttpClient(baseFolder + "/.http_cache", DEFAUL_CACHE_DURATION, newHttpClient());
     }
 
+    public boolean isOffline() {
+        return offline;
+    }
+
+    public void setOffline(boolean offline) {
+        this.offline = offline;
+    }
+
     public List<Candidate> getCandidates() throws Exception {
-        String response = client.get(BASE_URL + "/candidates");
+        String response = client.get(BASE_URL + "/candidates", offline);
         return CandidateListParser.parse(response);
     }
 
     public List<JavaVersion> getJavaVersions() throws IOException, InterruptedException {
-        String response = client.get(BASE_URL + "/candidates/java/" + getPlatformName() + "/versions/list?installed=");
+        String response = client.get(BASE_URL + "/candidates/java/" + getPlatformName() + "/versions/list?installed=", offline);
         var versions = VersionListParser.parseJava(response);
         var localInstalled = new HashSet<>(getLocalInstalledVersions("java"));
         var result = new ArrayList<JavaVersion>();

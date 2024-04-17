@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
@@ -24,24 +25,33 @@ public class CachedHttpClient {
         this.httpClient = httpClient;
     }
 
-    public String get(String url) throws IOException, InterruptedException {
+    public String get(String url, boolean offline) throws IOException, InterruptedException {
         var cacheFile = new File(cacheFolder, url.replaceAll("[^a-zA-Z0-9]", "_"));
-        var fromCache = loadFromCache(cacheFile);
+        var fromCache = loadFromCache(cacheFile, offline);
         if (fromCache != null) {
             logger.debug("Loaded from cache: {}", url);
             return fromCache;
         }
-        HttpRequest getRequest = HttpRequest.newBuilder().uri(java.net.URI.create(url)).build();
-        var response = httpClient.send(getRequest, java.net.http.HttpResponse.BodyHandlers.ofString());
-        try (var cacheOutputStream = new java.io.FileOutputStream(cacheFile)) {
-            var bytes = response.body().getBytes();
-            cacheOutputStream.write(bytes);
-            logger.debug("Loaded and saved to cache: {}", url);
-            return new String(bytes, StandardCharsets.UTF_8);
+        if (offline) {
+            String message = "Unable to get " + url + " as you are offline";
+            throw new IllegalStateException(message);
+        }
+        try {
+            HttpRequest getRequest = HttpRequest.newBuilder().uri(java.net.URI.create(url)).build();
+            var response = httpClient.send(getRequest, java.net.http.HttpResponse.BodyHandlers.ofString());
+            try (var cacheOutputStream = new java.io.FileOutputStream(cacheFile)) {
+                var bytes = response.body().getBytes();
+                cacheOutputStream.write(bytes);
+                logger.debug("Loaded and saved to cache: {}", url);
+                return new String(bytes, StandardCharsets.UTF_8);
+            }
+        } catch (ConnectException connectException) {
+            logger.warn("Failed to connect, assuming you are offline");
+            return get(url, true);
         }
     }
 
-    private String loadFromCache(File cacheFile) throws IOException {
+    private String loadFromCache(File cacheFile, boolean offline) throws IOException {
         if (!cacheFile.getParentFile().exists()) {
             logger.info("Creating (http) cache folder: {}", cacheFile.getParentFile().getAbsolutePath());
             cacheFile.getParentFile().mkdirs();
@@ -49,7 +59,7 @@ public class CachedHttpClient {
         if (cacheFile.exists()) {
             // get age of file
             long age = System.currentTimeMillis() - cacheFile.lastModified();
-            if (age < cacheDuration.toMillis()) {
+            if (age < cacheDuration.toMillis() || offline) {
                 try (var resource = new FileInputStream(cacheFile)) {
                     return new String(resource.readAllBytes(), StandardCharsets.UTF_8);
                 }

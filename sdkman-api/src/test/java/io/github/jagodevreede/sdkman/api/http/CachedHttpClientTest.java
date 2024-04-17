@@ -19,7 +19,9 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CachedHttpClientTest {
@@ -43,7 +45,7 @@ class CachedHttpClientTest {
         try (PrintWriter out = new PrintWriter(new File(tempDir, "http___example_com_test"))) {
             out.print("test");
         }
-        var result = subject.get(url);
+        var result = subject.get(url, false);
 
         assertThat(result).isEqualTo("test");
 
@@ -59,7 +61,7 @@ class CachedHttpClientTest {
 
         when(httpClient.send(any(HttpRequest.class), ArgumentMatchers.<HttpResponse.BodyHandler<String>>any())).thenReturn(httpResponse);
 
-        var result = subject.get(url);
+        var result = subject.get(url, false);
 
         assertThat(result).isEqualTo("test from http");
 
@@ -80,10 +82,26 @@ class CachedHttpClientTest {
 
         when(httpClient.send(any(HttpRequest.class), ArgumentMatchers.<HttpResponse.BodyHandler<String>>any())).thenReturn(httpResponse);
 
-        var result = subject.get(url);
+        var result = subject.get(url, false);
 
         assertThat(result).isEqualTo("test from http");
 
         verify(httpClient).send(any(HttpRequest.class), ArgumentMatchers.<HttpResponse.BodyHandler<String>>any());
+    }
+
+    @Test
+    void getDoesCallsHttpIfCacheFileToOldButIsOffline() throws Exception {
+        String url = "http://example.com/test";
+        File cacheFile = new File(tempDir, "http___example_com_test");
+        try (PrintWriter out = new PrintWriter(cacheFile)) {
+            out.print("test");
+        }
+        cacheFile.setLastModified(System.currentTimeMillis() - Duration.of(1, ChronoUnit.HOURS).toMillis() - 1);
+
+        var result = subject.get(url, true);
+
+        assertThat(result).isEqualTo("test");
+
+        verifyNoInteractions(httpClient);
     }
 }
