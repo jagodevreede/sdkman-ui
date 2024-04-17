@@ -1,9 +1,13 @@
 package io.github.jagodevreede.sdkmanui;
 
+import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
+import io.github.jagodevreede.sdkman.api.http.DownloadTask;
+import io.github.jagodevreede.sdkman.api.http.UnzipTask;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
 import io.github.jagodevreede.sdkmanui.view.JavaVersionView;
+import io.github.jagodevreede.sdkmanui.view.PopupView;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,14 +15,22 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
+    private static final Logger log = LoggerFactory.getLogger(MainScreenController.class);
     @FXML
     TableView<JavaVersionView> table;
     @FXML
@@ -53,11 +65,18 @@ public class MainScreenController implements Initializable {
     }
 
     public void loadData() {
+        double currentScroll = 0;
         if (tableData != null) {
+            ScrollBar verticalBar = (ScrollBar) table.lookup(".scroll-bar:vertical");
+            if (verticalBar != null) {
+                currentScroll = verticalBar.valueProperty().get();
+            }
             tableData.clear();
         }
         progressSpinner.setVisible(true);
         MainScreenController thiz = this;
+        final double finalCurrentScroll = currentScroll;
+        log.info("current scroll {}", currentScroll);
         TaskRunner.run(new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -74,6 +93,14 @@ public class MainScreenController implements Initializable {
 
                     table.setItems(tableData);
                     progressSpinner.setVisible(false);
+                    ScrollBar verticalBar = (ScrollBar) table.lookup(".scroll-bar:vertical");
+                    if (verticalBar != null) {
+                        log.info(" scrollbar");
+                        if (verticalBar.getMax()< finalCurrentScroll) {
+                            log.info("scrolling to {}", finalCurrentScroll);
+                            Platform.runLater(() -> verticalBar.setValue(finalCurrentScroll));
+                        }
+                    }
                 } catch (IOException | InterruptedException e) {
                     ServiceRegistry.INSTANCE.getPopupView().showError(e);
                 }
@@ -122,4 +149,50 @@ public class MainScreenController implements Initializable {
 
     }
 
+    public void downloadAndInstall(String identifier, String version) {
+        download(identifier, version, true);
+    }
+
+    private void install(String identifier, String version) {
+        UnzipTask unzipTask = ServiceRegistry.INSTANCE.getApi().install(identifier, version);
+        PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Extraction of " + identifier + " " + version + " in progress", unzipTask);
+        ProgressInformation progressInformation = current -> {
+            if (current > 0) {
+                Platform.runLater(() -> progressWindow.progressBar().setProgress(current / 100.0));
+            }
+        };
+        unzipTask.setProgressInformation(progressInformation);
+        TaskRunner.run(() -> {
+            unzipTask.unzip();
+            Platform.runLater(() -> {
+                progressWindow.alert().close();
+                loadData();
+            });
+        });
+    }
+
+    private void download(String identifier, String version, boolean install) {
+        DownloadTask downloadTask = ServiceRegistry.INSTANCE.getApi().download(identifier, version);
+        PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Download of " + identifier + " " + version + " in progress", downloadTask);
+        ProgressInformation progressInformation = current -> {
+            if (current > 0) {
+                Platform.runLater(() -> progressWindow.progressBar().setProgress(current / 100.0));
+            }
+        };
+        downloadTask.setProgressInformation(progressInformation);
+        TaskRunner.run(() -> {
+            downloadTask.download();
+            Platform.runLater(() -> {
+                progressWindow.alert().close();
+                if (install) {
+                    install(identifier, version);
+                }
+            });
+        });
+    }
+
+    public void uninstall(String identifier, String version) {
+        ServiceRegistry.INSTANCE.getApi().uninstall(identifier, version);
+        Platform.runLater(this::loadData);
+    }
 }

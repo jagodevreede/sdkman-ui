@@ -8,7 +8,11 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -101,6 +105,13 @@ public class JavaVersionView {
         }
         this.installed = new CheckBox();
         this.installed.setSelected(javaVersion.installed());
+        this.installed.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                controller.downloadAndInstall("java", javaVersion.identifier());
+            } else {
+                controller.uninstall("java", javaVersion.identifier());
+            }
+        });
     }
 
     private Button createImageButton(String imagePath, boolean disabled, EventHandler<? super MouseEvent> eventHandler) {

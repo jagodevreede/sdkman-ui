@@ -1,5 +1,6 @@
 package io.github.jagodevreede.sdkmanui;
 
+import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +22,8 @@ public class Main extends Application {
         logger.debug("Starting SDKMAN UI");
         ServiceRegistry.INSTANCE.getApi().registerShutdownHook();
         ServiceRegistry.INSTANCE.setPrimaryStage(stage);
+
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
 
         URL mainFxml = Main.class.getClassLoader().getResource("main.fxml");
         Parent root = FXMLLoader.load(mainFxml);

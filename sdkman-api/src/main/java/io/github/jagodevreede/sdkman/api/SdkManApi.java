@@ -3,7 +3,10 @@ package io.github.jagodevreede.sdkman.api;
 import io.github.jagodevreede.sdkman.api.domain.Candidate;
 import io.github.jagodevreede.sdkman.api.domain.JavaVersion;
 import io.github.jagodevreede.sdkman.api.domain.Vendor;
+import io.github.jagodevreede.sdkman.api.files.FileUtil;
 import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
+import io.github.jagodevreede.sdkman.api.http.DownloadTask;
+import io.github.jagodevreede.sdkman.api.http.UnzipTask;
 import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
 import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
 
@@ -12,7 +15,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -172,4 +180,26 @@ public class SdkManApi {
         Runtime.getRuntime().addShutdownHook(printingHook);
     }
 
+    public DownloadTask download(String identifier, String version) {
+        File finalArchiveFile = new File(baseFolder, "archives/" + identifier + "-" + version + ".zip");
+        String url = BASE_URL + "/broker/download/" + identifier + "/" + version + "/" + getPlatformName();
+        File tempFile = new File(baseFolder, "tmp/" + identifier + "-" + version + ".bin");
+        return new DownloadTask(url, tempFile, finalArchiveFile);
+    }
+
+    public UnzipTask install(String identifier, String version) {
+        File archiveFile = new File(baseFolder, "archives/" + identifier + "-" + version + ".zip");
+        return new UnzipTask(archiveFile, new File(baseFolder, "candidates/" + identifier + "/" + version));
+    }
+
+    public void uninstall(String identifier, String version) {
+        File candidateFolder = new File(baseFolder, "candidates/" + identifier + "/" + version);
+        if (candidateFolder.exists()) {
+            try {
+                FileUtil.deleteRecursively(candidateFolder);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
