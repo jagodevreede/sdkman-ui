@@ -33,10 +33,15 @@
 -->
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.jagodevreede.sdkmanui.MainScreenController">
    <children>
@@ -100,13 +105,12 @@
             <Label layoutX="14.0" layoutY="25.0" text="Global version:" />
             <Label fx:id="global_version_label" layoutX="100.0" layoutY="25.0" text="Unkown" />
             <Label fx:id="selected_item_label" layoutX="14.0" layoutY="6.0" text="N/A" />
-            <CheckBox fx:id="showInstalledOnly" layoutX="451.0" layoutY="6.0" mnemonicParsing="false" text="Show installed only" />
+            <CheckBox fx:id="showInstalledOnly" layoutX="451.0" layoutY="3.0" mnemonicParsing="false" text="Show installed only" />
+            <CheckBox fx:id="showAvailableOnly" layoutX="451.0" layoutY="23.0" mnemonicParsing="false" text="Show available only" />
          </children>
       </AnchorPane>
       <TableView fx:id="table" layoutX="221.0" layoutY="42.0" prefHeight="540.0" prefWidth="579.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
         </columns>
       </TableView>
       <ProgressIndicator fx:id="progressSpinner" layoutX="450.0" layoutY="300.0" scaleX="2.0" scaleY="2.0" />

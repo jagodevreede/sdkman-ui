@@ -33,7 +33,8 @@ public class SdkManApi {
     public static final String BASE_URL = "https://api.sdkman.io/2";
     public static final Duration DEFAUL_CACHE_DURATION = Duration.of(1, ChronoUnit.HOURS);
     public static final String DEFAULT_SDKMAN_HOME = System.getProperty("user.home") + "/.sdkman";
-    private static final Pattern VERSION_PATTERN = Pattern.compile("(.*)-(.+)");
+    /** Used to extract name and dist from a identifier, first group is the name, second group is the dist */
+    private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("(.*)-(.+)");
 
     private final CachedHttpClient client;
     private final String baseFolder;
@@ -62,20 +63,19 @@ public class SdkManApi {
         String response = client.get(BASE_URL + "/candidates/java/" + getPlatformName() + "/versions/list?installed=", offline);
         var versions = VersionListParser.parseJava(response);
         var localInstalled = new HashSet<>(getLocalInstalledVersions("java"));
+        var localAvailable = new HashSet<>(getLocalAvailableVersions("java"));
         var result = new ArrayList<JavaVersion>();
         var vendors = new HashSet<Vendor>();
         for (var version : versions) {
-            if (localInstalled.contains(version.identifier())) {
-                result.add(new JavaVersion(version, true));
-                localInstalled.remove(version.identifier());
-            } else {
-                result.add(new JavaVersion(version, false));
-            }
+            var installed = localInstalled.remove(version.identifier());
+            var available = localAvailable.remove(version.identifier());
+            result.add(new JavaVersion(version,  installed, available));
             vendors.add(new Vendor(version.vendor(), version.dist()));
         }
 
-        for (var version : localInstalled) {
-            Matcher matcher = VERSION_PATTERN.matcher(version);
+        for (var identifier : localInstalled) {
+            Matcher matcher = IDENTIFIER_PATTERN.matcher(identifier);
+            var available = localAvailable.remove(identifier);
             if (matcher.matches()) {
                 var dist = matcher.group(2);
                 var name = vendors.stream()
@@ -83,9 +83,24 @@ public class SdkManApi {
                         .findFirst()
                         .map(Vendor::vendor)
                         .orElse("Unclassified");
-                result.add(new JavaVersion(name, matcher.group(1), dist, version, true));
+                result.add(new JavaVersion(name, matcher.group(1), dist, identifier, true, available));
             } else {
-                result.add(new JavaVersion("Unclassified", "", "none", version, true));
+                result.add(new JavaVersion("Unclassified", "", "none", identifier, true, available));
+            }
+        }
+
+        for (var identifier : localAvailable) {
+            Matcher matcher = IDENTIFIER_PATTERN.matcher(identifier);
+            if (matcher.matches()) {
+                var dist = matcher.group(2);
+                var name = vendors.stream()
+                        .filter(v -> v.dist().equals(dist))
+                        .findFirst()
+                        .map(Vendor::vendor)
+                        .orElse("Unclassified");
+                result.add(new JavaVersion(name, matcher.group(1), dist, identifier, false, true));
+            } else {
+                result.add(new JavaVersion("Unclassified", "", "none", identifier, false, true));
             }
         }
 
@@ -112,6 +127,18 @@ public class SdkManApi {
         }
         return List.of(Objects.requireNonNull(candidatesFolder.list((dir, name) ->
                 new File(dir, name).isDirectory() && !"current".equals(name))));
+    }
+
+
+    private List<String> getLocalAvailableVersions(String candidate) {
+        var archiveFolder = new File(baseFolder + "/archives");
+        if (!archiveFolder.exists()) {
+            return List.of();
+        }
+        return Stream.of(Objects.requireNonNull(archiveFolder.list((dir, name) ->
+                new File(dir, name).isFile() && name.startsWith(candidate) && name.endsWith(".zip"))))
+                .map(name -> name.substring(candidate.length() + 1, name.length() - 4))
+                .toList();
     }
 
     public String getCurrentCandidateFromPath(String candidate) {

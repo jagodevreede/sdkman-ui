@@ -29,6 +29,7 @@ public class JavaVersionView {
     private final SimpleStringProperty identifier;
     private final HBox actions;
     private final CheckBox installed;
+    private final CheckBox available;
     private final Button globalAction;
     private final Button useAction;
     private final MainScreenController controller;
@@ -112,6 +113,9 @@ public class JavaVersionView {
                 controller.uninstall("java", javaVersion.identifier());
             }
         });
+        this.available = new CheckBox();
+        this.available.setDisable(true);
+        this.available.setSelected(javaVersion.available());
     }
 
     private Button createImageButton(String imagePath, boolean disabled, EventHandler<? super MouseEvent> eventHandler) {
@@ -163,6 +167,10 @@ public class JavaVersionView {
 
     public CheckBox getInstalled() {
         return installed;
+    }
+
+    public CheckBox getAvailable() {
+        return available;
     }
 
     public HBox getActions() {

@@ -39,6 +39,8 @@ public class MainScreenController implements Initializable {
     @FXML
     CheckBox showInstalledOnly;
     @FXML
+    CheckBox showAvailableOnly;
+    @FXML
     ProgressIndicator progressSpinner;
 
     ObservableList<JavaVersionView> tableData;
@@ -56,11 +58,13 @@ public class MainScreenController implements Initializable {
         TableColumn<JavaVersionView, String> emailCol = getTableColumn("Dist", "dist");
         TableColumn<JavaVersionView, String> identifierCol = getTableColumn("Identifier", "identifier");
         TableColumn<JavaVersionView, String> installedCol = getTableColumn("installed", "installed");
+        TableColumn<JavaVersionView, String> availableCol = getTableColumn("available", "available");
         TableColumn<JavaVersionView, String> actionCol = getTableColumn("actions", "actions");
 
-        table.getColumns().addAll(vendorCol, lastNameCol, emailCol, identifierCol, installedCol, actionCol);
+        table.getColumns().addAll(vendorCol, lastNameCol, emailCol, identifierCol, installedCol, availableCol, actionCol);
         loadData();
         showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
+        showAvailableOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
     }
 
     public void loadData() {
@@ -85,6 +89,7 @@ public class MainScreenController implements Initializable {
                 tableData = FXCollections.observableArrayList(
                         api.getJavaVersions().stream()
                                 .filter(j -> !showInstalledOnly.isSelected() || j.installed())
+                                .filter(j -> !showAvailableOnly.isSelected() || j.available())
                                 .map(j -> new JavaVersionView(j, javaGlobalVersionInUse, javaPathVersionInUse, thiz)).toList()
                 );
                 Platform.runLater(() -> {

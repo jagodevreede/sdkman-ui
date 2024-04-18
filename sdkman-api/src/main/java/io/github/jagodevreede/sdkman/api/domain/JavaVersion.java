@@ -1,9 +1,9 @@
 package io.github.jagodevreede.sdkman.api.domain;
 
-public record JavaVersion(String vendor, String version, String dist, String identifier, boolean installed) implements Comparable {
+public record JavaVersion(String vendor, String version, String dist, String identifier, boolean installed, boolean available) implements Comparable {
 
-    public JavaVersion(JavaVersion javaVersion, boolean installed) {
-        this(javaVersion.vendor, javaVersion.version, javaVersion.dist, javaVersion.identifier, installed);
+    public JavaVersion(JavaVersion javaVersion, boolean installed, boolean available) {
+        this(javaVersion.vendor, javaVersion.version, javaVersion.dist, javaVersion.identifier, installed, available);
     }
 
 

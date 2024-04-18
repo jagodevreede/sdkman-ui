@@ -29,7 +29,7 @@ public class VersionListParser {
             String version = matcher.group(3).trim();
             String dist = matcher.group(4).trim();
             String identifier = matcher.group(6).trim();
-            result.add(new JavaVersion(vendor, version, dist, identifier, false));
+            result.add(new JavaVersion(vendor, version, dist, identifier, false, false));
         }
         return result;
     }
