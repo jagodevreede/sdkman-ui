@@ -7,10 +7,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class UnzipTask extends ExtractTask<ZipArchiveEntry, ZipArchiveInputStream> {
+public class ZipExtractTask extends ExtractTask<ZipArchiveEntry, ZipArchiveInputStream> {
     private final File zipFile;
 
-    public UnzipTask(File zipFile, File destination) {
+    public ZipExtractTask(File zipFile, File destination) {
         super(destination);
         this.zipFile = zipFile;
     }

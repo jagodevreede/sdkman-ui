@@ -6,7 +6,7 @@ import io.github.jagodevreede.sdkman.api.domain.Vendor;
 import io.github.jagodevreede.sdkman.api.files.FileUtil;
 import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
-import io.github.jagodevreede.sdkman.api.http.UnzipTask;
+import io.github.jagodevreede.sdkman.api.http.ZipExtractTask;
 import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
 import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
 
@@ -223,9 +223,9 @@ public class SdkManApi {
         return new DownloadTask(url, tempFile, finalArchiveFile);
     }
 
-    public UnzipTask install(String identifier, String version) {
+    public ZipExtractTask install(String identifier, String version) {
         File archiveFile = new File(baseFolder, "archives/" + identifier + "-" + version + ".zip");
-        return new UnzipTask(archiveFile, new File(baseFolder, "candidates/" + identifier + "/" + version));
+        return new ZipExtractTask(archiveFile, new File(baseFolder, "candidates/" + identifier + "/" + version));
     }
 
     public void uninstall(String identifier, String version) {

@@ -3,7 +3,7 @@ package io.github.jagodevreede.sdkmanui;
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
-import io.github.jagodevreede.sdkman.api.http.UnzipTask;
+import io.github.jagodevreede.sdkman.api.http.ZipExtractTask;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
 import io.github.jagodevreede.sdkmanui.view.JavaVersionView;
@@ -154,16 +154,16 @@ public class MainScreenController implements Initializable {
     }
 
     private void install(String identifier, String version) {
-        UnzipTask unzipTask = ServiceRegistry.INSTANCE.getApi().install(identifier, version);
-        PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Extraction of " + identifier + " " + version + " in progress", unzipTask);
+        ZipExtractTask zipExtractTask = ServiceRegistry.INSTANCE.getApi().install(identifier, version);
+        PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Extraction of " + identifier + " " + version + " in progress", zipExtractTask);
         ProgressInformation progressInformation = current -> {
             if (current > 0) {
                 Platform.runLater(() -> progressWindow.progressBar().setProgress(current / 100.0));
             }
         };
-        unzipTask.setProgressInformation(progressInformation);
+        zipExtractTask.setProgressInformation(progressInformation);
         TaskRunner.run(() -> {
-            unzipTask.unzip();
+            zipExtractTask.unzip();
             Platform.runLater(() -> {
                 progressWindow.alert().close();
                 loadData();
@@ -182,6 +182,7 @@ public class MainScreenController implements Initializable {
         downloadTask.setProgressInformation(progressInformation);
         TaskRunner.run(() -> {
             downloadTask.download();
+
             Platform.runLater(() -> {
                 progressWindow.alert().close();
                 if (install) {

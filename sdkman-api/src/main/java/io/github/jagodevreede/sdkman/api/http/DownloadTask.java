@@ -1,6 +1,7 @@
 package io.github.jagodevreede.sdkman.api.http;
 
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
+import io.github.jagodevreede.sdkman.api.files.ArchiveType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
+
+import static io.github.jagodevreede.sdkman.api.files.ArchiveType.ZIP;
 
 public class DownloadTask implements CancelableTask {
     private static Logger logger = LoggerFactory.getLogger(DownloadTask.class);
@@ -67,6 +70,11 @@ public class DownloadTask implements CancelableTask {
                     }
                     output.write(data, 0, count);
                 }
+            }
+            if (ArchiveType.determineType(tempFile) != ZIP) {
+                progressInformation.publishState("Post-processing download ");
+                progressInformation.publishProgress(-1);
+
             }
             Files.move(tempFile.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
