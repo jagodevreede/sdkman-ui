@@ -17,8 +17,10 @@ public final class FileUtil {
                 deleteRecursively(c);
             }
         }
-        if (!f.delete())
-            throw new FileNotFoundException("Failed to delete file: " + f);
+        if (f.isFile()) {
+            if (!f.delete())
+                throw new FileNotFoundException("Failed to delete file: " + f);
+        }
     }
 
     public static File findRoot(File folderToSearchIn, String folderName) {
