@@ -1,4 +1,4 @@
-package io.github.jagodevreede.sdkman.api.http;
+package io.github.jagodevreede.sdkman.api.files;
 
 public interface CancelableTask {
 

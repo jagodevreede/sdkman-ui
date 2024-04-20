@@ -2,11 +2,16 @@ package io.github.jagodevreede.sdkman.api.http;
 
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.files.ArchiveType;
+import io.github.jagodevreede.sdkman.api.files.CancelableTask;
+import io.github.jagodevreede.sdkman.api.files.FileUtil;
+import io.github.jagodevreede.sdkman.api.files.TarGzExtractTask;
+import io.github.jagodevreede.sdkman.api.files.ZipDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -71,11 +76,9 @@ public class DownloadTask implements CancelableTask {
                     output.write(data, 0, count);
                 }
             }
-            if (ArchiveType.determineType(tempFile) != ZIP) {
-                progressInformation.publishState("Post-processing download ");
-                progressInformation.publishProgress(-1);
 
-            }
+            postProcess();
+            progressInformation.publishState("Moving download to destination");
             Files.move(tempFile.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             throw new IllegalStateException("Error in download", e);
@@ -85,6 +88,28 @@ public class DownloadTask implements CancelableTask {
             }
             if (cancelled) {
                 destination.delete();
+            }
+        }
+    }
+
+    private void postProcess() throws IOException {
+        if (ArchiveType.determineType(tempFile) != ZIP) {
+            progressInformation.publishState("Post-processing download");
+            progressInformation.publishProgress(-1);
+            if (ArchiveType.determineType(tempFile) == ArchiveType.TAR_GZ) {
+                File tempExtractFolder = new File(tempFile.getParent(), tempFile.getName().replaceAll("\\.", "") + "_extracted");
+                TarGzExtractTask extractTask = new TarGzExtractTask(tempFile, tempExtractFolder);
+                extractTask.setProgressInformation(progressInformation);
+                extractTask.extract();
+
+                progressInformation.publishState("Repackaging download");
+                File rootFolder = FileUtil.findRoot(tempExtractFolder, "bin");
+                new ZipDirectory(tempFile).zip(rootFolder);
+
+                progressInformation.publishState("Cleanup");
+                FileUtil.deleteRecursively(tempExtractFolder);
+            } else {
+                throw new IllegalStateException("Unknown archive type");
             }
         }
     }

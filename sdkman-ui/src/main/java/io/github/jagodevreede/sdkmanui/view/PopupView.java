@@ -1,6 +1,6 @@
 package io.github.jagodevreede.sdkmanui.view;
 
-import io.github.jagodevreede.sdkman.api.http.CancelableTask;
+import io.github.jagodevreede.sdkman.api.files.CancelableTask;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;

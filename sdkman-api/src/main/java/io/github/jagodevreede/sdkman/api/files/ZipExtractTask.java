@@ -1,4 +1,4 @@
-package io.github.jagodevreede.sdkman.api.http;
+package io.github.jagodevreede.sdkman.api.files;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
@@ -15,7 +15,8 @@ public class ZipExtractTask extends ExtractTask<ZipArchiveEntry, ZipArchiveInput
         this.zipFile = zipFile;
     }
 
-    public void unzip() {
+    @Override
+    public void extract() {
         try (FileInputStream fis = new FileInputStream(zipFile);
              ZipArchiveInputStream zis = new ZipArchiveInputStream(fis)) {
             extract(zis, fis.getChannel());
@@ -24,4 +25,11 @@ public class ZipExtractTask extends ExtractTask<ZipArchiveEntry, ZipArchiveInput
         }
     }
 
+    public static void main(String[] args) throws IOException {
+        var out = new File("/Users/jagodevreede/.sdkman/archives/test");
+        FileUtil.deleteRecursively(out);
+        //new ZipExtractTask(new File("/Users/jagodevreede/.sdkman/archives/java-8.0.292.hs-adpt.zip"), out).extract();
+        System.out.println(ArchiveType.determineType(new File("/Users/jagodevreede/.sdkman/archives/java-11.0.22-amzn.zip")));
+        new TarGzExtractTask(new File("/Users/jagodevreede/.sdkman/archives/java-11.0.22-amzn.zip"), out).extract();
+    }
 }

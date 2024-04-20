@@ -4,9 +4,9 @@ import io.github.jagodevreede.sdkman.api.domain.Candidate;
 import io.github.jagodevreede.sdkman.api.domain.JavaVersion;
 import io.github.jagodevreede.sdkman.api.domain.Vendor;
 import io.github.jagodevreede.sdkman.api.files.FileUtil;
+import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
 import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
-import io.github.jagodevreede.sdkman.api.http.ZipExtractTask;
 import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
 import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
 
@@ -128,7 +128,6 @@ public class SdkManApi {
         return List.of(Objects.requireNonNull(candidatesFolder.list((dir, name) ->
                 new File(dir, name).isDirectory() && !"current".equals(name))));
     }
-
 
     private List<String> getLocalAvailableVersions(String candidate) {
         var archiveFolder = new File(baseFolder + "/archives");
