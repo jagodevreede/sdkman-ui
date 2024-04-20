@@ -2,7 +2,6 @@ package io.github.jagodevreede.sdkmanui;
 
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
-import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
@@ -154,24 +153,9 @@ public class MainScreenController implements Initializable {
     }
 
     private void install(String identifier, String version) {
-        ZipExtractTask zipExtractTask = ServiceRegistry.INSTANCE.getApi().install(identifier, version);
-        PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Extraction of " + identifier + " " + version + " in progress", zipExtractTask);
-        ProgressInformation progressInformation = new ProgressInformation() {
-            @Override
-            public void publishProgress(int current) {
-                if (current > 0) {
-                    Platform.runLater(() -> progressWindow.progressBar().setProgress(current / 100.0));
-                }
-            }
-
-            @Override
-            public void publishState(String state) {
-                Platform.runLater(() -> progressWindow.alert().setHeaderText(state));
-            }
-        };
-        zipExtractTask.setProgressInformation(progressInformation);
+        PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Extraction of " + identifier + " " + version + " in progress", null);
         TaskRunner.run(() -> {
-            zipExtractTask.extract();
+            ServiceRegistry.INSTANCE.getApi().install(identifier, version);
             Platform.runLater(() -> {
                 progressWindow.alert().close();
                 loadData();

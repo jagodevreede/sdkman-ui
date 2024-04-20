@@ -82,15 +82,18 @@ public class PopupView {
             alert.setHeaderText(message);
 
             alert.getDialogPane().setContent(progressBar);
-            ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-            alert.getButtonTypes().setAll(buttonTypeCancel);
             currentShownAlert = alert;
 
-            Optional<ButtonType> result = alert.showAndWait();
+            if (cancelableTask != null) {
+                ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                alert.getButtonTypes().setAll(buttonTypeCancel);
+                Optional<ButtonType> result = alert.showAndWait();
 
-            if (result.isPresent() && result.get() == buttonTypeCancel) {
-                cancelableTask.cancel();
+                if (result.isPresent() && result.get() == buttonTypeCancel) {
+                    cancelableTask.cancel();
+                }
+            } else {
+                alert.show();
             }
         });
         return new ProgressWindow(progressBar, alert);

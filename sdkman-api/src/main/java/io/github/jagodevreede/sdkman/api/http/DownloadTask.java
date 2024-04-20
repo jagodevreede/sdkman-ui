@@ -99,7 +99,6 @@ public class DownloadTask implements CancelableTask {
             if (ArchiveType.determineType(tempFile) == ArchiveType.TAR_GZ) {
                 File tempExtractFolder = new File(tempFile.getParent(), tempFile.getName().replaceAll("\\.", "") + "_extracted");
                 TarGzExtractTask extractTask = new TarGzExtractTask(tempFile, tempExtractFolder);
-                extractTask.setProgressInformation(progressInformation);
                 extractTask.extract();
 
                 progressInformation.publishState("Repackaging download");

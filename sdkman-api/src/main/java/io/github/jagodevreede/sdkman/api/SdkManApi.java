@@ -222,9 +222,9 @@ public class SdkManApi {
         return new DownloadTask(url, tempFile, finalArchiveFile);
     }
 
-    public ZipExtractTask install(String identifier, String version) {
+    public void install(String identifier, String version) {
         File archiveFile = new File(baseFolder, "archives/" + identifier + "-" + version + ".zip");
-        return new ZipExtractTask(archiveFile, new File(baseFolder, "candidates/" + identifier + "/" + version));
+        ZipExtractTask.extract(archiveFile, new File(baseFolder, "candidates/" + identifier + "/" + version));
     }
 
     public void uninstall(String identifier, String version) {

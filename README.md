@@ -22,3 +22,6 @@ Jlink:
 -`./mvnw javafx:jlink -f sdkman-ui`
 
 run with: `./sdkman-ui/target/sdkmanui/bin/launcher` 
+
+# Design decisions
+See [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md)
