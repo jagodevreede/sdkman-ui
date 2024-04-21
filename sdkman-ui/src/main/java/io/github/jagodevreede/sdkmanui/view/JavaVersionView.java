@@ -6,6 +6,7 @@ import io.github.jagodevreede.sdkmanui.MainScreenController;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
@@ -36,7 +37,40 @@ public class JavaVersionView {
 
     public JavaVersionView(JavaVersion javaVersion, String javaGlobalVersionInUse, String javaPathVersionInUse, MainScreenController controller) {
         this.controller = controller;
-        globalAction = createImageButton("/images/global_icon.png", javaVersion.identifier().equals(javaGlobalVersionInUse), (event) -> {
+        globalAction = createImageButton("/images/global_icon.png", javaVersion.identifier().equals(javaGlobalVersionInUse), globalEventHandler(javaVersion));
+        useAction = createImageButton("/images/use_icon.png", javaVersion.identifier().equals(javaPathVersionInUse), useEventHandler(javaVersion));
+        this.vendor = new SimpleStringProperty(javaVersion.vendor());
+        this.version = new SimpleStringProperty(javaVersion.version());
+        this.dist = new SimpleStringProperty(javaVersion.dist());
+        this.identifier = new SimpleStringProperty(javaVersion.identifier());
+        if (javaVersion.installed()) {
+            this.actions = new HBox(
+                    globalAction,
+                    useAction
+            );
+        } else {
+            this.actions = new HBox();
+        }
+        this.installed = new CheckBox();
+        this.installed.setSelected(javaVersion.installed());
+        this.installed.selectedProperty().addListener(installedChangeListener(javaVersion));
+        this.available = new CheckBox();
+        this.available.setDisable(true);
+        this.available.setSelected(javaVersion.available());
+    }
+
+    private ChangeListener<Boolean> installedChangeListener(JavaVersion javaVersion) {
+        return (observable, oldValue, newValue) -> {
+            if (newValue) {
+                controller.downloadAndInstall("java", javaVersion.identifier());
+            } else {
+                controller.uninstall("java", javaVersion.identifier());
+            }
+        };
+    }
+
+    private EventHandler<MouseEvent> globalEventHandler(JavaVersion javaVersion) {
+        return (event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Set global SDK");
             alert.setHeaderText("Are you sure that you want to set " + javaVersion.identifier() + " as your global SDK?");
@@ -56,15 +90,18 @@ public class JavaVersionView {
                 } catch (IOException e) {
                     ServiceRegistry.INSTANCE.getPopupView().showError(e);
                 }
-                if (result.get() == buttonYesAndClose){
+                if (result.get() == buttonYesAndClose) {
                     Platform.exit();
                 } else {
                     controller.loadData();
                 }
             }
             alert.close();
-        });
-        useAction = createImageButton("/images/use_icon.png", javaVersion.identifier().equals(javaPathVersionInUse), (event) -> {
+        };
+    }
+
+    private EventHandler<MouseEvent> useEventHandler(JavaVersion javaVersion) {
+        return (event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Set local SDK");
             alert.setHeaderText("Are you sure that you want to set " + javaVersion.identifier() + " as your local SDK?");
@@ -84,38 +121,14 @@ public class JavaVersionView {
                 } catch (IOException e) {
                     ServiceRegistry.INSTANCE.getPopupView().showError(e);
                 }
-                if (result.get() == buttonYesAndClose){
+                if (result.get() == buttonYesAndClose) {
                     Platform.exit();
                 } else {
                     controller.loadData();
                 }
             }
             alert.close();
-        });
-        this.vendor = new SimpleStringProperty(javaVersion.vendor());
-        this.version = new SimpleStringProperty(javaVersion.version());
-        this.dist = new SimpleStringProperty(javaVersion.dist());
-        this.identifier = new SimpleStringProperty(javaVersion.identifier());
-        if (javaVersion.installed()) {
-            this.actions = new HBox(
-                    globalAction,
-                    useAction
-            );
-        } else {
-            this.actions = new HBox();
-        }
-        this.installed = new CheckBox();
-        this.installed.setSelected(javaVersion.installed());
-        this.installed.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                controller.downloadAndInstall("java", javaVersion.identifier());
-            } else {
-                controller.uninstall("java", javaVersion.identifier());
-            }
-        });
-        this.available = new CheckBox();
-        this.available.setDisable(true);
-        this.available.setSelected(javaVersion.available());
+        };
     }
 
     private Button createImageButton(String imagePath, boolean disabled, EventHandler<? super MouseEvent> eventHandler) {
@@ -137,32 +150,16 @@ public class JavaVersionView {
         return vendor.get();
     }
 
-    public SimpleStringProperty vendorProperty() {
-        return vendor;
-    }
-
     public String getVersion() {
         return version.get();
-    }
-
-    public SimpleStringProperty versionProperty() {
-        return version;
     }
 
     public String getDist() {
         return dist.get();
     }
 
-    public SimpleStringProperty distProperty() {
-        return dist;
-    }
-
     public String getIdentifier() {
         return identifier.get();
-    }
-
-    public SimpleStringProperty identifierProperty() {
-        return identifier;
     }
 
     public CheckBox getInstalled() {
