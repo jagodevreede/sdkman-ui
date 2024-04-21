@@ -177,8 +177,10 @@ public class MainScreenController implements Initializable {
 
             Platform.runLater(() -> {
                 progressWindow.alert().close();
-                if (install) {
+                if (install && !downloadTask.isCancelled()) {
                     install(identifier, version);
+                } else {
+                    loadData();
                 }
             });
         });

@@ -219,7 +219,7 @@ public class SdkManApi {
         File finalArchiveFile = new File(baseFolder, "archives/" + identifier + "-" + version + ".zip");
         String url = BASE_URL + "/broker/download/" + identifier + "/" + version + "/" + getPlatformName();
         File tempFile = new File(baseFolder, "tmp/" + identifier + "-" + version + ".bin");
-        return new DownloadTask(url, tempFile, finalArchiveFile);
+        return new DownloadTask(url, tempFile, finalArchiveFile, identifier + "-" + version);
     }
 
     public void install(String identifier, String version) {

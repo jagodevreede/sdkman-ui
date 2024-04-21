@@ -1,30 +1,17 @@
 package io.github.jagodevreede.sdkman.api.files;
 
-import io.github.jagodevreede.sdkman.api.ProgressInformation;
-
 import java.io.File;
 import java.io.IOException;
 
-public class ZipDirectory implements CancelableTask {
-    private final File outputFile;
-    private boolean cancelled;
-    private ProgressInformation progressInformation;
-
-    public ZipDirectory(File outputFile) throws IOException {
-        this.outputFile = outputFile;
+public class ZipDirectory {
+    private ZipDirectory() {
+        // no instantiation
     }
 
-    public void zip(File folderToZip) throws IOException {
-
-    }
-
-    private boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void cancel() {
-        cancelled = true;
+    public static void zip(File folderToZip, File outputFile) throws IOException {
+        outputFile.delete();
+        //  zip -qyr "$zip_output" "Java-22.1.0.1.r17-gln"
+        ProcessStarter.runIn(folderToZip.getParentFile(), "zip", "-qyr", outputFile.getAbsolutePath(), folderToZip.getName());
     }
 
 }

@@ -1,11 +1,8 @@
 package io.github.jagodevreede.sdkman.api.http;
 
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
-import io.github.jagodevreede.sdkman.api.files.ArchiveType;
 import io.github.jagodevreede.sdkman.api.files.CancelableTask;
-import io.github.jagodevreede.sdkman.api.files.FileUtil;
-import io.github.jagodevreede.sdkman.api.files.TarGzExtractTask;
-import io.github.jagodevreede.sdkman.api.files.ZipDirectory;
+import io.github.jagodevreede.sdkman.api.files.PostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,24 +15,21 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Map;
-
-import static io.github.jagodevreede.sdkman.api.files.ArchiveType.ZIP;
 
 public class DownloadTask implements CancelableTask {
-    private static Logger logger = LoggerFactory.getLogger(DownloadTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(DownloadTask.class);
     private final String url;
     private final File tempFile;
     private final File destination;
+    private final String identifier;
     private boolean cancelled = false;
     private ProgressInformation progressInformation;
-    private Map<String, List<String>> headerFields;
 
-    public DownloadTask(String url, File tempFile, File destination) {
+    public DownloadTask(String url, File tempFile, File destination, String identifier) {
         this.url = url;
         this.tempFile = tempFile;
         this.destination = destination;
+        this.identifier = identifier;
     }
 
     public void download() {
@@ -48,7 +42,6 @@ public class DownloadTask implements CancelableTask {
             URL url = new URL(this.url);
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
-            headerFields = connection.getHeaderFields();
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 throw new IllegalStateException("Server returned HTTP " + connection.getResponseCode()
@@ -88,41 +81,22 @@ public class DownloadTask implements CancelableTask {
             }
             if (cancelled) {
                 destination.delete();
+                tempFile.delete();
             }
         }
     }
 
     private void postProcess() throws IOException {
-        if (ArchiveType.determineType(tempFile) != ZIP) {
-            progressInformation.publishState("Post-processing download");
-            progressInformation.publishProgress(-1);
-            if (ArchiveType.determineType(tempFile) == ArchiveType.TAR_GZ) {
-                File tempExtractFolder = new File(tempFile.getParent(), tempFile.getName().replaceAll("\\.", "") + "_extracted");
-                TarGzExtractTask extractTask = new TarGzExtractTask(tempFile, tempExtractFolder);
-                extractTask.extract();
-
-                progressInformation.publishState("Repackaging download");
-                File rootFolder = FileUtil.findRoot(tempExtractFolder, "bin");
-                new ZipDirectory(tempFile).zip(rootFolder);
-
-                progressInformation.publishState("Cleanup");
-                FileUtil.deleteRecursively(tempExtractFolder);
-            } else {
-                throw new IllegalStateException("Unknown archive type");
-            }
-        }
+        PostProcessor postProcessor = new PostProcessor(progressInformation);
+        postProcessor.postProcess(tempFile, identifier);
     }
 
-    private boolean isCancelled() {
+    public boolean isCancelled() {
         return cancelled;
     }
 
     public void cancel() {
         cancelled = true;
-    }
-
-    public Map<String, List<String>> getHeaderFields() {
-        return headerFields;
     }
 
     public void setProgressInformation(ProgressInformation progressInformation) {
