@@ -64,8 +64,12 @@ public class PopupView {
     }
 
     public void showInformation(String message) {
+        showInformation(message, Alert.AlertType.INFORMATION);
+    }
+
+    public void showInformation(String message, Alert.AlertType alertType) {
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Alert alert = new Alert(alertType);
             alert.setTitle("Information");
             alert.setHeaderText(message);
 

@@ -9,6 +9,15 @@ implementation for windows.
 
 ![Ui sneek peak](https://jagodevreede.github.io/sdkman-ui-images/Animatie.gif)
 
+## Requirements
+
+tar, unzip and zip should be present on the system. You can install them with your favourite package manager on *inx
+systems. And for windows:
+
+tar: [https://gnuwin32.sourceforge.net/packages/libarchive.htm]() or [direct download](http://downloads.sourceforge.net/gnuwin32/libarchive-2.4.12-1-bin.zip)
+zip: [https://gnuwin32.sourceforge.net/packages/zip.htm]() or [direct download](http://downloads.sourceforge.net/gnuwin32/zip-3.0-bin.zip)
+unzip: [https://gnuwin32.sourceforge.net/packages/unzip.htm]() or [direct download](https://gnuwin32.sourceforge.net/downlinks/unzip-bin-zip.php)
+
 ## Available platforms
 
 Some platforms are not yet available as they are not yet setup and/or tested.

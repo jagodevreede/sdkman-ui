@@ -1,17 +1,24 @@
 package io.github.jagodevreede.sdkmanui;
 
+import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
+import io.github.jagodevreede.sdkman.api.files.ProcessStarter;
 import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 
 public class Main extends Application {
@@ -20,8 +27,11 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         logger.debug("Starting SDKMAN UI");
+        if (!preCheck(stage)) {
+            logger.warn("Failed pre-check");
+            return;
+        }
         ServiceRegistry.INSTANCE.getApi().registerShutdownHook();
-        ServiceRegistry.INSTANCE.setPrimaryStage(stage);
 
         Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
 
@@ -36,6 +46,49 @@ public class Main extends Application {
         stage.setTitle("SDKMAN UI");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private boolean preCheck(Stage stage) throws IOException {
+        SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
+        if (!sdkManUiPreferences.donePreCheck) {
+            String unzipExecutable = testExecutable("unzip", stage);
+            if (unzipExecutable == null) {
+                return false;
+            }
+            String zipExecutable = testExecutable("zip", stage);
+            if (zipExecutable == null) {
+                return false;
+            }
+            String tarExecutable = testExecutable("tar", stage);
+            if (tarExecutable == null) {
+                return false;
+            }
+            sdkManUiPreferences.donePreCheck = true;
+            sdkManUiPreferences.save();
+        }
+        return true;
+    }
+
+    public String testExecutable(String command, Stage stage) {
+        logger.debug("Testing for {}", command);
+        if (!ProcessStarter.testIfAvailable(command)) {
+            logger.info("{} is not on path", command);
+            ServiceRegistry.INSTANCE.getPopupView().showInformation(command + " is not available,\n" +
+                    "Please install it or in the next dialog point to where it is.");
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setInitialDirectory(new File("/usr/bin"));
+            fileChooser.setTitle("Where is the " + command + " executable");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(command, command));
+            fileChooser.setInitialFileName(command);
+            File file = fileChooser.showOpenDialog(stage);
+            if (file == null || !ProcessStarter.testIfAvailable(file.getAbsolutePath())) {
+                String name = file != null ? file.getAbsolutePath() : command;
+                ServiceRegistry.INSTANCE.getPopupView().showInformation("Failed to verify " + name, Alert.AlertType.INFORMATION);
+                return null;
+            }
+            return file.getAbsolutePath();
+        }
+        return command;
     }
 
     public static void main(String[] args) {

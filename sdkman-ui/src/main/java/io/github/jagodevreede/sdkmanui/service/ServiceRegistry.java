@@ -1,9 +1,11 @@
 package io.github.jagodevreede.sdkmanui.service;
 
 import io.github.jagodevreede.sdkman.api.SdkManApi;
+import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
 import io.github.jagodevreede.sdkmanui.view.PopupView;
 import javafx.scene.control.ProgressIndicator;
-import javafx.stage.Stage;
+
+import java.io.IOException;
 
 import static io.github.jagodevreede.sdkman.api.SdkManApi.DEFAULT_SDKMAN_HOME;
 
@@ -11,31 +13,24 @@ public class ServiceRegistry {
     public static final ServiceRegistry INSTANCE = new ServiceRegistry();
 
     private SdkManApi api = new SdkManApi(DEFAULT_SDKMAN_HOME);
-    private PopupView popupView;
-    private Stage primaryStage;
+    private PopupView popupView = new PopupView();;
     private ProgressIndicator progressSpinner;
+    private SdkManUiPreferences sdkManUiPreferences;
 
     private ServiceRegistry() {
+        try {
+            sdkManUiPreferences = SdkManUiPreferences.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public SdkManApi getApi() {
         return api;
     }
 
-    public void setApi(SdkManApi api) {
-        this.api = api;
-    }
-
-    public void setPrimaryStage(Stage primaryStage) {
-        popupView = new PopupView();
-    }
-
     public PopupView getPopupView() {
         return popupView;
-    }
-
-    public Stage getPrimaryStage() {
-        return primaryStage;
     }
 
     public void setProgressIndicator(ProgressIndicator progressSpinner) {
@@ -44,5 +39,9 @@ public class ServiceRegistry {
 
     public ProgressIndicator getProgressSpinner() {
         return progressSpinner;
+    }
+
+    public SdkManUiPreferences getSdkManUiPreferences() {
+        return sdkManUiPreferences;
     }
 }

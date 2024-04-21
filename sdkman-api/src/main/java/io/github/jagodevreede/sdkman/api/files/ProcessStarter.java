@@ -20,15 +20,15 @@ public class ProcessStarter {
 
     public static void runIn(File workingFolder, String... args) throws IOException {
         ProcessBuilder pb = new ProcessBuilder(args);
-        pb.directory(workingFolder);
-        pb.environment().put("LANG", "en_US.UTF-8");
-        pb.environment().put("LC_ALL", "en_US.UTF-8");
-        Process process = pb.start();
-        String stdOut = streamToString(process.getInputStream());
-        String stdErr = streamToString(process.getErrorStream());
+            pb.directory(workingFolder);
+            pb.environment().put("LANG", "en_US.UTF-8");
+            pb.environment().put("LC_ALL", "en_US.UTF-8");
+            Process process = pb.start();
+            String stdOut = streamToString(process.getInputStream());
+            String stdErr = streamToString(process.getErrorStream());
 
-        try {
-            process.waitFor();
+            try {
+                process.waitFor();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);
@@ -41,7 +41,22 @@ public class ProcessStarter {
             throw new IllegalStateException("Failure during extraction: " + stdErr);
         }
     }
+
     public static void run(String... args) throws IOException {
         runIn(new File("."), args);
+    }
+
+    public static boolean testIfAvailable(String command) {
+        ProcessBuilder pb = new ProcessBuilder(command, "--version");
+        try {
+            Process process = pb.start();
+            streamToString(process.getInputStream());
+            streamToString(process.getErrorStream());
+
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+        return true;
     }
 }
