@@ -21,6 +21,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
+import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
+
 public class Main extends Application {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
@@ -76,9 +78,13 @@ public class Main extends Application {
             ServiceRegistry.INSTANCE.getPopupView().showInformation(command + " is not available,\n" +
                     "Please install it or in the next dialog point to where it is.");
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(new File("/usr/bin"));
+            if (isWindows()) {
+                fileChooser.setInitialDirectory(new File("./"));
+            } else {
+                fileChooser.setInitialDirectory(new File("/usr/bin"));
+            }
             fileChooser.setTitle("Where is the " + command + " executable");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(command, command));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(command, command + (isWindows() ? ".exe" : "")));
             fileChooser.setInitialFileName(command);
             File file = fileChooser.showOpenDialog(stage);
             if (file == null || !ProcessStarter.testIfAvailable(file.getAbsolutePath())) {

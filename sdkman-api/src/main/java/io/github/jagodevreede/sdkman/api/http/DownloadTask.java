@@ -16,6 +16,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
+
 public class DownloadTask implements CancelableTask {
     private static final Logger logger = LoggerFactory.getLogger(DownloadTask.class);
     private final String url;
@@ -30,6 +32,11 @@ public class DownloadTask implements CancelableTask {
         this.tempFile = tempFile;
         this.destination = destination;
         this.identifier = identifier;
+        // Create folders if this is the first download we do
+        tempFile.getParentFile().mkdirs();
+        destination.getParentFile().mkdirs();
+        // remove any old tempfile if there
+        tempFile.delete();
     }
 
     public void download() {
@@ -72,7 +79,6 @@ public class DownloadTask implements CancelableTask {
 
             postProcess();
             progressInformation.publishState("Moving download to destination");
-            Files.move(tempFile.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             throw new IllegalStateException("Error in download", e);
         } finally {
@@ -82,6 +88,19 @@ public class DownloadTask implements CancelableTask {
             if (cancelled) {
                 destination.delete();
                 tempFile.delete();
+            }
+        }
+        if (tempFile.exists()) {
+            try {
+                // Windows doesn't like atomic file moves, as it keeps the file in use
+                if (isWindows()) {
+                    Files.copy(tempFile.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    tempFile.delete();
+                } else {
+                    Files.move(tempFile.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+            } catch (IOException e) {
+                throw new IllegalStateException("Unable to move downloaded file to final destination", e);
             }
         }
     }

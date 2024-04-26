@@ -25,7 +25,7 @@ public class OsHelper {
     }
 
     public static String getPathSeparator() {
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+        if (isWindows()) {
             return ";";
         }
         return ":";
@@ -33,5 +33,9 @@ public class OsHelper {
 
     public static boolean hasShell() {
         return !getPathSeparator().equals(";");
+    }
+
+    public static boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("windows");
     }
 }
