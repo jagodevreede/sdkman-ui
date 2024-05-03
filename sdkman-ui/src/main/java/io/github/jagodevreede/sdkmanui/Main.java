@@ -61,9 +61,11 @@ public class Main extends Application {
             if (zipExecutable == null) {
                 return false;
             }
-            String tarExecutable = testExecutable("tar", stage);
-            if (tarExecutable == null) {
-                return false;
+            if (!isWindows()) {
+                String tarExecutable = testExecutable("tar", stage);
+                if (tarExecutable == null) {
+                    return false;
+                }
             }
             sdkManUiPreferences.donePreCheck = true;
             sdkManUiPreferences.save();
