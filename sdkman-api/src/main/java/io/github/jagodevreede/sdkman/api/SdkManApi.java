@@ -61,7 +61,7 @@ public class SdkManApi {
 
     public List<JavaVersion> getJavaVersions() throws IOException, InterruptedException {
         String response = client.get(BASE_URL + "/candidates/java/" + getPlatformName() + "/versions/list?installed=", offline);
-        var versions = VersionListParser.parseJava(response);
+        var versions = VersionListParser.parse(response);
         var localInstalled = new HashSet<>(getLocalInstalledVersions("java"));
         var localAvailable = new HashSet<>(getLocalAvailableVersions("java"));
         var result = new ArrayList<JavaVersion>();
@@ -79,7 +79,7 @@ public class SdkManApi {
             if (matcher.matches()) {
                 var dist = matcher.group(2);
                 var name = vendors.stream()
-                        .filter(v -> v.dist().equals(dist))
+                        .filter(v -> Objects.equals(v.dist(), dist))
                         .findFirst()
                         .map(Vendor::vendor)
                         .orElse("Unclassified");
@@ -94,7 +94,7 @@ public class SdkManApi {
             if (matcher.matches()) {
                 var dist = matcher.group(2);
                 var name = vendors.stream()
-                        .filter(v -> v.dist().equals(dist))
+                        .filter(v -> Objects.equals(v.dist(), dist))
                         .findFirst()
                         .map(Vendor::vendor)
                         .orElse("Unclassified");
