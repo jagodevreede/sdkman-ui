@@ -5,12 +5,11 @@ import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
-import io.github.jagodevreede.sdkmanui.view.JavaVersionView;
 import io.github.jagodevreede.sdkmanui.view.PopupView;
+import io.github.jagodevreede.sdkmanui.view.VersionView;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
@@ -30,7 +29,7 @@ import java.util.ResourceBundle;
 public class MainScreenController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(MainScreenController.class);
     @FXML
-    TableView<JavaVersionView> table;
+    TableView<VersionView> table;
     @FXML
     Label selected_item_label;
     @FXML
@@ -42,9 +41,11 @@ public class MainScreenController implements Initializable {
     @FXML
     ProgressIndicator progressSpinner;
 
-    ObservableList<JavaVersionView> tableData;
+    ObservableList<VersionView> tableData;
 
     SdkManApi api;
+
+    private String selectedCandidate = "java";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -52,15 +53,6 @@ public class MainScreenController implements Initializable {
         table.getColumns().clear();
         api = ServiceRegistry.INSTANCE.getApi();
 
-        TableColumn<JavaVersionView, String> vendorCol = getTableColumn("Vendor", "vendor");
-        TableColumn<JavaVersionView, String> lastNameCol = getTableColumn("Version", "version");
-        TableColumn<JavaVersionView, String> emailCol = getTableColumn("Dist", "dist");
-        TableColumn<JavaVersionView, String> identifierCol = getTableColumn("Identifier", "identifier");
-        TableColumn<JavaVersionView, String> installedCol = getTableColumn("installed", "installed");
-        TableColumn<JavaVersionView, String> availableCol = getTableColumn("available", "available");
-        TableColumn<JavaVersionView, String> actionCol = getTableColumn("actions", "actions");
-
-        table.getColumns().addAll(vendorCol, lastNameCol, emailCol, identifierCol, installedCol, availableCol, actionCol);
         loadData();
         showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
         showAvailableOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
@@ -77,19 +69,20 @@ public class MainScreenController implements Initializable {
         }
         progressSpinner.setVisible(true);
         MainScreenController thiz = this;
+        createColumns();
         final double finalCurrentScroll = currentScroll;
         log.info("current scroll {}", currentScroll);
         TaskRunner.run(() -> {
             try {
-                String javaGlobalVersionInUse = api.resolveCurrentVersion("java");
-                String javaPathVersionInUse = api.getCurrentCandidateFromPath("java");
-                setGlobalVersionLabel(javaGlobalVersionInUse);
-                setPathVersionLabel(javaPathVersionInUse);
+                String globalVersionInUse = api.resolveCurrentVersion(selectedCandidate);
+                String pathVersionInUse = api.getCurrentCandidateFromPath(selectedCandidate);
+                setGlobalVersionLabel(globalVersionInUse);
+                setPathVersionLabel(pathVersionInUse);
                 tableData = FXCollections.observableArrayList(
-                        api.getJavaVersions().stream()
+                        api.getVersions(selectedCandidate).stream()
                                 .filter(j -> !showInstalledOnly.isSelected() || j.installed())
                                 .filter(j -> !showAvailableOnly.isSelected() || j.available())
-                                .map(j -> new JavaVersionView(j, javaGlobalVersionInUse, javaPathVersionInUse, thiz)).toList()
+                                .map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz)).toList()
                 );
                 Platform.runLater(() -> {
                     table.setItems(tableData);
@@ -108,13 +101,30 @@ public class MainScreenController implements Initializable {
         });
     }
 
-    private void setPathVersionLabel(String javaPathVersionInUse) {
+    private void createColumns() {
+        TableColumn<VersionView, String> vendorCol = getTableColumn("Vendor", "vendor");
+        TableColumn<VersionView, String> versionCol = getTableColumn("Version", "version");
+        TableColumn<VersionView, String> distCol = getTableColumn("Dist", "dist");
+        TableColumn<VersionView, String> identifierCol = getTableColumn("Identifier", "identifier");
+        TableColumn<VersionView, String> installedCol = getTableColumn("installed", "installed");
+        TableColumn<VersionView, String> availableCol = getTableColumn("available", "available");
+        TableColumn<VersionView, String> actionCol = getTableColumn("actions", "actions");
+
+        table.getColumns().clear();
+        if ("java".equals(selectedCandidate)) {
+            table.getColumns().addAll(vendorCol, versionCol, distCol, identifierCol, installedCol, availableCol, actionCol);
+        } else {
+            table.getColumns().addAll(versionCol, installedCol, availableCol, actionCol);
+        }
+    }
+
+    private void setPathVersionLabel(String pathVersionInUse) {
         Platform.runLater(() -> {
-            if (javaPathVersionInUse != null) {
-                if ("current".equals(javaPathVersionInUse)) {
+            if (pathVersionInUse != null) {
+                if ("current".equals(pathVersionInUse)) {
                     selected_item_label.setText("Using global version in shell");
                 } else {
-                    selected_item_label.setText("Using " + javaPathVersionInUse + " in shell");
+                    selected_item_label.setText("Using " + pathVersionInUse + " in shell");
                 }
             } else {
                 selected_item_label.setText("No path version in use");
@@ -122,30 +132,32 @@ public class MainScreenController implements Initializable {
         });
     }
 
-    private void setGlobalVersionLabel(String javaGlobalVersionInUse) {
+    private void setGlobalVersionLabel(String globalVersionInUse) {
         Platform.runLater(() -> {
-            if (javaGlobalVersionInUse != null) {
-                global_version_label.setText(javaGlobalVersionInUse);
+            if (globalVersionInUse != null) {
+                global_version_label.setText(globalVersionInUse);
             } else {
                 global_version_label.setText("No global version in use");
             }
         });
     }
 
-    private static TableColumn<JavaVersionView, String> getTableColumn(String title, String property) {
-        TableColumn<JavaVersionView, String> vendorCol = new TableColumn<>(title);
+    private static TableColumn<VersionView, String> getTableColumn(String title, String property) {
+        TableColumn<VersionView, String> vendorCol = new TableColumn<>(title);
         vendorCol.setCellValueFactory(
                 new PropertyValueFactory<>(property)
         );
         return vendorCol;
     }
 
-    public void javaSelected(ActionEvent event) {
-        //  table.set
+    public void javaSelected() {
+        selectedCandidate = "java";
+        loadData();
     }
 
-    public void mavenSelected(ActionEvent event) {
-
+    public void mavenSelected() {
+        selectedCandidate = "maven";
+        loadData();
     }
 
     public void downloadAndInstall(String identifier, String version) {

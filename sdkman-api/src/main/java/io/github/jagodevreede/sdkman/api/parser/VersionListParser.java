@@ -1,6 +1,6 @@
 package io.github.jagodevreede.sdkman.api.parser;
 
-import io.github.jagodevreede.sdkman.api.domain.JavaVersion;
+import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +13,18 @@ public class VersionListParser {
     private static final Pattern JAVA_VERSION_PATTERN = Pattern.compile("(.*?)\\|(.*?)\\|(.*?)\\|(.*?)\\|(.*?)\\|(.*)");
     private static final Pattern OTHER_VERSION_PATTERN = Pattern.compile("(.+?)\\s+(.+?)\\s+(.+?)\\s");
 
-    public static List<JavaVersion> parse(String response) {
+    public static List<CandidateVersion> parse(String response) {
         var matcher = JAVA_VERSION_PATTERN.matcher(response);
         if (matcher.find()) {
             return parseJava(response);
         }
         var result = parseOther(response);
-        result.sort(JavaVersion::compareTo);
+        result.sort(CandidateVersion::compareTo);
         return result;
     }
 
-    private static List<JavaVersion> parseOther(String response) {
-        var result = new ArrayList<JavaVersion>();
+    private static List<CandidateVersion> parseOther(String response) {
+        var result = new ArrayList<CandidateVersion>();
         String headerLessResponse = removeHeader(response);
         var matcher = OTHER_VERSION_PATTERN.matcher(headerLessResponse);
         while (matcher.find()) {
@@ -35,7 +35,7 @@ public class VersionListParser {
                     return result;
                 }
                 if (!version.isEmpty()) {
-                    result.add(new JavaVersion(null, version, null, version, false, false));
+                    result.add(new CandidateVersion(null, version, null, version, false, false));
                 }
             }
         }
@@ -47,8 +47,8 @@ public class VersionListParser {
         return response.lines().skip(3).collect(Collectors.joining("\n"));
     }
 
-    private static List<JavaVersion> parseJava(String response) {
-        var result = new ArrayList<JavaVersion>();
+    private static List<CandidateVersion> parseJava(String response) {
+        var result = new ArrayList<CandidateVersion>();
         var matcher = JAVA_VERSION_PATTERN.matcher(response);
         String lastVendor = null;
         while (matcher.find()) {
@@ -64,7 +64,7 @@ public class VersionListParser {
             String version = matcher.group(3).trim();
             String dist = matcher.group(4).trim();
             String identifier = matcher.group(6).trim();
-            result.add(new JavaVersion(vendor, version, dist, identifier, false, false));
+            result.add(new CandidateVersion(vendor, version, dist, identifier, false, false));
         }
         return result;
     }

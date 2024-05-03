@@ -1,7 +1,7 @@
 package io.github.jagodevreede.sdkmanui.view;
 
 import io.github.jagodevreede.sdkman.api.SdkManApi;
-import io.github.jagodevreede.sdkman.api.domain.JavaVersion;
+import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkmanui.MainScreenController;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import javafx.application.Platform;
@@ -22,7 +22,7 @@ import javafx.scene.layout.HBox;
 import java.io.IOException;
 import java.util.Optional;
 
-public class JavaVersionView {
+public class VersionView {
 
     private final SimpleStringProperty vendor;
     private final SimpleStringProperty version;
@@ -35,15 +35,15 @@ public class JavaVersionView {
     private final Button useAction;
     private final MainScreenController controller;
 
-    public JavaVersionView(JavaVersion javaVersion, String javaGlobalVersionInUse, String javaPathVersionInUse, MainScreenController controller) {
+    public VersionView(CandidateVersion candidateVersion, String globalVersionInUse, String pathVersionInUse, MainScreenController controller) {
         this.controller = controller;
-        globalAction = createImageButton("/images/global_icon.png", javaVersion.identifier().equals(javaGlobalVersionInUse), globalEventHandler(javaVersion));
-        useAction = createImageButton("/images/use_icon.png", javaVersion.identifier().equals(javaPathVersionInUse), useEventHandler(javaVersion));
-        this.vendor = new SimpleStringProperty(javaVersion.vendor());
-        this.version = new SimpleStringProperty(javaVersion.version());
-        this.dist = new SimpleStringProperty(javaVersion.dist());
-        this.identifier = new SimpleStringProperty(javaVersion.identifier());
-        if (javaVersion.installed()) {
+        globalAction = createImageButton("/images/global_icon.png", candidateVersion.identifier().equals(globalVersionInUse), globalEventHandler(candidateVersion));
+        useAction = createImageButton("/images/use_icon.png", candidateVersion.identifier().equals(pathVersionInUse), useEventHandler(candidateVersion));
+        this.vendor = new SimpleStringProperty(candidateVersion.vendor());
+        this.version = new SimpleStringProperty(candidateVersion.version());
+        this.dist = new SimpleStringProperty(candidateVersion.dist());
+        this.identifier = new SimpleStringProperty(candidateVersion.identifier());
+        if (candidateVersion.installed()) {
             this.actions = new HBox(
                     globalAction,
                     useAction
@@ -52,28 +52,28 @@ public class JavaVersionView {
             this.actions = new HBox();
         }
         this.installed = new CheckBox();
-        this.installed.setSelected(javaVersion.installed());
-        this.installed.selectedProperty().addListener(installedChangeListener(javaVersion));
+        this.installed.setSelected(candidateVersion.installed());
+        this.installed.selectedProperty().addListener(installedChangeListener(candidateVersion));
         this.available = new CheckBox();
         this.available.setDisable(true);
-        this.available.setSelected(javaVersion.available());
+        this.available.setSelected(candidateVersion.available());
     }
 
-    private ChangeListener<Boolean> installedChangeListener(JavaVersion javaVersion) {
+    private ChangeListener<Boolean> installedChangeListener(CandidateVersion candidateVersion) {
         return (observable, oldValue, newValue) -> {
             if (newValue) {
-                controller.downloadAndInstall("java", javaVersion.identifier());
+                controller.downloadAndInstall("java", candidateVersion.identifier());
             } else {
-                controller.uninstall("java", javaVersion.identifier());
+                controller.uninstall("java", candidateVersion.identifier());
             }
         };
     }
 
-    private EventHandler<MouseEvent> globalEventHandler(JavaVersion javaVersion) {
+    private EventHandler<MouseEvent> globalEventHandler(CandidateVersion candidateVersion) {
         return (event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Set global SDK");
-            alert.setHeaderText("Are you sure that you want to set " + javaVersion.identifier() + " as your global SDK?");
+            alert.setHeaderText("Are you sure that you want to set " + candidateVersion.identifier() + " as your global SDK?");
 
             ButtonType buttonTypeCancel = new ButtonType("Cancel");
 
@@ -86,7 +86,7 @@ public class JavaVersionView {
             if (result.isPresent() && (result.get() == buttonYesAndClose || result.get() == buttonYes)) {
                 SdkManApi api = ServiceRegistry.INSTANCE.getApi();
                 try {
-                    api.changeGlobal("java", javaVersion.identifier());
+                    api.changeGlobal("java", candidateVersion.identifier());
                 } catch (IOException e) {
                     ServiceRegistry.INSTANCE.getPopupView().showError(e);
                 }
@@ -100,11 +100,11 @@ public class JavaVersionView {
         };
     }
 
-    private EventHandler<MouseEvent> useEventHandler(JavaVersion javaVersion) {
+    private EventHandler<MouseEvent> useEventHandler(CandidateVersion candidateVersion) {
         return (event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Set local SDK");
-            alert.setHeaderText("Are you sure that you want to set " + javaVersion.identifier() + " as your local SDK?");
+            alert.setHeaderText("Are you sure that you want to set " + candidateVersion.identifier() + " as your local SDK?");
 
             ButtonType buttonTypeCancel = new ButtonType("Cancel");
 
@@ -117,7 +117,7 @@ public class JavaVersionView {
             if (result.isPresent() && (result.get() == buttonYesAndClose || result.get() == buttonYes)) {
                 SdkManApi api = ServiceRegistry.INSTANCE.getApi();
                 try {
-                    api.createExitScript("java", javaVersion.identifier());
+                    api.createExitScript("java", candidateVersion.identifier());
                 } catch (IOException e) {
                     ServiceRegistry.INSTANCE.getPopupView().showError(e);
                 }

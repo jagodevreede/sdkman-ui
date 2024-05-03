@@ -1,7 +1,7 @@
 package io.github.jagodevreede.sdkman.api;
 
 import io.github.jagodevreede.sdkman.api.domain.Candidate;
-import io.github.jagodevreede.sdkman.api.domain.JavaVersion;
+import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkman.api.domain.Vendor;
 import io.github.jagodevreede.sdkman.api.files.FileUtil;
 import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
@@ -33,7 +33,9 @@ public class SdkManApi {
     public static final String BASE_URL = "https://api.sdkman.io/2";
     public static final Duration DEFAUL_CACHE_DURATION = Duration.of(1, ChronoUnit.HOURS);
     public static final String DEFAULT_SDKMAN_HOME = System.getProperty("user.home") + "/.sdkman";
-    /** Used to extract name and dist from a identifier, first group is the name, second group is the dist */
+    /**
+     * Used to extract name and dist from a identifier, first group is the name, second group is the dist
+     */
     private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("(.*)-(.+)");
 
     private final CachedHttpClient client;
@@ -59,17 +61,17 @@ public class SdkManApi {
         return CandidateListParser.parse(response);
     }
 
-    public List<JavaVersion> getJavaVersions() throws IOException, InterruptedException {
-        String response = client.get(BASE_URL + "/candidates/java/" + getPlatformName() + "/versions/list?installed=", offline);
+    public List<CandidateVersion> getVersions(String candidate) throws IOException, InterruptedException {
+        String response = client.get(BASE_URL + "/candidates/" + candidate + "/" + getPlatformName() + "/versions/list?installed=", offline);
         var versions = VersionListParser.parse(response);
-        var localInstalled = new HashSet<>(getLocalInstalledVersions("java"));
-        var localAvailable = new HashSet<>(getLocalAvailableVersions("java"));
-        var result = new ArrayList<JavaVersion>();
+        var localInstalled = new HashSet<>(getLocalInstalledVersions(candidate));
+        var localAvailable = new HashSet<>(getLocalAvailableVersions(candidate));
+        var result = new ArrayList<CandidateVersion>();
         var vendors = new HashSet<Vendor>();
         for (var version : versions) {
             var installed = localInstalled.remove(version.identifier());
             var available = localAvailable.remove(version.identifier());
-            result.add(new JavaVersion(version,  installed, available));
+            result.add(new CandidateVersion(version, installed, available));
             vendors.add(new Vendor(version.vendor(), version.dist()));
         }
 
@@ -83,9 +85,9 @@ public class SdkManApi {
                         .findFirst()
                         .map(Vendor::vendor)
                         .orElse("Unclassified");
-                result.add(new JavaVersion(name, matcher.group(1), dist, identifier, true, available));
+                result.add(new CandidateVersion(name, matcher.group(1), dist, identifier, true, available));
             } else {
-                result.add(new JavaVersion("Unclassified", "", "none", identifier, true, available));
+                result.add(new CandidateVersion("Unclassified", "", "none", identifier, true, available));
             }
         }
 
@@ -98,13 +100,13 @@ public class SdkManApi {
                         .findFirst()
                         .map(Vendor::vendor)
                         .orElse("Unclassified");
-                result.add(new JavaVersion(name, matcher.group(1), dist, identifier, false, true));
+                result.add(new CandidateVersion(name, matcher.group(1), dist, identifier, false, true));
             } else {
-                result.add(new JavaVersion("Unclassified", "", "none", identifier, false, true));
+                result.add(new CandidateVersion("Unclassified", "", "none", identifier, false, true));
             }
         }
 
-        result.sort(JavaVersion::compareTo);
+        result.sort(CandidateVersion::compareTo);
         return result;
     }
 
@@ -135,7 +137,7 @@ public class SdkManApi {
             return List.of();
         }
         return Stream.of(Objects.requireNonNull(archiveFolder.list((dir, name) ->
-                new File(dir, name).isFile() && name.startsWith(candidate) && name.endsWith(".zip"))))
+                        new File(dir, name).isFile() && name.startsWith(candidate) && name.endsWith(".zip"))))
                 .map(name -> name.substring(candidate.length() + 1, name.length() - 4))
                 .toList();
     }
@@ -200,7 +202,9 @@ public class SdkManApi {
         return null;
     }
 
-    /** Always create an exit file, as that is being called after the program exits. */
+    /**
+     * Always create an exit file, as that is being called after the program exits.
+     */
     public void registerShutdownHook() {
         Thread printingHook = new Thread(() -> {
             File exitScriptFile = getExitScriptFile();
@@ -208,7 +212,8 @@ public class SdkManApi {
                 try {
                     exitScriptFile.createNewFile();
                 } catch (IOException e) {
-                    throw new RuntimeException(e);}
+                    throw new RuntimeException(e);
+                }
             }
 
         });
