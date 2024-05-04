@@ -13,6 +13,7 @@ public class SdkManUiPreferences {
     public String unzipExecutable;
     public String zipExecutable;
     public String tarExecutable;
+    public boolean canCreateSymlink;
 
     public static SdkManUiPreferences load() throws IOException {
         PROPERTY_LOCATION.getParentFile().mkdirs();
@@ -27,6 +28,7 @@ public class SdkManUiPreferences {
         uiPreferences.unzipExecutable = properties.getProperty("unzipExecutable", "unzip");
         uiPreferences.zipExecutable = properties.getProperty("zipExecutable", "zip");
         uiPreferences.tarExecutable = properties.getProperty("tarExecutable", "tar");
+        uiPreferences.canCreateSymlink = Boolean.parseBoolean(properties.getProperty("canCreateSymlink", "true"));
         return uiPreferences;
     }
 
@@ -37,6 +39,7 @@ public class SdkManUiPreferences {
         properties.setProperty("unzipExecutable", unzipExecutable);
         properties.setProperty("zipExecutable", zipExecutable);
         properties.setProperty("tarExecutable", tarExecutable);
+        properties.setProperty("canCreateSymlink", String.valueOf(canCreateSymlink));
         properties.store(new FileOutputStream(PROPERTY_LOCATION), null);
     }
 }

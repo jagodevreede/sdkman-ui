@@ -1,13 +1,13 @@
 @echo off
-if not exist "%HOME%\.sdkman" mkdir %HOME%\.sdkman
-if not exist "%HOME%\.sdkman\tmp" mkdir %HOME%\.sdkman\tmp
-if exist "%HOME%\.sdkman\tmp\exit-script.cmd" del %HOME%\.sdkman\tmp\exit-script.cmd
+if not exist "%homedrive%%homepath%\.sdkman" mkdir %homedrive%%homepath%\.sdkman
+if not exist "%homedrive%%homepath%\.sdkman\tmp" mkdir %homedrive%%homepath%\.sdkman\tmp
+if exist "%homedrive%%homepath%\.sdkman\tmp\exit-script.cmd" del %homedrive%%homepath%\.sdkman\tmp\exit-script.cmd
 
 sdkman-ui.exe
 
 :waitloop
-IF EXIST "%HOME%\.sdkman\tmp\exit-script.cmd" GOTO waitloopend
+IF EXIST "%homedrive%%homepath%\.sdkman\tmp\exit-script.cmd" GOTO waitloopend
 timeout /t 1 /nobreak > nul
 goto waitloop
 :waitloopend
-call %HOME%\.sdkman\tmp\exit-script.cmd
+call %homedrive%%homepath%\.sdkman\tmp\exit-script.cmd

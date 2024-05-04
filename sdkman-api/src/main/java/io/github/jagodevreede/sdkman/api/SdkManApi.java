@@ -116,10 +116,17 @@ public class SdkManApi {
             throw new IllegalArgumentException("No such identifier for candidate " + candidate + ": " + toIdentifier);
         }
         File currentFolder = new File(baseFolder, "candidates/" + candidate + "/current");
-        if (currentFolder.exists()) {
-            currentFolder.delete();
+        if (SdkManUiPreferences.load().canCreateSymlink) {
+            if (currentFolder.exists()) {
+                currentFolder.delete();
+            }
+            Files.createSymbolicLink(currentFolder.toPath(), toFolder.toPath());
+        } else {
+            if (currentFolder.exists()) {
+                FileUtil.deleteRecursively(currentFolder);
+            }
+            FileUtil.copyDirectory(toFolder.getAbsolutePath(), currentFolder.getAbsolutePath());
         }
-        Files.createSymbolicLink(currentFolder.toPath(), toFolder.toPath());
     }
 
     public List<String> getLocalInstalledVersions(String candidate) {

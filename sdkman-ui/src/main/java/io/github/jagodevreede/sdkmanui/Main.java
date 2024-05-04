@@ -1,5 +1,6 @@
 package io.github.jagodevreede.sdkmanui;
 
+import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
 import io.github.jagodevreede.sdkman.api.files.ProcessStarter;
 import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,15 +64,42 @@ public class Main extends Application {
                 return false;
             }
             if (!isWindows()) {
+                // other than windows can create symlinks
+                sdkManUiPreferences.canCreateSymlink = true;
                 String tarExecutable = testExecutable("tar", stage);
                 if (tarExecutable == null) {
                     return false;
                 }
+                sdkManUiPreferences.tarExecutable = tarExecutable;
+            } else {
+                sdkManUiPreferences.canCreateSymlink = checkSymlink();
             }
+            sdkManUiPreferences.unzipExecutable = unzipExecutable;
+            sdkManUiPreferences.zipExecutable = zipExecutable;
             sdkManUiPreferences.donePreCheck = true;
             sdkManUiPreferences.save();
         }
         return true;
+    }
+
+    private boolean checkSymlink() {
+        File sourceFolder = new File(SdkManApi.DEFAULT_SDKMAN_HOME, "/tmp/src");
+        sourceFolder.mkdirs();
+        File targetFolder = new File(SdkManApi.DEFAULT_SDKMAN_HOME, "/tmp/target");
+        if (targetFolder.exists()) {
+            targetFolder.delete();
+        }
+        try {
+            Files.createSymbolicLink(sourceFolder.toPath(), targetFolder.toPath());
+            return true;
+        } catch (IOException e) {
+            logger.trace("Failed to create symlink", e);
+            logger.info("Unable to make symlinks, using copies instead");
+        } finally {
+            targetFolder.delete();
+            sourceFolder.delete();
+        }
+        return false;
     }
 
     public String testExecutable(String command, Stage stage) {

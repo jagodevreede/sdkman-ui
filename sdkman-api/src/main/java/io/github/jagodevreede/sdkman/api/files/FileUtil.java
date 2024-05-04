@@ -1,8 +1,10 @@
 package io.github.jagodevreede.sdkman.api.files;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,10 +19,7 @@ public final class FileUtil {
                 deleteRecursively(c);
             }
         }
-        if (f.isFile()) {
-            if (!f.delete())
-                throw new FileNotFoundException("Failed to delete file: " + f);
-        }
+        f.delete();
     }
 
     public static File findRoot(File folderToSearchIn, String folderName) {
@@ -35,5 +34,19 @@ public final class FileUtil {
             }
         }
         return null;
+    }
+
+    public static void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation)
+            throws IOException {
+        Files.walk(Paths.get(sourceDirectoryLocation))
+                .forEach(source -> {
+                    Path destination = Paths.get(destinationDirectoryLocation, source.toString()
+                            .substring(sourceDirectoryLocation.length()));
+                    try {
+                        Files.copy(source, destination);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 }

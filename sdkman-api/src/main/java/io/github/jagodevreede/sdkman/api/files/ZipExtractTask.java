@@ -25,6 +25,7 @@ public final class ZipExtractTask {
             ProcessStarter.run(unzipExecutable, "-oq", zipFile.getAbsolutePath(), "-d", tempDir.getAbsolutePath());
 
             File sourceExtractedFolder = tempDir.listFiles()[0];
+            destination.getParentFile().mkdirs();
             Files.move(sourceExtractedFolder.toPath(), destination.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
