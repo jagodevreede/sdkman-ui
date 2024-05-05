@@ -23,7 +23,7 @@ public class ProcessStarter {
         return stringBuilder.toString().trim();
     }
 
-    public static void runIn(File workingFolder, String... args) throws IOException {
+    public static String runInGetOutput(File workingFolder, String... args) throws IOException {
         log.debug("Running in {}: {}", workingFolder, String.join(" ", args));
         ProcessBuilder pb = new ProcessBuilder(args);
         pb.directory(workingFolder);
@@ -40,11 +40,16 @@ public class ProcessStarter {
             throw new RuntimeException(e);
         }
 
-        if (!stdOut.isEmpty()) {
-            throw new IllegalStateException("Failure during extraction: " + stdOut);
-        }
         if (!stdErr.isEmpty()) {
             throw new IllegalStateException("Failure during extraction: " + stdErr);
+        }
+        return stdOut;
+    }
+
+    public static void runIn(File workingFolder, String... args) throws IOException {
+        String stdOut = runInGetOutput(workingFolder, args);
+        if (!stdOut.isEmpty()) {
+            throw new IllegalStateException("Failure during extraction: " + stdOut);
         }
     }
 

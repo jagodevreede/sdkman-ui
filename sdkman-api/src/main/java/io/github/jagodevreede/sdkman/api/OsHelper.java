@@ -1,5 +1,10 @@
 package io.github.jagodevreede.sdkman.api;
 
+import io.github.jagodevreede.sdkman.api.files.ProcessStarter;
+
+import java.io.File;
+import java.io.IOException;
+
 public class OsHelper {
 
     public static String getOs() {
@@ -10,7 +15,7 @@ public class OsHelper {
         String result;
         if (getOs().contains("windows")) {
             result = "windows";
-        } else if (getOs().contains("mac")) {
+        } else if (isMac()) {
             result = "darwin";
         } else {
             result = "linux";
@@ -37,5 +42,22 @@ public class OsHelper {
 
     public static boolean isWindows() {
         return System.getProperty("os.name").toLowerCase().contains("windows");
+    }
+
+    public static String getGlobalPath() {
+        if (OsHelper.isWindows()) {
+            try {
+                String pathQuery = ProcessStarter.runInGetOutput(new File("./"), "reg.exe", "query", "HKCU\\Environment", "/v", "Path");
+                String[] split = pathQuery.split("\\s");
+                System.out.println(split[split.length - 1].trim());
+            }catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    public static boolean isMac() {
+        return getOs().contains("mac");
     }
 }

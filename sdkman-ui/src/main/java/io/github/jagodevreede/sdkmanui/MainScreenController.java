@@ -145,21 +145,30 @@ public class MainScreenController implements Initializable {
     }
 
     public void javaSelected() {
-        selectedCandidate = "java";
-        if (tableData != null) {
-            tableData.clear();
-        }
-        createColumns();
-        loadData();
+        switchCandidate("java");
     }
 
     public void mavenSelected() {
-        selectedCandidate = "maven";
+        switchCandidate("maven");
+    }
+
+    private void switchCandidate(String candidate) {
+        selectedCandidate = candidate;
         if (tableData != null) {
             tableData.clear();
         }
         createColumns();
         loadData();
+        if (hasInstalledVersion()) {
+
+        }
+    }
+
+    private boolean hasInstalledVersion() {
+        if (tableData == null) {
+            return false;
+        }
+        return this.tableData.stream().anyMatch(j -> j.getInstalled().isSelected());
     }
 
     public void downloadAndInstall(String identifier, String version) {

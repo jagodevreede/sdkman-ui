@@ -1,5 +1,6 @@
 package io.github.jagodevreede.sdkmanui;
 
+import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import javafx.application.Application;
@@ -21,6 +22,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         logger.debug("Starting SDKMAN UI");
+        setOsxDockImage(stage);
         if (!ConfigurationUtil.preCheck(stage)) {
             logger.warn("Failed pre-check");
             return;
@@ -32,15 +34,35 @@ public class Main extends Application {
         URL mainFxml = Main.class.getClassLoader().getResource("main.fxml");
         Parent root = FXMLLoader.load(mainFxml);
 
-        stage.getIcons().clear();
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/sdkman_ui_logo.png"))));
-
         Scene scene = new Scene(root, 800, 580);
         stage.setResizable(false);
 
         stage.setTitle("SDKMAN UI");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void setOsxDockImage(Stage stage) {
+        if (!OsHelper.isMac()) {
+            // Only for mac other os are not needed
+            Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/sdkman_ui_logo.png")));
+            stage.getIcons().add(appIcon);
+            return;
+        }
+        final java.awt.Toolkit defaultToolkit = java.awt.Toolkit.getDefaultToolkit();
+        final URL imageResource = getClass().getResource("/images/sdkman_ui_logo.png");
+        final java.awt.Image image = defaultToolkit.getImage(imageResource);
+
+        final java.awt.Taskbar taskbar = java.awt.Taskbar.getTaskbar();
+
+        try {
+            //set icon for mac os (and other systems which do support this method)
+            taskbar.setIconImage(image);
+        } catch (final UnsupportedOperationException e) {
+            System.out.println("The os does not support: 'taskbar.setIconImage'");
+        } catch (final SecurityException e) {
+            System.out.println("There was a security exception for: 'taskbar.setIconImage'");
+        }
     }
 
     public static void main(String[] args) {
