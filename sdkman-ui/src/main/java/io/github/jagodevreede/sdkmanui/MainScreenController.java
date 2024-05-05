@@ -2,6 +2,7 @@ package io.github.jagodevreede.sdkmanui;
 
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
+import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
@@ -15,7 +16,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
@@ -45,7 +46,7 @@ public class MainScreenController implements Initializable {
 
     SdkManApi api;
 
-    private String selectedCandidate = "java";
+    private String selectedCandidate;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -53,48 +54,41 @@ public class MainScreenController implements Initializable {
         table.getColumns().clear();
         api = ServiceRegistry.INSTANCE.getApi();
 
+        javaSelected();
         loadData();
         showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
         showAvailableOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
     }
 
     public void loadData() {
-        double currentScroll = 0;
-        if (tableData != null) {
-            ScrollBar verticalBar = (ScrollBar) table.lookup(".scroll-bar:vertical");
-            if (verticalBar != null) {
-                currentScroll = verticalBar.valueProperty().get();
-            }
-            tableData.clear();
-        }
         progressSpinner.setVisible(true);
         MainScreenController thiz = this;
-        createColumns();
-        final double finalCurrentScroll = currentScroll;
-        log.info("current scroll {}", currentScroll);
         TaskRunner.run(() -> {
             try {
                 String globalVersionInUse = api.resolveCurrentVersion(selectedCandidate);
                 String pathVersionInUse = api.getCurrentCandidateFromPath(selectedCandidate);
                 setGlobalVersionLabel(globalVersionInUse);
                 setPathVersionLabel(pathVersionInUse);
-                tableData = FXCollections.observableArrayList(
-                        api.getVersions(selectedCandidate).stream()
-                                .filter(j -> !showInstalledOnly.isSelected() || j.installed())
-                                .filter(j -> !showAvailableOnly.isSelected() || j.available())
-                                .map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz)).toList()
-                );
-                Platform.runLater(() -> {
-                    table.setItems(tableData);
-                    ScrollBar verticalBar = (ScrollBar) table.lookup(".scroll-bar:vertical");
-                    if (verticalBar != null) {
-                        log.info(" scrollbar");
-                        if (verticalBar.getMax() < finalCurrentScroll) {
-                            log.info("scrolling to {}", finalCurrentScroll);
-                            Platform.runLater(() -> verticalBar.setValue(finalCurrentScroll));
+                List<CandidateVersion> updatedVersions = api.getVersions(selectedCandidate).stream()
+                        .filter(j -> !showInstalledOnly.isSelected() || j.installed())
+                        .filter(j -> !showAvailableOnly.isSelected() || j.available())
+                        .toList();
+                if (tableData == null || tableData.size() != updatedVersions.size()) {
+                    tableData = FXCollections.observableArrayList(
+                            updatedVersions.stream()
+                                    .map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz)).toList()
+                    );
+                    Platform.runLater(() -> table.setItems(tableData));
+                } else {
+                    tableData.forEach(oldData -> {
+                        var found = updatedVersions.stream().filter(j -> j.identifier().equals(oldData.getIdentifier())).findFirst();
+                        if (found.isPresent()) {
+                            oldData.update(found.get(), globalVersionInUse, pathVersionInUse);
+                        } else {
+                            log.error("Could not find version {}", oldData.getIdentifier());
                         }
-                    }
-                });
+                    });
+                }
             } catch (IOException | InterruptedException e) {
                 ServiceRegistry.INSTANCE.getPopupView().showError(e);
             }
@@ -152,11 +146,19 @@ public class MainScreenController implements Initializable {
 
     public void javaSelected() {
         selectedCandidate = "java";
+        if (tableData != null) {
+            tableData.clear();
+        }
+        createColumns();
         loadData();
     }
 
     public void mavenSelected() {
         selectedCandidate = "maven";
+        if (tableData != null) {
+            tableData.clear();
+        }
+        createColumns();
         loadData();
     }
 

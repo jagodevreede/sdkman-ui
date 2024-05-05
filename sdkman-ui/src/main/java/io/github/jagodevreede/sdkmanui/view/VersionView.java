@@ -37,8 +37,8 @@ public class VersionView {
 
     public VersionView(CandidateVersion candidateVersion, String globalVersionInUse, String pathVersionInUse, MainScreenController controller) {
         this.controller = controller;
-        globalAction = createImageButton("/images/global_icon.png", candidateVersion.identifier().equals(globalVersionInUse), globalEventHandler(candidateVersion));
-        useAction = createImageButton("/images/use_icon.png", candidateVersion.identifier().equals(pathVersionInUse), useEventHandler(candidateVersion));
+        globalAction = createImageButton("/images/global_icon.png", globalEventHandler(candidateVersion));
+        useAction = createImageButton("/images/use_icon.png", useEventHandler(candidateVersion));
         this.vendor = new SimpleStringProperty(candidateVersion.vendor());
         this.version = new SimpleStringProperty(candidateVersion.version());
         this.dist = new SimpleStringProperty(candidateVersion.dist());
@@ -52,11 +52,17 @@ public class VersionView {
             this.actions = new HBox();
         }
         this.installed = new CheckBox();
+        this.available = new CheckBox();
+        update(candidateVersion, globalVersionInUse, pathVersionInUse);
+    }
+
+    public void update(CandidateVersion candidateVersion, String globalVersionInUse, String pathVersionInUse) {
         this.installed.setSelected(candidateVersion.installed());
         this.installed.selectedProperty().addListener(installedChangeListener(candidateVersion));
-        this.available = new CheckBox();
         this.available.setDisable(true);
         this.available.setSelected(candidateVersion.available());
+        globalAction.setDisable(candidateVersion.identifier().equals(globalVersionInUse));
+        useAction.setDisable(candidateVersion.identifier().equals(pathVersionInUse));
     }
 
     private ChangeListener<Boolean> installedChangeListener(CandidateVersion candidateVersion) {
@@ -131,9 +137,8 @@ public class VersionView {
         };
     }
 
-    private Button createImageButton(String imagePath, boolean disabled, EventHandler<? super MouseEvent> eventHandler) {
+    private Button createImageButton(String imagePath, EventHandler<? super MouseEvent> eventHandler) {
         Button button = new Button();
-        button.setDisable(disabled);
         ImageView globalActionImage = new ImageView();
         globalActionImage.setImage(new Image(getClass().getResourceAsStream(imagePath)));
         globalActionImage.setFitHeight(10.0);
