@@ -103,6 +103,23 @@ public class PopupView {
         return new ProgressWindow(progressBar, alert);
     }
 
+    public void showConfirmation(String title, String message, Runnable onConfirm) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(message);
+
+        ButtonType buttonTypeCancel = new ButtonType("No");
+        ButtonType buttonTypeConfirm = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+
+        alert.getButtonTypes().setAll(buttonTypeCancel, buttonTypeConfirm);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == buttonTypeConfirm) {
+            onConfirm.run();
+        }
+    }
+
     public record ProgressWindow(ProgressBar progressBar, Alert alert) {
     }
 }

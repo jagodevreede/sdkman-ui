@@ -1,5 +1,6 @@
 package io.github.jagodevreede.sdkmanui;
 
+import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
@@ -28,7 +29,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
-    private static final Logger log = LoggerFactory.getLogger(MainScreenController.class);
+    private static final Logger logger = LoggerFactory.getLogger(MainScreenController.class);
+    private final SdkManApi api = ServiceRegistry.INSTANCE.getApi();
+    private final PopupView popupView = ServiceRegistry.INSTANCE.getPopupView();
     @FXML
     TableView<VersionView> table;
     @FXML
@@ -44,23 +47,23 @@ public class MainScreenController implements Initializable {
 
     ObservableList<VersionView> tableData;
 
-    SdkManApi api;
-
     private String selectedCandidate;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ServiceRegistry.INSTANCE.setProgressIndicator(progressSpinner);
         table.getColumns().clear();
-        api = ServiceRegistry.INSTANCE.getApi();
 
         javaSelected();
-        loadData();
         showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
         showAvailableOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
     }
 
     public void loadData() {
+        loadData(null);
+    }
+
+    public void loadData(Runnable onLoaded) {
         progressSpinner.setVisible(true);
         MainScreenController thiz = this;
         TaskRunner.run(() -> {
@@ -85,12 +88,15 @@ public class MainScreenController implements Initializable {
                         if (found.isPresent()) {
                             oldData.update(found.get(), globalVersionInUse, pathVersionInUse);
                         } else {
-                            log.error("Could not find version {}", oldData.getIdentifier());
+                            logger.error("Could not find version {}", oldData.getIdentifier());
                         }
                     });
                 }
+                if (onLoaded != null) {
+                    onLoaded.run();
+                }
             } catch (IOException | InterruptedException e) {
-                ServiceRegistry.INSTANCE.getPopupView().showError(e);
+                popupView.showError(e);
             }
         });
     }
@@ -158,9 +164,16 @@ public class MainScreenController implements Initializable {
             tableData.clear();
         }
         createColumns();
-        loadData();
-        if (hasInstalledVersion()) {
+        loadData(() -> checkIfEnvironmentIsConfigured(selectedCandidate));
+    }
 
+    private void checkIfEnvironmentIsConfigured(String candidate) {
+        // Only on windows, check if the environment is configured
+        if (OsHelper.isWindows() && hasInstalledVersion() && !api.hasEnvironmentConfigured(candidate)) {
+            Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate,
+                    candidate + " is not in the environment (path variable) yet, do you want to add it?", () -> {
+                        api.configureWindowsEnvironment(candidate);
+                    }));
         }
     }
 
@@ -176,9 +189,9 @@ public class MainScreenController implements Initializable {
     }
 
     private void install(String identifier, String version) {
-        PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Extraction of " + identifier + " " + version + " in progress", null);
+        PopupView.ProgressWindow progressWindow = popupView.showProgress("Extraction of " + identifier + " " + version + " in progress", null);
         TaskRunner.run(() -> {
-            ServiceRegistry.INSTANCE.getApi().install(identifier, version);
+            api.install(identifier, version);
             Platform.runLater(() -> {
                 progressWindow.alert().close();
                 loadData();
@@ -187,8 +200,8 @@ public class MainScreenController implements Initializable {
     }
 
     private void download(String identifier, String version, boolean install) {
-        DownloadTask downloadTask = ServiceRegistry.INSTANCE.getApi().download(identifier, version);
-        PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Download of " + identifier + " " + version + " in progress", downloadTask);
+        DownloadTask downloadTask = api.download(identifier, version);
+        PopupView.ProgressWindow progressWindow = popupView.showProgress("Download of " + identifier + " " + version + " in progress", downloadTask);
         ProgressInformation progressInformation = current -> {
             if (current > 0) {
                 Platform.runLater(() -> progressWindow.progressBar().setProgress(current / 100.0));
@@ -210,7 +223,7 @@ public class MainScreenController implements Initializable {
     }
 
     public void uninstall(String identifier, String version) {
-        ServiceRegistry.INSTANCE.getApi().uninstall(identifier, version);
+        api.uninstall(identifier, version);
         Platform.runLater(this::loadData);
     }
 }

@@ -9,6 +9,8 @@ import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
 import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
 import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,13 +28,16 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalPath;
+import static java.io.File.separator;
 import static java.net.http.HttpClient.newHttpClient;
 
 public class SdkManApi {
+    private static Logger logger = LoggerFactory.getLogger(SdkManApi.class);
 
     public static final String BASE_URL = "https://api.sdkman.io/2";
     public static final Duration DEFAUL_CACHE_DURATION = Duration.of(1, ChronoUnit.HOURS);
-    public static final String DEFAULT_SDKMAN_HOME = System.getProperty("user.home") + "/.sdkman";
+    public static final String DEFAULT_SDKMAN_HOME = System.getProperty("user.home") + separator + ".sdkman";
     /**
      * Used to extract name and dist from a identifier, first group is the name, second group is the dist
      */
@@ -41,11 +46,12 @@ public class SdkManApi {
     private final CachedHttpClient client;
     private final String baseFolder;
     private Map<String, String> changes = new HashMap<>();
+    private Map<String, Boolean> hasEnvironmentConfigured = new HashMap<>();
     private boolean offline;
 
     public SdkManApi(String baseFolder) {
         this.baseFolder = baseFolder;
-        this.client = new CachedHttpClient(baseFolder + "/.http_cache", DEFAUL_CACHE_DURATION, newHttpClient());
+        this.client = new CachedHttpClient(baseFolder + separator + ".http_cache", DEFAUL_CACHE_DURATION, newHttpClient());
     }
 
     public boolean isOffline() {
@@ -111,11 +117,11 @@ public class SdkManApi {
     }
 
     public void changeGlobal(String candidate, String toIdentifier) throws IOException {
-        File toFolder = new File(baseFolder, "candidates/" + candidate + "/" + toIdentifier);
+        File toFolder = new File(baseFolder, "candidates" + separator + candidate + separator + toIdentifier);
         if (!toFolder.exists()) {
             throw new IllegalArgumentException("No such identifier for candidate " + candidate + ": " + toIdentifier);
         }
-        File currentFolder = new File(baseFolder, "candidates/" + candidate + "/current");
+        File currentFolder = new File(baseFolder, "candidates" + separator + candidate + separator +"current");
         if (SdkManUiPreferences.load().canCreateSymlink) {
             if (currentFolder.exists()) {
                 currentFolder.delete();
@@ -130,7 +136,7 @@ public class SdkManApi {
     }
 
     public List<String> getLocalInstalledVersions(String candidate) {
-        var candidatesFolder = new File(baseFolder + "/candidates/" + candidate);
+        var candidatesFolder = new File(baseFolder + separator + "candidates" + separator + candidate);
         if (!candidatesFolder.exists()) {
             return List.of();
         }
@@ -139,7 +145,7 @@ public class SdkManApi {
     }
 
     private List<String> getLocalAvailableVersions(String candidate) {
-        var archiveFolder = new File(baseFolder + "/archives");
+        var archiveFolder = new File(baseFolder + separator + "archives");
         if (!archiveFolder.exists()) {
             return List.of();
         }
@@ -153,32 +159,37 @@ public class SdkManApi {
         if (changes.containsKey(candidate)) {
             return changes.get(candidate);
         }
-        var paths = System.getenv("PATH").split(OsHelper.getPathSeparator());
-        var pathName = baseFolder + "/candidates/" + candidate;
-        for (var path : paths) {
-            if (path.startsWith(pathName)) {
-                return path.substring(pathName.length() + 1).replace("/bin", "");
+        var paths = System.getenv("PATH");
+        return findCandidateInPath(candidate, paths);
+    }
+
+    private String findCandidateInPath(String candidate, String path) {
+        var paths = path.split(File.pathSeparator);
+        var pathName = baseFolder + separator + "candidates" + separator + candidate;
+        for (var p : paths) {
+            if (p.startsWith(pathName)) {
+                return p.substring(pathName.length() + 1).replace(separator + "bin", "");
             }
         }
         return null;
     }
 
     private String updatePathForCandidate(String candidate, String identifier) {
-        var paths = System.getenv("PATH").split(OsHelper.getPathSeparator());
-        var pathName = baseFolder + "/candidates/" + candidate;
+        var paths = System.getenv("PATH").split(File.pathSeparator);
+        var pathName = baseFolder + separator + "candidates" + separator + candidate;
         return Stream.of(paths).map(path -> {
             if (path.startsWith(pathName)) {
-                return baseFolder + "/candidates/" + candidate + "/" + identifier + "/bin";
+                return baseFolder + separator + "candidates" + separator + candidate + separator + identifier + separator + "bin";
             }
             return path;
-        }).toList().stream().collect(Collectors.joining(OsHelper.getPathSeparator()));
+        }).toList().stream().collect(Collectors.joining(File.pathSeparator));
     }
 
     public File getExitScriptFile() {
         if (OsHelper.hasShell()) {
             return new File(baseFolder, "tmp/exit-script.sh");
         } else {
-            return new File(baseFolder, "tmp/exit-script.cmd");
+            return new File(baseFolder, "tmp\\exit-script.cmd");
         }
     }
 
@@ -200,11 +211,11 @@ public class SdkManApi {
     }
 
     public String resolveCurrentVersion(String candidate) throws IOException {
-        var candidatesFolder = new File(baseFolder + "/candidates/" + candidate);
+        var candidatesFolder = new File(baseFolder + separator + "candidates" + separator + candidate);
         File current = new File(candidatesFolder, "current");
         if (current.exists()) {
             var realPath = current.toPath().toRealPath().toString();
-            return realPath.substring(candidatesFolder.getAbsolutePath().length() + 1).replace("/bin", "");
+            return realPath.substring(candidatesFolder.getAbsolutePath().length() + 1).replace(separator + "bin", "");
         }
         return null;
     }
@@ -222,25 +233,24 @@ public class SdkManApi {
                     throw new RuntimeException(e);
                 }
             }
-
         });
         Runtime.getRuntime().addShutdownHook(printingHook);
     }
 
     public DownloadTask download(String identifier, String version) {
-        File finalArchiveFile = new File(baseFolder, "archives/" + identifier + "-" + version + ".zip");
+        File finalArchiveFile = new File(baseFolder, "archives" + separator + identifier + "-" + version + ".zip");
         String url = BASE_URL + "/broker/download/" + identifier + "/" + version + "/" + getPlatformName();
-        File tempFile = new File(baseFolder, "tmp/" + identifier + "-" + version + ".bin");
+        File tempFile = new File(baseFolder, "tmp" + separator + identifier + "-" + version + ".bin");
         return new DownloadTask(url, tempFile, finalArchiveFile, identifier + "-" + version);
     }
 
     public void install(String identifier, String version) {
-        File archiveFile = new File(baseFolder, "archives/" + identifier + "-" + version + ".zip");
-        ZipExtractTask.extract(archiveFile, new File(baseFolder, "candidates/" + identifier + "/" + version));
+        File archiveFile = new File(baseFolder, "archives" + separator + identifier + "-" + version + ".zip");
+        ZipExtractTask.extract(archiveFile, new File(baseFolder, "candidates" + separator + identifier + separator + version));
     }
 
     public void uninstall(String identifier, String version) {
-        File candidateFolder = new File(baseFolder, "candidates/" + identifier + "/" + version);
+        File candidateFolder = new File(baseFolder, "candidates" + separator + identifier + separator + version);
         if (candidateFolder.exists()) {
             try {
                 FileUtil.deleteRecursively(candidateFolder);
@@ -248,5 +258,25 @@ public class SdkManApi {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public boolean hasEnvironmentConfigured(String candidate) {
+        return hasEnvironmentConfigured.computeIfAbsent(candidate, (k) -> {
+            if (OsHelper.isWindows()) {
+                String globalPath = getGlobalPath();
+                String candidateInPath = findCandidateInPath(candidate, globalPath);
+                return candidateInPath != null;
+            }
+            // Only a thing on windows
+            return true;
+        });
+    }
+
+    public void configureWindowsEnvironment(String candidate) {
+        logger.debug("Configuring environment for {}", candidate);
+        String path = getGlobalPath();
+        path = baseFolder + "\\candidates\\" + candidate + "\\current\\bin;" + path;
+        OsHelper.setGlobalPath(path);
+        hasEnvironmentConfigured.put(candidate, true);
     }
 }
