@@ -21,6 +21,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Parameters params = getParameters();
+        List<String> list = params.getRaw();
+        for (String each : list) {
+            System.out.println(each);
+        }
+
         logger.debug("Starting SDKMAN UI");
         setOsxDockImage(stage);
         if (!ConfigurationUtil.preCheck(stage)) {
@@ -59,9 +65,9 @@ public class Main extends Application {
             //set icon for mac os (and other systems which do support this method)
             taskbar.setIconImage(image);
         } catch (final UnsupportedOperationException e) {
-            System.out.println("The os does not support: 'taskbar.setIconImage'");
+            logger.debug("The os does not support: 'taskbar.setIconImage'");
         } catch (final SecurityException e) {
-            System.out.println("There was a security exception for: 'taskbar.setIconImage'");
+            logger.debug("There was a security exception for: 'taskbar.setIconImage'");
         }
     }
 
