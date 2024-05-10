@@ -132,6 +132,16 @@ public class SdkManApi {
                 FileUtil.deleteRecursively(currentFolder);
             }
             FileUtil.copyDirectory(toFolder.getAbsolutePath(), currentFolder.getAbsolutePath());
+            writeCurrentVersionToFile(candidate, toIdentifier);
+        }
+    }
+
+    private void writeCurrentVersionToFile(String candidate, String identifier) {
+        File versionFile = new File(baseFolder, "candidates" + separator + candidate + separator + "current" + separator + ".sdkman-version");
+        try {
+            Files.writeString(versionFile.toPath(), identifier);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to write .sdkman-version file: " + e.getMessage(), e);
         }
     }
 
@@ -214,10 +224,26 @@ public class SdkManApi {
         var candidatesFolder = new File(baseFolder + separator + "candidates" + separator + candidate);
         File current = new File(candidatesFolder, "current");
         if (current.exists()) {
+            String versionFromVersionFile = readCurrentVersionFromFile(candidate);
+            if (versionFromVersionFile != null) {
+                return versionFromVersionFile;
+            }
             var realPath = current.toPath().toRealPath().toString();
             return realPath.substring(candidatesFolder.getAbsolutePath().length() + 1).replace(separator + "bin", "");
         }
         return null;
+    }
+
+    private String readCurrentVersionFromFile(String candidate) {
+        File versionFile = new File(baseFolder, "candidates" + separator + candidate + separator + "current" + separator + ".sdkman-version");
+        if (!versionFile.isFile()) {
+            return null;
+        }
+        try {
+            return Files.readString(versionFile.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to read .sdkman-version file: " + e.getMessage(), e);
+        }
     }
 
     /**

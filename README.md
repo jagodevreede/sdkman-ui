@@ -12,7 +12,9 @@ implementation for windows.
 ## Requirements
 
 tar, unzip and zip should be present on the system. You can install them with your favourite package manager on *inx
-systems. And for windows:
+systems. 
+
+And for windows:
 
 - tar: no need for tar as it is not used on windows
 - zip: [https://gnuwin32.sourceforge.net/packages/zip.htm]()
