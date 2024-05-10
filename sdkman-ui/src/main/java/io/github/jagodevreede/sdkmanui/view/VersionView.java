@@ -22,6 +22,9 @@ import javafx.scene.layout.HBox;
 import java.io.IOException;
 import java.util.Optional;
 
+import static io.github.jagodevreede.sdkmanui.view.Images.globalIcon;
+import static io.github.jagodevreede.sdkmanui.view.Images.useIcon;
+
 public class VersionView {
 
     private final SimpleStringProperty vendor;
@@ -37,8 +40,8 @@ public class VersionView {
 
     public VersionView(CandidateVersion candidateVersion, String globalVersionInUse, String pathVersionInUse, MainScreenController controller) {
         this.controller = controller;
-        globalAction = createImageButton("/images/global_icon.png", globalEventHandler(candidateVersion));
-        useAction = createImageButton("/images/use_icon.png", useEventHandler(candidateVersion));
+        globalAction = createImageButton(globalIcon, globalEventHandler(candidateVersion));
+        useAction = createImageButton(useIcon, useEventHandler(candidateVersion));
         this.vendor = new SimpleStringProperty(candidateVersion.vendor());
         this.version = new SimpleStringProperty(candidateVersion.version());
         this.dist = new SimpleStringProperty(candidateVersion.dist());
@@ -137,10 +140,10 @@ public class VersionView {
         };
     }
 
-    private Button createImageButton(String imagePath, EventHandler<? super MouseEvent> eventHandler) {
+    private Button createImageButton(Image image, EventHandler<? super MouseEvent> eventHandler) {
         Button button = new Button();
         ImageView globalActionImage = new ImageView();
-        globalActionImage.setImage(new Image(getClass().getResourceAsStream(imagePath)));
+        globalActionImage.setImage(image);
         globalActionImage.setFitHeight(10.0);
         globalActionImage.setFitWidth(10.0);
         button.setGraphic(globalActionImage);
