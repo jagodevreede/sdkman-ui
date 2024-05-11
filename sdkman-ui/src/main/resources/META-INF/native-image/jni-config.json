@@ -13,19 +13,41 @@
 },
 {
   "name":"com.sun.glass.ui.Application",
-  "methods":[{"name":"notifyDidBecomeActive","parameterTypes":[] }, {"name":"notifyDidFinishLaunching","parameterTypes":[] }, {"name":"notifyOpenFiles","parameterTypes":["java.lang.String[]"] }, {"name":"notifyWillBecomeActive","parameterTypes":[] }, {"name":"notifyWillFinishLaunching","parameterTypes":[] }]
+  "methods":[
+    {"name":"notifyDidBecomeActive","parameterTypes":[] }, 
+    {"name":"notifyDidFinishLaunching","parameterTypes":[] }, 
+    {"name":"notifyOpenFiles","parameterTypes":["java.lang.String[]"] }, 
+    {"name":"notifyWillBecomeActive","parameterTypes":[] }, 
+    {"name":"notifyWillFinishLaunching","parameterTypes":[] }
+  ]
+},
+{
+  "name":"com.sun.glass.ui.Cursor",
+  "methods":[
+    {"name":"getNativeCursor","parameterTypes":[] }, 
+    {"name":"getType","parameterTypes":[] }
+  ]
 },
 {
   "name":"com.sun.glass.ui.Menu",
-  "methods":[{"name":"notifyMenuClosed","parameterTypes":[] }, {"name":"notifyMenuOpening","parameterTypes":[] }]
+  "methods":[
+    {"name":"notifyMenuClosed","parameterTypes":[] }, 
+    {"name":"notifyMenuOpening","parameterTypes":[] }
+  ]
 },
 {
   "name":"com.sun.glass.ui.MenuItem$Callback",
-  "methods":[{"name":"action","parameterTypes":[] }, {"name":"validate","parameterTypes":[] }]
+  "methods":[
+    {"name":"action","parameterTypes":[] }, 
+    {"name":"validate","parameterTypes":[] }
+  ]
 },
 {
   "name":"com.sun.glass.ui.Screen",
-  "methods":[{"name":"<init>","parameterTypes":["long","int","int","int","int","int","int","int","int","int","int","int","int","int","int","int","float","float","float","float"] }, {"name":"notifySettingsChanged","parameterTypes":[] }]
+  "methods":[
+    {"name":"<init>","parameterTypes":["long","int","int","int","int","int","int","int","int","int","int","int","int","int","int","int","float","float","float","float"] }, 
+    {"name":"notifySettingsChanged","parameterTypes":[] }
+  ]
 },
 {
   "name":"com.sun.glass.ui.Size",
@@ -34,31 +56,123 @@
 {
   "name":"com.sun.glass.ui.View",
   "fields":[{"name":"ptr"}],
-  "methods":[{"name":"getAccessible","parameterTypes":[] }, {"name":"notifyDragDrop","parameterTypes":["int","int","int","int","int"] }, {"name":"notifyDragEnd","parameterTypes":["int"] }, {"name":"notifyDragEnter","parameterTypes":["int","int","int","int","int"] }, {"name":"notifyDragLeave","parameterTypes":[] }, {"name":"notifyDragOver","parameterTypes":["int","int","int","int","int"] }, {"name":"notifyInputMethod","parameterTypes":["java.lang.String","int[]","int[]","byte[]","int","int","int"] }, {"name":"notifyInputMethodCandidatePosRequest","parameterTypes":["int"] }, {"name":"notifyKey","parameterTypes":["int","int","char[]","int"] }, {"name":"notifyMenu","parameterTypes":["int","int","int","int","boolean"] }, {"name":"notifyMouse","parameterTypes":["int","int","int","int","int","int","int","boolean","boolean"] }, {"name":"notifyRepaint","parameterTypes":["int","int","int","int"] }, {"name":"notifyResize","parameterTypes":["int","int"] }, {"name":"notifyView","parameterTypes":["int"] }]
+  "methods":[
+    {"name":"getAccessible","parameterTypes":[] }, 
+    {"name":"notifyDragDrop","parameterTypes":["int","int","int","int","int"] }, 
+    {"name":"notifyDragEnd","parameterTypes":["int"] }, 
+    {"name":"notifyDragEnter","parameterTypes":["int","int","int","int","int"] }, 
+    {"name":"notifyDragLeave","parameterTypes":[] }, 
+    {"name":"notifyDragOver","parameterTypes":["int","int","int","int","int"] }, 
+    {"name":"notifyInputMethod","parameterTypes":["java.lang.String","int[]","int[]","byte[]","int","int","int"] }, 
+    {"name":"notifyInputMethodCandidatePosRequest","parameterTypes":["int"] }, 
+    {"name":"notifyKey","parameterTypes":["int","int","char[]","int"] }, 
+    {"name":"notifyMenu","parameterTypes":["int","int","int","int","boolean"] }, 
+    {"name":"notifyMouse","parameterTypes":["int","int","int","int","int","int","int","boolean","boolean"] }, 
+    {"name":"notifyRepaint","parameterTypes":["int","int","int","int"] }, 
+    {"name":"notifyResize","parameterTypes":["int","int"] }, 
+    {"name":"notifyView","parameterTypes":["int"] }
+  ]
 },
 {
   "name":"com.sun.javafx.font.coretext.CGAffineTransform",
-  "fields":[{"name":"a"}, {"name":"b"}, {"name":"c"}, {"name":"d"}, {"name":"tx"}, {"name":"ty"}],
+  "fields":[
+    {"name":"a"}, 
+    {"name":"b"}, 
+    {"name":"c"}, 
+    {"name":"d"}, 
+    {"name":"tx"}, 
+    {"name":"ty"}
+  ],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.sun.javafx.font.coretext.CGPoint",
-  "fields":[{"name":"x"}, {"name":"y"}],
+  "fields":[
+    {"name":"x"}, 
+    {"name":"y"}
+  ],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.sun.javafx.font.coretext.CGRect",
-  "fields":[{"name":"origin"}, {"name":"size"}],
+  "fields":[
+    {"name":"origin"}, 
+    {"name":"size"}
+  ],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.sun.javafx.font.coretext.CGSize",
-  "fields":[{"name":"height"}, {"name":"width"}],
+  "fields":[
+    {"name":"height"}, 
+    {"name":"width"}
+  ],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.sun.javafx.font.directwrite.DWRITE_GLYPH_METRICS",
+  "fields":[
+    {"name":"advanceHeight"}, 
+    {"name":"advanceWidth"}, 
+    {"name":"bottomSideBearing"}, 
+    {"name":"leftSideBearing"}, 
+    {"name":"rightSideBearing"}, 
+    {"name":"topSideBearing"}, 
+    {"name":"verticalOriginY"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.font.directwrite.DWRITE_GLYPH_RUN",
+  "fields":[
+    {"name":"advanceOffset"}, 
+    {"name":"ascenderOffset"}, 
+    {"name":"bidiLevel"}, 
+    {"name":"fontEmSize"}, 
+    {"name":"fontFace"}, 
+    {"name":"glyphAdvances"}, 
+    {"name":"glyphIndices"}, 
+    {"name":"isSideways"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.font.directwrite.DWRITE_MATRIX",
+  "fields":[
+    {"name":"dx"}, 
+    {"name":"dy"}, 
+    {"name":"m11"}, 
+    {"name":"m12"}, 
+    {"name":"m21"}, 
+    {"name":"m22"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.font.directwrite.RECT",
+  "fields":[
+    {"name":"bottom"}, 
+    {"name":"left"}, 
+    {"name":"right"}, 
+    {"name":"top"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.prism.impl.PrismSettings",
+  "fields":[
+    {"name":"disableD3D9Ex"}, 
+    {"name":"forceGPU"}, 
+    {"name":"isVsyncEnabled"}, 
+    {"name":"verbose"}
+  ]
+},
+{
   "name":"java.awt.AlphaComposite",
-  "fields":[{"name":"extraAlpha"}, {"name":"rule"}]
+  "fields":[
+    {"name":"extraAlpha"}, 
+    {"name":"rule"}
+  ]
 },
 {
   "name":"java.awt.Color",
@@ -74,11 +188,22 @@
 },
 {
   "name":"java.awt.geom.AffineTransform",
-  "fields":[{"name":"m00"}, {"name":"m01"}, {"name":"m02"}, {"name":"m10"}, {"name":"m11"}, {"name":"m12"}]
+  "fields":[
+    {"name":"m00"}, 
+    {"name":"m01"}, 
+    {"name":"m02"}, 
+    {"name":"m10"}, 
+    {"name":"m11"}, 
+    {"name":"m12"}
+  ]
 },
 {
   "name":"java.awt.geom.Path2D",
-  "fields":[{"name":"numTypes"}, {"name":"pointTypes"}, {"name":"windingRule"}]
+  "fields":[
+    {"name":"numTypes"}, 
+    {"name":"pointTypes"}, 
+    {"name":"windingRule"}
+  ]
 },
 {
   "name":"java.awt.geom.Path2D$Float",
@@ -90,34 +215,81 @@
 },
 {
   "name":"java.awt.image.BufferedImage",
-  "fields":[{"name":"colorModel"}, {"name":"imageType"}, {"name":"raster"}],
-  "methods":[{"name":"getRGB","parameterTypes":["int","int","int","int","int[]","int","int"] }, {"name":"setRGB","parameterTypes":["int","int","int","int","int[]","int","int"] }]
+  "fields":[
+    {"name":"colorModel"}, 
+    {"name":"imageType"}, 
+    {"name":"raster"}
+  ],
+  "methods":[
+    {"name":"getRGB","parameterTypes":["int","int","int","int","int[]","int","int"] }, 
+    {"name":"setRGB","parameterTypes":["int","int","int","int","int[]","int","int"] }
+  ]
 },
 {
   "name":"java.awt.image.ColorModel",
-  "fields":[{"name":"colorSpace"}, {"name":"colorSpaceType"}, {"name":"isAlphaPremultiplied"}, {"name":"is_sRGB"}, {"name":"nBits"}, {"name":"numComponents"}, {"name":"supportsAlpha"}, {"name":"transparency"}],
+  "fields":[
+    {"name":"colorSpace"}, 
+    {"name":"colorSpaceType"}, 
+    {"name":"isAlphaPremultiplied"}, 
+    {"name":"is_sRGB"}, 
+    {"name":"nBits"}, 
+    {"name":"numComponents"}, 
+    {"name":"supportsAlpha"}, 
+    {"name":"transparency"}
+  ],
   "methods":[{"name":"getRGBdefault","parameterTypes":[] }]
 },
 {
   "name":"java.awt.image.IndexColorModel",
-  "fields":[{"name":"allgrayopaque"}, {"name":"colorData"}, {"name":"map_size"}, {"name":"rgb"}, {"name":"transparent_index"}]
+  "fields":[
+    {"name":"allgrayopaque"}, 
+    {"name":"colorData"}, 
+    {"name":"map_size"}, 
+    {"name":"rgb"}, 
+    {"name":"transparent_index"}
+  ]
 },
 {
   "name":"java.awt.image.Raster",
-  "fields":[{"name":"dataBuffer"}, {"name":"height"}, {"name":"minX"}, {"name":"minY"}, {"name":"numBands"}, {"name":"numDataElements"}, {"name":"sampleModel"}, {"name":"sampleModelTranslateX"}, {"name":"sampleModelTranslateY"}, {"name":"width"}]
+  "fields":[
+    {"name":"dataBuffer"}, 
+    {"name":"height"}, 
+    {"name":"minX"}, 
+    {"name":"minY"}, 
+    {"name":"numBands"}, 
+    {"name":"numDataElements"}, 
+    {"name":"sampleModel"}, 
+    {"name":"sampleModelTranslateX"}, 
+    {"name":"sampleModelTranslateY"}, 
+    {"name":"width"}
+  ]
 },
 {
   "name":"java.awt.image.SampleModel",
-  "fields":[{"name":"height"}, {"name":"width"}],
-  "methods":[{"name":"getPixels","parameterTypes":["int","int","int","int","int[]","java.awt.image.DataBuffer"] }, {"name":"setPixels","parameterTypes":["int","int","int","int","int[]","java.awt.image.DataBuffer"] }]
+  "fields":[
+    {"name":"height"}, 
+    {"name":"width"}
+  ],
+  "methods":[
+    {"name":"getPixels","parameterTypes":["int","int","int","int","int[]","java.awt.image.DataBuffer"] }, 
+    {"name":"setPixels","parameterTypes":["int","int","int","int","int[]","java.awt.image.DataBuffer"] }
+  ]
 },
 {
   "name":"java.awt.image.SinglePixelPackedSampleModel",
-  "fields":[{"name":"bitMasks"}, {"name":"bitOffsets"}, {"name":"bitSizes"}, {"name":"maxBitSize"}]
+  "fields":[
+    {"name":"bitMasks"}, 
+    {"name":"bitOffsets"}, 
+    {"name":"bitSizes"}, 
+    {"name":"maxBitSize"}
+  ]
 },
 {
   "name":"java.lang.Boolean",
-  "fields":[{"name":"FALSE"}, {"name":"TRUE"}],
+  "fields":[
+    {"name":"FALSE"}, 
+    {"name":"TRUE"}
+  ],
   "methods":[{"name":"booleanValue","parameterTypes":[] }]
 },
 {
@@ -126,11 +298,17 @@
 },
 {
   "name":"java.lang.ClassLoader",
-  "methods":[{"name":"getPlatformClassLoader","parameterTypes":[] }, {"name":"loadClass","parameterTypes":["java.lang.String"] }]
+  "methods":[
+    {"name":"getPlatformClassLoader","parameterTypes":[] }, 
+    {"name":"loadClass","parameterTypes":["java.lang.String"] }
+  ]
 },
 {
   "name":"java.lang.Integer",
-  "methods":[{"name":"<init>","parameterTypes":["int"] }, {"name":"intValue","parameterTypes":[] }]
+  "methods":[
+    {"name":"<init>","parameterTypes":["int"] }, 
+    {"name":"intValue","parameterTypes":[] }
+  ]
 },
 {
   "name":"java.lang.Long",
@@ -146,11 +324,18 @@
 },
 {
   "name":"java.lang.String",
-  "methods":[{"name":"lastIndexOf","parameterTypes":["int"] }, {"name":"substring","parameterTypes":["int"] }]
+  "methods":[
+    {"name":"lastIndexOf","parameterTypes":["int"] }, 
+    {"name":"substring","parameterTypes":["int"] }
+  ]
 },
 {
   "name":"java.lang.System",
-  "methods":[{"name":"getProperty","parameterTypes":["java.lang.String"] }, {"name":"load","parameterTypes":["java.lang.String"] }, {"name":"setProperty","parameterTypes":["java.lang.String","java.lang.String"] }]
+  "methods":[
+    {"name":"getProperty","parameterTypes":["java.lang.String"] }, 
+    {"name":"load","parameterTypes":["java.lang.String"] }, 
+    {"name":"setProperty","parameterTypes":["java.lang.String","java.lang.String"] }
+  ]
 },
 {
   "name":"java.util.Collections",
@@ -166,7 +351,10 @@
 },
 {
   "name":"java.util.Map",
-  "methods":[{"name":"get","parameterTypes":["java.lang.Object"] }, {"name":"put","parameterTypes":["java.lang.Object","java.lang.Object"] }]
+  "methods":[
+    {"name":"get","parameterTypes":["java.lang.Object"] }, 
+    {"name":"put","parameterTypes":["java.lang.Object","java.lang.Object"] }
+  ]
 },
 {
   "name":"javafx.scene.paint.Color",
@@ -194,11 +382,20 @@
 },
 {
   "name":"sun.awt.image.ImageRepresentation",
-  "fields":[{"name":"numSrcLUT"}, {"name":"srcLUTtransIndex"}]
+  "fields":[
+    {"name":"numSrcLUT"}, 
+    {"name":"srcLUTtransIndex"}
+  ]
 },
 {
   "name":"sun.awt.image.IntegerComponentRaster",
-  "fields":[{"name":"data"}, {"name":"dataOffsets"}, {"name":"pixelStride"}, {"name":"scanlineStride"}, {"name":"type"}]
+  "fields":[
+    {"name":"data"}, 
+    {"name":"dataOffsets"}, 
+    {"name":"pixelStride"}, 
+    {"name":"scanlineStride"}, 
+    {"name":"type"}
+  ]
 },
 {
   "name":"sun.java2d.Disposer",
@@ -212,11 +409,21 @@
 },
 {
   "name":"sun.java2d.SunGraphics2D",
-  "fields":[{"name":"clipRegion"}, {"name":"composite"}, {"name":"eargb"}, {"name":"lcdTextContrast"}, {"name":"pixel"}, {"name":"strokeHint"}]
+  "fields":[
+    {"name":"clipRegion"}, 
+    {"name":"composite"}, 
+    {"name":"eargb"}, 
+    {"name":"lcdTextContrast"}, 
+    {"name":"pixel"}, 
+    {"name":"strokeHint"}
+  ]
 },
 {
   "name":"sun.java2d.SurfaceData",
-  "fields":[{"name":"pData"}, {"name":"valid"}]
+  "fields":[
+    {"name":"pData"}, 
+    {"name":"valid"}
+  ]
 },
 {
   "name":"sun.java2d.loops.Blit",
@@ -228,7 +435,14 @@
 },
 {
   "name":"sun.java2d.loops.CompositeType",
-  "fields":[{"name":"AnyAlpha"}, {"name":"Src"}, {"name":"SrcNoEa"}, {"name":"SrcOver"}, {"name":"SrcOverNoEa"}, {"name":"Xor"}]
+  "fields":[
+    {"name":"AnyAlpha"}, 
+    {"name":"Src"}, 
+    {"name":"SrcNoEa"}, 
+    {"name":"SrcOver"}, 
+    {"name":"SrcOverNoEa"}, 
+    {"name":"Xor"}
+  ]
 },
 {
   "name":"sun.java2d.loops.DrawGlyphList",
@@ -300,7 +514,38 @@
 },
 {
   "name":"sun.java2d.loops.SurfaceType",
-  "fields":[{"name":"Any3Byte"}, {"name":"Any4Byte"}, {"name":"AnyByte"}, {"name":"AnyColor"}, {"name":"AnyInt"}, {"name":"AnyShort"}, {"name":"ByteBinary1Bit"}, {"name":"ByteBinary2Bit"}, {"name":"ByteBinary4Bit"}, {"name":"ByteGray"}, {"name":"ByteIndexed"}, {"name":"ByteIndexedBm"}, {"name":"FourByteAbgr"}, {"name":"FourByteAbgrPre"}, {"name":"Index12Gray"}, {"name":"Index8Gray"}, {"name":"IntArgb"}, {"name":"IntArgbBm"}, {"name":"IntArgbPre"}, {"name":"IntBgr"}, {"name":"IntRgb"}, {"name":"IntRgbx"}, {"name":"OpaqueColor"}, {"name":"ThreeByteBgr"}, {"name":"Ushort4444Argb"}, {"name":"Ushort555Rgb"}, {"name":"Ushort555Rgbx"}, {"name":"Ushort565Rgb"}, {"name":"UshortGray"}, {"name":"UshortIndexed"}]
+  "fields":[
+    {"name":"Any3Byte"}, 
+    {"name":"Any4Byte"}, 
+    {"name":"AnyByte"}, 
+    {"name":"AnyColor"}, 
+    {"name":"AnyInt"}, 
+    {"name":"AnyShort"}, 
+    {"name":"ByteBinary1Bit"}, 
+    {"name":"ByteBinary2Bit"}, 
+    {"name":"ByteBinary4Bit"}, 
+    {"name":"ByteGray"}, 
+    {"name":"ByteIndexed"}, 
+    {"name":"ByteIndexedBm"}, 
+    {"name":"FourByteAbgr"}, 
+    {"name":"FourByteAbgrPre"}, 
+    {"name":"Index12Gray"}, 
+    {"name":"Index8Gray"}, 
+    {"name":"IntArgb"}, 
+    {"name":"IntArgbBm"}, 
+    {"name":"IntArgbPre"}, 
+    {"name":"IntBgr"}, 
+    {"name":"IntRgb"}, 
+    {"name":"IntRgbx"}, 
+    {"name":"OpaqueColor"}, 
+    {"name":"ThreeByteBgr"}, 
+    {"name":"Ushort4444Argb"}, 
+    {"name":"Ushort555Rgb"}, 
+    {"name":"Ushort555Rgbx"}, 
+    {"name":"Ushort565Rgb"}, 
+    {"name":"UshortGray"}, 
+    {"name":"UshortIndexed"}
+  ]
 },
 {
   "name":"sun.java2d.loops.TransformHelper",
@@ -308,15 +553,30 @@
 },
 {
   "name":"sun.java2d.loops.XORComposite",
-  "fields":[{"name":"alphaMask"}, {"name":"xorColor"}, {"name":"xorPixel"}]
+  "fields":[
+    {"name":"alphaMask"}, 
+    {"name":"xorColor"}, 
+    {"name":"xorPixel"}
+  ]
 },
 {
   "name":"sun.java2d.pipe.Region",
-  "fields":[{"name":"bands"}, {"name":"endIndex"}, {"name":"hix"}, {"name":"hiy"}, {"name":"lox"}, {"name":"loy"}]
+  "fields":[
+    {"name":"bands"}, 
+    {"name":"endIndex"}, 
+    {"name":"hix"}, 
+    {"name":"hiy"}, 
+    {"name":"lox"}, 
+    {"name":"loy"}
+  ]
 },
 {
   "name":"sun.java2d.pipe.RegionIterator",
-  "fields":[{"name":"curIndex"}, {"name":"numXbands"}, {"name":"region"}]
+  "fields":[
+    {"name":"curIndex"}, 
+    {"name":"numXbands"}, 
+    {"name":"region"}
+  ]
 },
 {
   "name":"sun.launcher.LauncherHelper$FXHelper",

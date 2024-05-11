@@ -1,115 +1,198 @@
 {
   "resources":{
-  "includes":[{
-    "pattern":"\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLInputFactory\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/org.slf4j.spi.SLF4JServiceProvider\\E"
-  }, {
-    "pattern":"\\Qcom/sun/javafx/scene/control/skin/resources/controls_en.properties\\E"
-  }, {
-    "pattern":"\\Qcom/sun/javafx/scene/control/skin/resources/controls_en_NL.properties\\E"
-  }, {
-    "pattern":"\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_en.properties\\E"
-  }, {
-    "pattern":"\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_en_NL.properties\\E"
-  }, {
-    "pattern":"\\Qmain.fxml\\E"
-  }, {
-    "pattern":"\\Qsimplelogger.properties\\E"
-  }, {
-    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/nfc.nrm\\E"
-  }, {
-    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/nfkc.nrm\\E"
-  }, {
-    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/ubidi.icu\\E"
-  }, {
-    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/uprops.icu\\E"
-  }, {
-    "pattern":"java.base:\\Qsun/net/idn/uidna.spp\\E"
-  }, {
-    "pattern":"java.base:\\Qsun/net/www/content-types.properties\\E"
-  }, {
-    "pattern":"java.desktop:\\Qsun/awt/resources/awt_en.properties\\E"
-  }, {
-    "pattern":"java.desktop:\\Qsun/awt/resources/awt_en_NL.properties\\E"
-  }, {
-    "pattern":"java.desktop:\\Qsun/awt/resources/awtosx_en.properties\\E"
-  }, {
-    "pattern":"java.desktop:\\Qsun/awt/resources/awtosx_en_NL.properties\\E"
-  }, {
-    "pattern":"java.xml:\\Qjdk/xml/internal/jdkcatalog/JDKCatalog.xml\\E"
-  }, {
-    "pattern":"javafx.base:\\Qcom/sun/javafx/reflect/Trampoline.class\\E"
-  }, {
-    "pattern":"javafx.controls:\\Qcom/sun/javafx/scene/control/skin/modena/modena.bss\\E"
-  }, {
-    "pattern":"javafx.controls:\\Qcom/sun/javafx/scene/control/skin/resources/controls.properties\\E"
-  }, {
-    "pattern":"javafx.controls:\\Qcom/sun/javafx/scene/control/skin/resources/controls_en.properties\\E"
-  }, {
-    "pattern":"javafx.controls:\\Qcom/sun/javafx/scene/control/skin/resources/controls_en_NL.properties\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/glass/utils/NativeLibLoader.class\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle.properties\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_en.properties\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_en_NL.properties\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/FillPgram_Color.frag\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/FillPgram_LinearGradient_PAD.frag\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/Solid_Color.frag\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/Solid_TextureRGB.frag\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/Texture_Color.frag\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/Texture_LinearGradient_PAD.frag\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/scenario/effect/impl/es2/glsl/Blend_SRC_IN.frag\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qcom/sun/scenario/effect/impl/es2/glsl/LinearConvolveShadow_8.frag\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qlibglass.dylib\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qlibjavafx_font.dylib\\E"
-  }, {
-    "pattern":"javafx.graphics:\\Qlibprism_es2.dylib\\E"
-  }, {
-    "pattern":"sdkmanui:\\Qimages/global_icon.png\\E"
-  }, {
-    "pattern":"sdkmanui:\\Qimages/sdkman_ui_logo.png\\E"
-  }, {
-    "pattern":"sdkmanui:\\Qimages/use_icon.png\\E"
-  }]},
-  "bundles":[{
-    "name":"com.sun.javafx.tk.quantum.QuantumMessagesBundle",
-    "locales":["en-NL", "und"]
-  }, {
-    "name":"com/sun/javafx/scene/control/skin/resources/controls",
-    "locales":["en-NL", "und"]
-  }, {
-    "name":"sun.awt.resources.awt",
-    "locales":["en-NL"]
-  }, {
-    "name":"sun.awt.resources.awtosx",
-    "locales":["en-NL"]
-  }, {
-    "name":"sun.text.resources.cldr.FormatData",
-    "locales":["en", "en-US", "und"]
-  }, {
-    "name":"sun.util.resources.cldr.CalendarData",
-    "locales":["und"]
-  }]
+  "includes":[
+    {
+      "pattern":"\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLInputFactory\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/org.slf4j.spi.SLF4JServiceProvider\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/sun/javafx/scene/control/skin/resources/controls_en.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/sun/javafx/scene/control/skin/resources/controls_en_NL.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_en.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_en_NL.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qmain.fxml\\E"
+    }, 
+    {
+      "pattern":"\\Qsimplelogger.properties\\E"
+    }, 
+    {
+      "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/nfc.nrm\\E"
+    }, 
+    {
+      "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/nfkc.nrm\\E"
+    }, 
+    {
+      "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/ubidi.icu\\E"
+    }, 
+    {
+      "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/uprops.icu\\E"
+    }, 
+    {
+      "pattern":"java.base:\\Qsun/net/idn/uidna.spp\\E"
+    }, 
+    {
+      "pattern":"java.base:\\Qsun/net/www/content-types.properties\\E"
+    }, 
+    {
+      "pattern":"java.desktop:\\Qsun/awt/resources/awt_en.properties\\E"
+    }, 
+    {
+      "pattern":"java.desktop:\\Qsun/awt/resources/awt_en_NL.properties\\E"
+    }, 
+    {
+      "pattern":"java.desktop:\\Qsun/awt/resources/awtosx_en.properties\\E"
+    }, 
+    {
+      "pattern":"java.desktop:\\Qsun/awt/resources/awtosx_en_NL.properties\\E"
+    }, 
+    {
+      "pattern":"java.xml:\\Qjdk/xml/internal/jdkcatalog/JDKCatalog.xml\\E"
+    }, 
+    {
+      "pattern":"javafx.base:\\Qcom/sun/javafx/reflect/Trampoline.class\\E"
+    }, 
+    {
+      "pattern":"javafx.controls:\\Qcom/sun/javafx/scene/control/skin/modena/modena.bss\\E"
+    }, 
+    {
+      "pattern":"javafx.controls:\\Qcom/sun/javafx/scene/control/skin/resources/controls.properties\\E"
+    }, 
+    {
+      "pattern":"javafx.controls:\\Qcom/sun/javafx/scene/control/skin/resources/controls_en.properties\\E"
+    }, 
+    {
+      "pattern":"javafx.controls:\\Qcom/sun/javafx/scene/control/skin/resources/controls_en_NL.properties\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/glass/utils/NativeLibLoader.class\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle.properties\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_en.properties\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_en_NL.properties\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/FillPgram_Color.frag\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/FillPgram_LinearGradient_PAD.frag\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/Solid_Color.frag\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/Solid_TextureRGB.frag\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/Texture_Color.frag\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/prism/es2/glsl/Texture_LinearGradient_PAD.frag\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/scenario/effect/impl/es2/glsl/Blend_SRC_IN.frag\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qcom/sun/scenario/effect/impl/es2/glsl/LinearConvolveShadow_8.frag\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qlibglass.dylib\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qlibjavafx_font.dylib\\E"
+    }, 
+    {
+      "pattern":"javafx.graphics:\\Qlibprism_es2.dylib\\E"
+    }, 
+    {
+      "pattern":"sdkmanui:\\Qimages/global_icon.png\\E"
+    }, 
+    {
+      "pattern":"sdkmanui:\\Qimages/sdkman_ui_logo.png\\E"
+    }, 
+    {
+      "pattern":"sdkmanui:\\Qimages/use_icon.png\\E"
+    }
+  ]},
+  "bundles":[
+    {
+      "name":"com.sun.javafx.tk.quantum.QuantumMessagesBundle",
+      "locales":[
+        "", 
+        "en-NL", 
+        "und"
+      ]
+    }, 
+    {
+      "name":"com/sun/glass/ui/win/themes",
+      "locales":[
+        "", 
+        "de", 
+        "en", 
+        "es", 
+        "fr", 
+        "it", 
+        "ja", 
+        "ko", 
+        "pt-BR", 
+        "sv", 
+        "zh-CN", 
+        "zh-TW"
+      ]
+    }, 
+    {
+      "name":"com/sun/javafx/scene/control/skin/resources/controls",
+      "locales":[
+        "", 
+        "en-NL", 
+        "und"
+      ]
+    }, 
+    {
+      "name":"sun.awt.resources.awt",
+      "locales":["en-NL"]
+    }, 
+    {
+      "name":"sun.awt.resources.awtosx",
+      "locales":["en-NL"]
+    }, 
+    {
+      "name":"sun.text.resources.cldr.FormatData",
+      "locales":[
+        "en", 
+        "en-US", 
+        "und"
+      ]
+    }, 
+    {
+      "name":"sun.util.resources.cldr.CalendarData",
+      "locales":["und"]
+    }
+  ]
 }
