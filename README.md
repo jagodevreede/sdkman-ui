@@ -49,6 +49,7 @@ commandline as `sdkui`
 
 Native:
 
+To update native reflections `gluonfx:runagent`
 `./mvnw gluonfx:build -f sdkman-ui`
 
 Jlink:
