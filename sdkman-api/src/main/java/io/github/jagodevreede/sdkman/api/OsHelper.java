@@ -43,7 +43,6 @@ public class OsHelper {
 
     public static String getGlobalPath() {
         if (OsHelper.isWindows()) {
-            long startTime = System.currentTimeMillis();
             try {
                 String pathQuery = ProcessStarter.runInGetOutput(new File("./"), "reg.exe", "query", "HKCU\\Environment", "/v", "Path");
                 String[] split = pathQuery.split("\\s");
@@ -55,8 +54,6 @@ public class OsHelper {
                 // this can happen if there is no path set in the users environment variables
                 log.debug("Failed to get global path: {}", e.getMessage());
                 return "";
-            } finally {
-                log.info("Query took {}ms", System.currentTimeMillis() - startTime);
             }
         }
         return null;
