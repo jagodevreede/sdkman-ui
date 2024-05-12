@@ -26,7 +26,7 @@ jobs:
           tar -xzf *java17-linux-gluon*.tar.gz -C $JAVA_HOME --strip-components=1
       - name: Install libraries
         run: |
-          sudo apt install libasound2-dev libavcodec-dev libavformat-dev libavutil-dev libgl-dev libgtk-3-dev libpango1.0-dev libxtst-dev
+          sudo apt update && sudo apt install libasound2-dev libavcodec-dev libavformat-dev libavutil-dev libgl-dev libgtk-3-dev libpango1.0-dev libxtst-dev
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
