@@ -1,6 +1,7 @@
 module sdkmanui {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.graphics;
     requires sdkmanapi;
     requires org.slf4j;
     requires org.slf4j.simple;

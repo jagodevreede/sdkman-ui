@@ -1,19 +1,6 @@
 [
 {
-  "name":"[B"
-},
-{
-  "name":"[Ljava.lang.String;"
-},
-{
   "name":"[Ljavafx.collections.transformation.SortedList$Element;"
-},
-{
-  "name":"[Lsun.security.pkcs.SignerInfo;"
-},
-{
-  "name":"apple.security.AppleProvider",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.sun.crypto.provider.AESCipher$General",
@@ -44,38 +31,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"com.sun.crypto.provider.HmacCore$HmacSHA256",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.sun.crypto.provider.HmacCore$HmacSHA384",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"com.sun.crypto.provider.TlsMasterSecretGenerator",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"com.sun.glass.ui.Application"
-},
-{
-  "name":"com.sun.glass.ui.Menu"
-},
-{
-  "name":"com.sun.glass.ui.MenuItem$Callback"
-},
-{
   "name":"com.sun.glass.ui.Screen"
-},
-{
-  "name":"com.sun.glass.ui.Size"
-},
-{
-  "name":"com.sun.glass.ui.View"
-},
-{
-  "name":"com.sun.javafx.font.coretext.CTFactory",
-  "methods":[{"name":"getFactory","parameterTypes":[] }]
 },
 {
   "name":"com.sun.javafx.font.directwrite.DWFactory",
@@ -117,10 +77,6 @@
   "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
 },
 {
-  "name":"com.sun.prism.shader.Solid_Color_Loader",
-  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
-},
-{
   "name":"com.sun.prism.shader.Solid_TextureFirstPassLCD_Loader",
   "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
 },
@@ -143,10 +99,6 @@
 {
   "name":"com.sun.scenario.effect.impl.prism.PrRenderer",
   "methods":[{"name":"createRenderer","parameterTypes":["com.sun.scenario.effect.FilterContext"] }]
-},
-{
-  "name":"com.sun.scenario.effect.impl.prism.ps.PPSBlend_SRC_INPeer",
-  "methods":[{"name":"<init>","parameterTypes":["com.sun.scenario.effect.FilterContext","com.sun.scenario.effect.impl.Renderer","java.lang.String"] }]
 },
 {
   "name":"com.sun.scenario.effect.impl.prism.ps.PPSLinearConvolveShadowPeer",
@@ -173,51 +125,19 @@
   "queryAllDeclaredMethods":true,
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
-    {"name":"javaSelected","parameterTypes":[] }, 
     {"name":"mavenSelected","parameterTypes":[] }
-  ]
-},
-{
-  "name":"io.github.jagodevreede.sdkmanui.view.JavaVersionView",
-  "methods":[
-    {"name":"distProperty","parameterTypes":[] }, 
-    {"name":"getActions","parameterTypes":[] }, 
-    {"name":"getInstalled","parameterTypes":[] }, 
-    {"name":"identifierProperty","parameterTypes":[] }, 
-    {"name":"vendorProperty","parameterTypes":[] }, 
-    {"name":"versionProperty","parameterTypes":[] }
-  ],
-  "queriedMethods":[
-    {"name":"getDist","parameterTypes":[] }, 
-    {"name":"getIdentifier","parameterTypes":[] }, 
-    {"name":"getVendor","parameterTypes":[] }, 
-    {"name":"getVersion","parameterTypes":[] }
   ]
 },
 {
   "name":"io.github.jagodevreede.sdkmanui.view.VersionView",
   "methods":[
-    {"name":"actionsProperty","parameterTypes":[] }, 
-    {"name":"availableProperty","parameterTypes":[] }, 
-    {"name":"distProperty","parameterTypes":[] }, 
     {"name":"getActions","parameterTypes":[] }, 
     {"name":"getAvailable","parameterTypes":[] }, 
     {"name":"getDist","parameterTypes":[] }, 
     {"name":"getIdentifier","parameterTypes":[] }, 
     {"name":"getInstalled","parameterTypes":[] }, 
     {"name":"getVendor","parameterTypes":[] }, 
-    {"name":"getVersion","parameterTypes":[] }, 
-    {"name":"identifierProperty","parameterTypes":[] }, 
-    {"name":"installedProperty","parameterTypes":[] }, 
-    {"name":"setActions","parameterTypes":["javafx.scene.layout.HBox"] }, 
-    {"name":"setAvailable","parameterTypes":["javafx.scene.control.CheckBox"] }, 
-    {"name":"setDist","parameterTypes":["java.lang.String"] }, 
-    {"name":"setIdentifier","parameterTypes":["java.lang.String"] }, 
-    {"name":"setInstalled","parameterTypes":["javafx.scene.control.CheckBox"] }, 
-    {"name":"setVendor","parameterTypes":["java.lang.String"] }, 
-    {"name":"setVersion","parameterTypes":["java.lang.String"] }, 
-    {"name":"vendorProperty","parameterTypes":[] }, 
-    {"name":"versionProperty","parameterTypes":[] }
+    {"name":"getVersion","parameterTypes":[] }
   ]
 },
 {
@@ -233,7 +153,7 @@
 },
 {
   "name":"java.lang.Module",
-  "methods":[
+  "queriedMethods":[
     {"name":"getDescriptor","parameterTypes":[] }, 
     {"name":"getLayer","parameterTypes":[] }, 
     {"name":"getName","parameterTypes":[] }, 
@@ -246,16 +166,6 @@
     {"name":"boot","parameterTypes":[] }, 
     {"name":"findModule","parameterTypes":["java.lang.String"] }
   ]
-},
-{
-  "name":"java.lang.Runnable"
-},
-{
-  "name":"java.lang.String"
-},
-{
-  "name":"java.lang.Thread",
-  "fields":[{"name":"threadLocalRandomProbe"}]
 },
 {
   "name":"java.nio.ByteBuffer",
@@ -273,37 +183,6 @@
 },
 {
   "name":"java.security.SecureRandomParameters"
-},
-{
-  "name":"java.security.interfaces.RSAPrivateKey"
-},
-{
-  "name":"java.security.interfaces.RSAPublicKey"
-},
-{
-  "name":"java.util.Date"
-},
-{
-  "name":"java.util.concurrent.ForkJoinTask",
-  "fields":[
-    {"name":"aux"}, 
-    {"name":"status"}
-  ]
-},
-{
-  "name":"java.util.concurrent.atomic.AtomicBoolean",
-  "fields":[{"name":"value"}]
-},
-{
-  "name":"java.util.concurrent.atomic.AtomicReference",
-  "fields":[{"name":"value"}]
-},
-{
-  "name":"java.util.concurrent.atomic.Striped64",
-  "fields":[
-    {"name":"base"}, 
-    {"name":"cellsBusy"}
-  ]
 },
 {
   "name":"javafx.animation.KeyValue"
@@ -395,18 +274,7 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"javafx.scene.control.TableColumn",
-  "queryAllDeclaredMethods":true,
-  "queryAllPublicConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"javafx.scene.control.TableColumnBase",
-  "queryAllDeclaredMethods":true,
-  "methods":[
-    {"name":"setPrefWidth","parameterTypes":["double"] }, 
-    {"name":"setText","parameterTypes":["java.lang.String"] }
-  ]
+  "name":"javafx.scene.control.TableColumnBase"
 },
 {
   "name":"javafx.scene.control.TableView",
@@ -448,8 +316,7 @@
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
     {"name":"setAlignment","parameterTypes":["javafx.geometry.Pos"] }, 
-    {"name":"setMargin","parameterTypes":["javafx.scene.Node","javafx.geometry.Insets"] }, 
-    {"name":"setMargin","parameterTypes":["javafx.scene.image.ImageView","javafx.geometry.Insets"] }
+    {"name":"setMargin","parameterTypes":["javafx.scene.Node","javafx.geometry.Insets"] }
   ]
 },
 {
@@ -493,9 +360,6 @@
   "name":"javafx.scene.transform.Transform"
 },
 {
-  "name":"javafx.scene.web.WebView"
-},
-{
   "name":"javafx.stage.Stage"
 },
 {
@@ -504,17 +368,7 @@
 {
   "name":"javax.security.auth.x500.X500Principal",
   "fields":[{"name":"thisX500Name"}],
-  "methods":[{"name":"<init>","parameterTypes":["sun.security.x509.X500Name"] }]
-},
-{
-  "name":"jdk.internal.misc.Unsafe"
-},
-{
-  "name":"org.slf4j.simple.SimpleServiceProvider"
-},
-{
-  "name":"sun.java2d.marlin.DMarlinRenderingEngine",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "queriedMethods":[{"name":"<init>","parameterTypes":["sun.security.x509.X500Name"] }]
 },
 {
   "name":"sun.misc.Unsafe",
@@ -541,23 +395,12 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"sun.security.provider.JavaKeyStore$DualFormatJKS",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"sun.security.provider.JavaKeyStore$JKS",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"sun.security.provider.MD5",
   "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.provider.NativePRNG",
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
-    {"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }
-  ]
 },
 {
   "name":"sun.security.provider.SHA",
@@ -584,10 +427,6 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"sun.security.provider.certpath.PKIXCertPathValidator",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"sun.security.rsa.PSSParameters",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -604,14 +443,6 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"sun.security.rsa.RSASignature$SHA256withRSA",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.rsa.RSASignature$SHA384withRSA",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"sun.security.ssl.KeyManagerFactoryImpl$SunX509",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -622,9 +453,6 @@
 {
   "name":"sun.security.ssl.TrustManagerFactoryImpl$PKIXFactory",
   "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.util.ObjectIdentifier"
 },
 {
   "name":"sun.security.x509.AuthorityInfoAccessExtension",
@@ -641,9 +469,6 @@
 {
   "name":"sun.security.x509.CRLDistributionPointsExtension",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
-},
-{
-  "name":"sun.security.x509.CertificateExtensions"
 },
 {
   "name":"sun.security.x509.CertificatePoliciesExtension",
