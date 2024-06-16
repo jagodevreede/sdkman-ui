@@ -56,11 +56,14 @@ public class OsHelper {
         return null;
     }
 
-    public static String setGlobalPath(String path) {
+    public static void setGlobalEnvironment(String key, String value) {
         if (OsHelper.isWindows()) {
             Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Environment", "Path", path);
         }
-        return null;
+    }
+
+    public static void setGlobalPath(String path) {
+        setGlobalEnvironment("Path", path);
     }
 
     public static boolean isMac() {

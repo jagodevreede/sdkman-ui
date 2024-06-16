@@ -16,6 +16,16 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.Objects;
+
 public class Main extends Application {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
@@ -47,6 +57,37 @@ public class Main extends Application {
         stage.setTitle("SDKMAN UI");
         stage.setScene(scene);
         stage.show();
+        checkInstalled();
+    }
+
+    private void checkInstalled() {
+        try {
+            URL location = Main.class.getProtectionDomain().getCodeSource().getLocation();
+            File currentExecutable = Paths.get(location.toURI()).toFile();
+            if (!currentExecutable.isFile()) {
+                // Probably dev mode, or failed to get location, we can't check for installation
+                return;
+            }
+            File currentRunningFolder = currentExecutable.getParentFile();
+            File installFolder = new File(ServiceRegistry.INSTANCE.getApi().getBaseFolder(), "ui");
+            if (!currentRunningFolder.equals(installFolder)) {
+                ServiceRegistry.INSTANCE.getPopupView().showConfirmation("Install?",
+                        "SDKMAN UI is not installed on your system, do you want to install it?",
+                        () -> install(currentExecutable, installFolder));
+            }
+        } catch (URISyntaxException e) {
+            logger.warn("Failed to check if installed, assuming so");
+        }
+    }
+
+    private void install(File currentExecutable, File installFolder) {
+        try {
+            installFolder.mkdirs();
+            Files.copy(currentExecutable.toPath(), new File(installFolder, currentExecutable.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+            ServiceRegistry.INSTANCE.getPopupView().showInformation("SDKMAN UI has been installed, you can now remove " + currentExecutable.getAbsolutePath());
+        } catch (final IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
     }
 
     private void loadServiceRegistry() {

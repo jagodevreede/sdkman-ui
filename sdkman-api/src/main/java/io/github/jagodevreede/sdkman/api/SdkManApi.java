@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalPath;
@@ -122,7 +122,7 @@ public class SdkManApi {
         if (!toFolder.exists()) {
             throw new IllegalArgumentException("No such identifier for candidate " + candidate + ": " + toIdentifier);
         }
-        File currentFolder = new File(baseFolder, "candidates" + separator + candidate + separator +"current");
+        File currentFolder = new File(baseFolder, "candidates" + separator + candidate + separator + "current");
         if (SdkManUiPreferences.load().canCreateSymlink) {
             if (currentFolder.exists()) {
                 currentFolder.delete();
@@ -174,29 +174,27 @@ public class SdkManApi {
         return findCandidateInPath(candidate, paths);
     }
 
-    private String findCandidateInPath(String candidate, String path) {
-        var paths = path.split(File.pathSeparator);
+    private String findCandidateInPath(String candidate, String paths) {
         var pathName = baseFolder + separator + "candidates" + separator + candidate;
-        for (var p : paths) {
-            if (p.startsWith(pathName)) {
-                return p.substring(pathName.length() + 1).replace(separator + "bin", "");
-            }
-        }
-        return null;
+        return isPathConfigured(pathName, paths);
     }
 
     private String updatePathForCandidate(String candidate, String identifier) {
         var paths = System.getenv("PATH").split(File.pathSeparator);
         var pathName = baseFolder + separator + "candidates" + separator + candidate;
-        return Stream.of(paths).map(path -> {
+        return String.join(File.pathSeparator, Stream.of(paths).map(path -> {
             if (path.startsWith(pathName)) {
-                return baseFolder + separator + "candidates" + separator + candidate + separator + identifier + separator + "bin";
+                return getCandidateFolder(candidate, identifier) + separator + "bin";
             }
             return path;
-        }).toList().stream().collect(Collectors.joining(File.pathSeparator));
+        }).toList());
     }
 
-    public File getExitScriptFile() {
+    private String getCandidateFolder(String candidate, String identifier) {
+        return baseFolder + separator + "candidates" + separator + candidate + separator + identifier;
+    }
+
+    private File getExitScriptFile() {
         if (OsHelper.hasShell()) {
             return new File(baseFolder, "tmp/exit-script.sh");
         } else {
@@ -204,16 +202,13 @@ public class SdkManApi {
         }
     }
 
-    public void createExitScript(String candidate, String identifier) throws IOException {
+    private void createExitScript(String candidate, String identifier) throws IOException {
         changes.put(candidate, identifier);
-        if (OsHelper.hasShell()) {
-            try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
-                writer.write("export PATH=" + updatePathForCandidate(candidate, identifier));
-            }
-        } else {
-            try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
-                writer.write("set PATH=" + updatePathForCandidate(candidate, identifier));
-            }
+        final String exportCommand = OsHelper.isWindows() ? "set " : "export ";
+
+        try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
+            writer.write(exportCommand + "PATH=" + updatePathForCandidate(candidate, identifier));
+            writer.write(exportCommand + candidate.toUpperCase(Locale.ROOT) + "_HOME=" + getCandidateFolder(candidate, identifier));
         }
     }
 
@@ -249,12 +244,15 @@ public class SdkManApi {
     public void registerShutdownHook() {
         Thread printingHook = new Thread(() -> {
             File exitScriptFile = getExitScriptFile();
-            if (!exitScriptFile.exists()) {
-                try {
+            try {
+                if (!exitScriptFile.exists()) {
                     exitScriptFile.createNewFile();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
                 }
+                for (Map.Entry<String, String> changesEntry : changes.entrySet()) {
+                    createExitScript(changesEntry.getKey(), changesEntry.getValue());
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         });
         Runtime.getRuntime().addShutdownHook(printingHook);
@@ -283,14 +281,35 @@ public class SdkManApi {
         }
     }
 
-    public boolean hasEnvironmentConfigured(String candidate) {
+    public void configureEnvironmentPath() {
+        var pathName = baseFolder + separator + "ui";
+        // Only a thing on windows (yet)
+        if (OsHelper.isWindows()) {
+            String globalPath = getGlobalPath();
+            if (isPathConfigured(pathName, globalPath) == null) {
+                OsHelper.setGlobalPath(pathName + File.pathSeparator + globalPath);
+            }
+        }
+    }
+
+    private String isPathConfigured(String pathName, String paths) {
+        var pathsSplit = paths.split(File.pathSeparator);
+        for (var p : pathsSplit) {
+            if (p.startsWith(pathName)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public boolean hasCandidateEnvironmentPathConfigured(String candidate) {
         return hasEnvironmentConfigured.computeIfAbsent(candidate, (k) -> {
             if (OsHelper.isWindows()) {
                 String globalPath = getGlobalPath();
                 String candidateInPath = findCandidateInPath(candidate, globalPath);
                 return candidateInPath != null;
             }
-            // Only a thing on windows
+            // Only a thing on windows  (yet)
             return true;
         });
     }
@@ -301,5 +320,9 @@ public class SdkManApi {
         path = baseFolder + "\\candidates\\" + candidate + "\\current\\bin;" + path;
         OsHelper.setGlobalPath(path);
         hasEnvironmentConfigured.put(candidate, true);
+    }
+
+    public String getBaseFolder() {
+        return baseFolder;
     }
 }
