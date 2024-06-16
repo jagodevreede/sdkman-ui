@@ -196,7 +196,7 @@ public class MainScreenController implements Initializable {
 
     private void checkIfEnvironmentIsConfigured(String candidate) {
         // Only on windows, check if the environment is configured
-        if (OsHelper.isWindows() && hasInstalledVersion() && !api.hasEnvironmentConfigured(candidate)) {
+        if (OsHelper.isWindows() && hasInstalledVersion() && !api.hasCandidateEnvironmentPathConfigured(candidate)) {
             Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate,
                     candidate + " is not in the environment (path variable) yet, do you want to add it?", () -> {
                         api.configureWindowsEnvironment(candidate);

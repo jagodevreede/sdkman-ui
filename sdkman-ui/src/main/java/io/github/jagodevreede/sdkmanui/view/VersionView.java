@@ -127,12 +127,6 @@ public class VersionView {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && (result.get() == buttonYesAndClose || result.get() == buttonYes)) {
-                SdkManApi api = ServiceRegistry.INSTANCE.getApi();
-                try {
-                    api.createExitScript("java", candidateVersion.identifier());
-                } catch (IOException e) {
-                    ServiceRegistry.INSTANCE.getPopupView().showError(e);
-                }
                 if (result.get() == buttonYesAndClose) {
                     Platform.exit();
                 } else {
