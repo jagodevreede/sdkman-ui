@@ -80,22 +80,24 @@ public class MainScreenController implements Initializable {
                         .filter(j -> !showInstalledOnly.isSelected() || j.installed())
                         .filter(j -> !showAvailableOnly.isSelected() || j.available())
                         .toList();
-                if (tableData == null || tableData.size() != updatedVersions.size()) {
-                    tableData = FXCollections.observableArrayList(
-                            updatedVersions.stream()
-                                    .map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz)).toList()
-                    );
-                    Platform.runLater(() -> table.setItems(tableData));
-                } else {
-                    tableData.forEach(oldData -> {
-                        var found = updatedVersions.stream().filter(j -> j.identifier().equals(oldData.getIdentifier())).findFirst();
-                        if (found.isPresent()) {
-                            oldData.update(found.get(), globalVersionInUse, pathVersionInUse);
-                        } else {
-                            logger.error("Could not find version {}", oldData.getIdentifier());
-                        }
-                    });
-                }
+                Platform.runLater(() -> {
+                    if (tableData == null || tableData.size() != updatedVersions.size()) {
+                        tableData = FXCollections.observableArrayList(
+                                updatedVersions.stream()
+                                        .map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz)).toList()
+                        );
+                        table.setItems(tableData);
+                    } else {
+                        tableData.forEach(oldData -> {
+                            var found = updatedVersions.stream().filter(j -> j.identifier().equals(oldData.getIdentifier())).findFirst();
+                            if (found.isPresent()) {
+                                oldData.update(found.get(), globalVersionInUse, pathVersionInUse);
+                            } else {
+                                logger.error("Could not find version {}", oldData.getIdentifier());
+                            }
+                        });
+                    }
+                });
                 if (onLoaded != null) {
                     onLoaded.run();
                 }
@@ -188,10 +190,6 @@ public class MainScreenController implements Initializable {
         return this.tableData.stream().anyMatch(j -> j.getInstalled().isSelected());
     }
 
-    public void downloadAndInstall(String identifier, String version) {
-        download(identifier, version, true);
-    }
-
     private void install(String identifier, String version) {
         PopupView.ProgressWindow progressWindow = popupView.showProgress("Extraction of " + identifier + " " + version + " in progress", null);
         TaskRunner.run(() -> {
@@ -203,7 +201,7 @@ public class MainScreenController implements Initializable {
         });
     }
 
-    private void download(String identifier, String version, boolean install) {
+    public void download(String identifier, String version, boolean install) {
         DownloadTask downloadTask = api.download(identifier, version);
         PopupView.ProgressWindow progressWindow = popupView.showProgress("Download of " + identifier + " " + version + " in progress", downloadTask);
         ProgressInformation progressInformation = current -> {

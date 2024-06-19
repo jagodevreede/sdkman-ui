@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalPath;
+import static io.github.jagodevreede.sdkman.api.OsHelper.getPlatformName;
 import static java.io.File.separator;
 import static java.net.http.HttpClient.newHttpClient;
 
@@ -214,10 +215,6 @@ public class SdkManApi {
                 writer.write("set PATH=" + updatePathForCandidate(candidate, identifier));
             }
         }
-    }
-
-    public String getPlatformName() {
-        return OsHelper.getPlatformName();
     }
 
     public String resolveCurrentVersion(String candidate) throws IOException {

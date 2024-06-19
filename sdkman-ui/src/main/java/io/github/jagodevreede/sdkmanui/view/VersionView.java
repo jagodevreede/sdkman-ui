@@ -31,12 +31,13 @@ public class VersionView {
     private final SimpleStringProperty version;
     private final SimpleStringProperty dist;
     private final SimpleStringProperty identifier;
-    private final HBox actions;
+    private final HBox actions = new HBox();
     private final CheckBox installed;
     private final CheckBox available;
     private final Button globalAction;
     private final Button useAction;
     private final MainScreenController controller;
+    private final ChangeListener<Boolean> installChangeListener;
 
     public VersionView(CandidateVersion candidateVersion, String globalVersionInUse, String pathVersionInUse, MainScreenController controller) {
         this.controller = controller;
@@ -46,32 +47,31 @@ public class VersionView {
         this.version = new SimpleStringProperty(candidateVersion.version());
         this.dist = new SimpleStringProperty(candidateVersion.dist());
         this.identifier = new SimpleStringProperty(candidateVersion.identifier());
-        if (candidateVersion.installed()) {
-            this.actions = new HBox(
-                    globalAction,
-                    useAction
-            );
-        } else {
-            this.actions = new HBox();
-        }
         this.installed = new CheckBox();
         this.available = new CheckBox();
+        installChangeListener = installedChangeListener(candidateVersion);
         update(candidateVersion, globalVersionInUse, pathVersionInUse);
     }
 
     public void update(CandidateVersion candidateVersion, String globalVersionInUse, String pathVersionInUse) {
+        this.installed.selectedProperty().removeListener(installChangeListener);
         this.installed.setSelected(candidateVersion.installed());
-        this.installed.selectedProperty().addListener(installedChangeListener(candidateVersion));
+        this.installed.selectedProperty().addListener(installChangeListener);
         this.available.setDisable(true);
         this.available.setSelected(candidateVersion.available());
         globalAction.setDisable(candidateVersion.identifier().equals(globalVersionInUse));
         useAction.setDisable(candidateVersion.identifier().equals(pathVersionInUse));
+        this.actions.getChildren().clear();
+        if (candidateVersion.installed()) {
+            this.actions.getChildren().add(globalAction);
+            this.actions.getChildren().add(useAction);
+        }
     }
 
     private ChangeListener<Boolean> installedChangeListener(CandidateVersion candidateVersion) {
         return (observable, oldValue, newValue) -> {
             if (Boolean.TRUE.equals(newValue)) {
-                controller.downloadAndInstall(controller.getSelectedCandidate(), candidateVersion.identifier());
+                controller.download(controller.getSelectedCandidate(), candidateVersion.identifier(), true);
             } else {
                 controller.uninstall(controller.getSelectedCandidate(), candidateVersion.identifier());
             }
