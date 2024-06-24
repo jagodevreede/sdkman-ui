@@ -20,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -42,7 +43,9 @@ public class VersionView {
     public VersionView(CandidateVersion candidateVersion, String globalVersionInUse, String pathVersionInUse, MainScreenController controller) {
         this.controller = controller;
         globalAction = createImageButton(globalIcon, globalEventHandler(candidateVersion));
+        globalAction.setTooltip(new Tooltip("Use this version as global SDK."));
         useAction = createImageButton(useIcon, useEventHandler(candidateVersion));
+        useAction.setTooltip(new Tooltip("Use this version as local SDK."));
         this.vendor = new SimpleStringProperty(candidateVersion.vendor());
         this.version = new SimpleStringProperty(candidateVersion.version());
         this.dist = new SimpleStringProperty(candidateVersion.dist());
