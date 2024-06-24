@@ -1,10 +1,6 @@
 package io.github.jagodevreede.sdkman.api.http;
 
-import io.github.jagodevreede.sdkman.api.ProgressInformation;
-import io.github.jagodevreede.sdkman.api.files.CancelableTask;
-import io.github.jagodevreede.sdkman.api.files.PostProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,7 +12,11 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
+import io.github.jagodevreede.sdkman.api.ProgressInformation;
+import io.github.jagodevreede.sdkman.api.files.CancelableTask;
+import io.github.jagodevreede.sdkman.api.files.PostProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DownloadTask implements CancelableTask {
     private static final Logger logger = LoggerFactory.getLogger(DownloadTask.class);
@@ -80,7 +80,7 @@ public class DownloadTask implements CancelableTask {
             postProcess();
             progressInformation.publishState("Moving download to destination");
         } catch (Exception e) {
-            throw new IllegalStateException("Error in download", e);
+            throw new IllegalStateException("Error in download: " + this.url, e);
         } finally {
             if (connection != null) {
                 connection.disconnect();

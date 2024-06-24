@@ -1,5 +1,9 @@
 package io.github.jagodevreede.sdkmanui;
 
+import java.net.URL;
+import java.util.List;
+import java.util.Objects;
+
 import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
@@ -11,10 +15,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
-import java.util.List;
-import java.util.Objects;
 
 public class Main extends Application {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
@@ -29,7 +29,7 @@ public class Main extends Application {
             System.out.println(each);
         }
 
-        setOsxDockImage(stage);
+        setApplicationIconImage(stage);
         if (!ConfigurationUtil.preCheck(stage)) {
             logger.warn("Failed pre-check");
             return;
@@ -59,7 +59,7 @@ public class Main extends Application {
         loaderThread.start();
     }
 
-    private void setOsxDockImage(Stage stage) {
+    private void setApplicationIconImage(Stage stage) {
         if (!OsHelper.isMac()) {
             // Only for mac other os are not needed
             Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/sdkman_ui_logo.png")));

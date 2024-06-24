@@ -1,5 +1,11 @@
 package io.github.jagodevreede.sdkmanui.view;
 
+import static io.github.jagodevreede.sdkmanui.view.Images.globalIcon;
+import static io.github.jagodevreede.sdkmanui.view.Images.useIcon;
+
+import java.io.IOException;
+import java.util.Optional;
+
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkmanui.MainScreenController;
@@ -18,12 +24,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-
-import java.io.IOException;
-import java.util.Optional;
-
-import static io.github.jagodevreede.sdkmanui.view.Images.globalIcon;
-import static io.github.jagodevreede.sdkmanui.view.Images.useIcon;
 
 public class VersionView {
 
@@ -70,10 +70,10 @@ public class VersionView {
 
     private ChangeListener<Boolean> installedChangeListener(CandidateVersion candidateVersion) {
         return (observable, oldValue, newValue) -> {
-            if (newValue) {
-                controller.downloadAndInstall("java", candidateVersion.identifier());
+            if (Boolean.TRUE.equals(newValue)) {
+                controller.downloadAndInstall(controller.getSelectedCandidate(), candidateVersion.identifier());
             } else {
-                controller.uninstall("java", candidateVersion.identifier());
+                controller.uninstall(controller.getSelectedCandidate(), candidateVersion.identifier());
             }
         };
     }

@@ -1,5 +1,10 @@
 package io.github.jagodevreede.sdkmanui;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+
 import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
@@ -23,11 +28,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-
 public class MainScreenController implements Initializable {
     private static final Logger logger = LoggerFactory.getLogger(MainScreenController.class);
     private final SdkManApi api = ServiceRegistry.INSTANCE.getApi();
@@ -46,6 +46,10 @@ public class MainScreenController implements Initializable {
     ProgressIndicator progressSpinner;
 
     ObservableList<VersionView> tableData;
+
+    public String getSelectedCandidate() {
+        return selectedCandidate;
+    }
 
     private String selectedCandidate;
 

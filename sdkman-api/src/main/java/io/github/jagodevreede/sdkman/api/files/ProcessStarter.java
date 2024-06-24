@@ -1,13 +1,14 @@
 package io.github.jagodevreede.sdkman.api.files;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProcessStarter {
     private static final Logger log = LoggerFactory.getLogger(ProcessStarter.class);
@@ -61,13 +62,10 @@ public class ProcessStarter {
         ProcessBuilder pb = new ProcessBuilder(command, "--version");
         try {
             Process process = pb.start();
-            streamToString(process.getInputStream());
-            streamToString(process.getErrorStream());
 
-            process.waitFor();
+            return process.waitFor(5, TimeUnit.SECONDS);
         } catch (IOException | InterruptedException e) {
             return false;
         }
-        return true;
     }
 }

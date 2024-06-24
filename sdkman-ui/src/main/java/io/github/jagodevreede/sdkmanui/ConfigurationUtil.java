@@ -1,5 +1,11 @@
 package io.github.jagodevreede.sdkmanui;
 
+import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
 import io.github.jagodevreede.sdkman.api.files.ProcessStarter;
@@ -10,14 +16,8 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
-import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
-
 final class ConfigurationUtil {
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationUtil.class);
 
     static boolean preCheck(Stage stage) throws IOException {
         SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
