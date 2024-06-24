@@ -58,7 +58,7 @@ public class OsHelper {
 
     public static void setGlobalEnvironment(String key, String value) {
         if (OsHelper.isWindows()) {
-            Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Environment", "Path", path);
+            Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Environment", key, value);
         }
     }
 

@@ -13,13 +13,5 @@
             <outputDirectory>/</outputDirectory>
             <destName>sdkman-ui.exe</destName>
         </file>
-        <file>
-            <source>${project.basedir}/src/main/scripts/sdkui.cmd</source>
-            <outputDirectory>/</outputDirectory>
-        </file>
-        <file>
-            <source>${project.basedir}/src/main/scripts/install.cmd</source>
-            <outputDirectory>/</outputDirectory>
-        </file>
     </files>
 </assembly>
