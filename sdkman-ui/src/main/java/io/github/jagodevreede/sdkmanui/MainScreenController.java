@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
@@ -14,6 +15,7 @@ import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
 import io.github.jagodevreede.sdkmanui.view.PopupView;
 import io.github.jagodevreede.sdkmanui.view.VersionView;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +26,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +47,11 @@ public class MainScreenController implements Initializable {
     @FXML
     CheckBox showAvailableOnly;
     @FXML
+    TextField searchField;
+    @FXML
     ProgressIndicator progressSpinner;
+
+    PauseTransition searchFieldPause = new PauseTransition(Duration.millis(300));
 
     ObservableList<VersionView> tableData;
 
@@ -61,6 +69,10 @@ public class MainScreenController implements Initializable {
         javaSelected();
         showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
         showAvailableOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            searchFieldPause.setOnFinished(event -> loadData());
+            searchFieldPause.playFromStart();
+        });
     }
 
     public void loadData() {
@@ -79,6 +91,15 @@ public class MainScreenController implements Initializable {
                 List<CandidateVersion> updatedVersions = api.getVersions(selectedCandidate).stream()
                         .filter(j -> !showInstalledOnly.isSelected() || j.installed())
                         .filter(j -> !showAvailableOnly.isSelected() || j.available())
+                         .filter(j -> {
+                             if(searchField == null || searchField.getText().isBlank()) {
+                                 return true;
+                             } else {
+                                 final boolean vendorMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.vendor()).find();
+                                 final boolean identifierMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.identifier()).find();
+                                 return vendorMatchesSearch || identifierMatchesSearch;
+                             }
+                         })
                         .toList();
                 Platform.runLater(() -> {
                     if (tableData == null || tableData.size() != updatedVersions.size()) {
