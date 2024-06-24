@@ -58,18 +58,30 @@ public class Main extends Application {
 
     private void checkInstalled() {
         try {
-            URL location = Main.class.getProtectionDomain().getCodeSource().getLocation();
-            File currentExecutable = Paths.get(location.toURI()).toFile();
-            if (!currentExecutable.isFile()) {
-                // Probably dev mode, or failed to get location, we can't check for installation
-                return;
-            }
-            File currentRunningFolder = currentExecutable.getParentFile();
-            File installFolder = new File(ServiceRegistry.INSTANCE.getApi().getBaseFolder(), "ui");
-            if (!currentRunningFolder.equals(installFolder)) {
-                ServiceRegistry.INSTANCE.getPopupView().showConfirmation("Install?",
-                        "SDKMAN UI is not installed on your system, do you want to install it?",
-                        () -> install(currentExecutable, installFolder));
+            final String applicationVersion = ApplicationVersion.INSTANCE.getVersion();
+            final String currentInstalledUIVersion = ServiceRegistry.INSTANCE.getApi().getCurrentInstalledUIVersion();
+            if (!applicationVersion.equals(currentInstalledUIVersion)) {
+                logger.info("Running a different UI version {} then the one installed {}", applicationVersion, currentInstalledUIVersion);
+                URL location = Main.class.getProtectionDomain().getCodeSource().getLocation();
+                File currentExecutable = Paths.get(location.toURI()).toFile();
+                if (!currentExecutable.isFile()) {
+                    logger.info("Not running executable, so unable to install");
+                    // Probably dev mode, or failed to get location, we can't check for installation
+                    return;
+                }
+                File currentRunningFolder = currentExecutable.getParentFile();
+                File installFolder = new File(ServiceRegistry.INSTANCE.getApi().getBaseFolder(), "ui");
+                if (!currentRunningFolder.equals(installFolder)) {
+                    ServiceRegistry.INSTANCE.getPopupView().showConfirmation("Installation", "Do you want to install/update SDKMAN UI?", () -> {
+                        install(currentExecutable, installFolder);
+                        ServiceRegistry.INSTANCE.getApi().configureEnvironmentPath();
+                        try {
+                            Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("sdkui.cmd"), new File(installFolder, "sdkui.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                }
             }
         } catch (URISyntaxException e) {
             logger.warn("Failed to check if installed, assuming so");
