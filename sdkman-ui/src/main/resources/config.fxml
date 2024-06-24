@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
@@ -13,8 +14,14 @@
       <TextField fx:id="zipExecutablePath" layoutX="102.0" layoutY="20.0" prefHeight="25.0" prefWidth="402.0" />
       <TextField fx:id="unzipExecutablePath" layoutX="102.0" layoutY="60.0" prefHeight="25.0" prefWidth="402.0" />
       <TextField fx:id="tarExecutablePath" layoutX="102.0" layoutY="100.0" prefHeight="25.0" prefWidth="402.0" />
-      <Button layoutX="518.0" layoutY="20.0" mnemonicParsing="false" text="Browse..." />
-      <Button layoutX="518.0" layoutY="55.0" mnemonicParsing="false" text="Browse..." />
-      <Button layoutX="518.0" layoutY="100.0" mnemonicParsing="false" text="Browse..." />
+      <Button layoutX="518.0" layoutY="20.0" mnemonicParsing="false" onMouseClicked="#browseZipExecutablePath" text="Browse..." />
+      <Button layoutX="518.0" layoutY="55.0" mnemonicParsing="false" onMouseClicked="#browseUnzipExecutablePath" text="Browse..." />
+      <Button layoutX="518.0" layoutY="100.0" mnemonicParsing="false" onMouseClicked="#browseTarExecutablePath" text="Browse..." />
+      <ButtonBar layoutX="357.0" layoutY="340.0" prefHeight="40.0" prefWidth="223.0">
+        <buttons>
+          <Button mnemonicParsing="false" onMouseClicked="#saveAndCloseConfigWindow" prefHeight="25.0" prefWidth="149.0" text="Save and Close" />
+            <Button fx:id="closeConfigButton" mnemonicParsing="false" onMouseClicked="#closeConfigWindow" text="Cancel" />
+        </buttons>
+      </ButtonBar>
    </children>
 </AnchorPane>
