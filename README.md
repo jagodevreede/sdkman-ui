@@ -58,6 +58,11 @@ Jlink:
 
 run with: `./sdkman-ui/target/sdkmanui/bin/launcher`
 
+## Run as developer:
+
+Run the following class:
+`io.github.jagodevreede.sdkmanui.Main`
+
 ## Design decisions
 
 See [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md)
