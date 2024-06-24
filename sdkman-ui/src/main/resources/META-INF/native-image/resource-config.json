@@ -5,16 +5,28 @@
       "pattern":"\\QMETA-INF/services/org.slf4j.spi.SLF4JServiceProvider\\E"
     }, 
     {
+      "pattern":"\\Qcom/sun/jna/win32-x86-64/jnidispatch.dll\\E"
+    }, 
+    {
       "pattern":"\\Qmain.fxml\\E"
     }, 
     {
       "pattern":"\\Qsimplelogger.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qversion.txt\\E"
+    },
+    {
+      "pattern":"\\Qsdkui.cmd\\E"
     }
   ]},
   "bundles":[
     {
       "name":"com.sun.javafx.tk.quantum.QuantumMessagesBundle",
-      "locales":[""]
+      "locales":[
+        "", 
+        "und"
+      ]
     }, 
     {
       "name":"com/sun/glass/ui/win/themes",
@@ -29,13 +41,17 @@
         "ko", 
         "pt-BR", 
         "sv", 
+        "und", 
         "zh-CN", 
         "zh-TW"
       ]
     }, 
     {
       "name":"com/sun/javafx/scene/control/skin/resources/controls",
-      "locales":[""]
+      "locales":[
+        "", 
+        "und"
+      ]
     }
   ]
 }
