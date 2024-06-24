@@ -92,7 +92,7 @@ public class MainScreenController implements Initializable {
                         .filter(j -> !showInstalledOnly.isSelected() || j.installed())
                         .filter(j -> !showAvailableOnly.isSelected() || j.available())
                          .filter(j -> {
-                             if(searchField == null || searchField.getText().isBlank()) {
+                             if(searchField == null || searchField.getText() == null || searchField.getText().isBlank()) {
                                  return true;
                              } else {
                                  final boolean vendorMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.vendor()).find();
