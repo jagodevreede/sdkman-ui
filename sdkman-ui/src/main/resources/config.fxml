@@ -10,9 +10,9 @@
       <Text layoutX="20.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="select zip" />
       <Text layoutX="20.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="select unzip" />
       <Text layoutX="20.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="select tar" />
-      <TextField fx:id="zip_executable_path" layoutX="102.0" layoutY="20.0" prefHeight="25.0" prefWidth="402.0" />
-      <TextField fx:id="unzip_executable_path" layoutX="102.0" layoutY="60.0" prefHeight="25.0" prefWidth="402.0" />
-      <TextField fx:id="tar_executable_path" layoutX="102.0" layoutY="100.0" prefHeight="25.0" prefWidth="402.0" />
+      <TextField fx:id="zipExecutablePath" layoutX="102.0" layoutY="20.0" prefHeight="25.0" prefWidth="402.0" />
+      <TextField fx:id="unzipExecutablePath" layoutX="102.0" layoutY="60.0" prefHeight="25.0" prefWidth="402.0" />
+      <TextField fx:id="tarExecutablePath" layoutX="102.0" layoutY="100.0" prefHeight="25.0" prefWidth="402.0" />
       <Button layoutX="518.0" layoutY="20.0" mnemonicParsing="false" text="Browse..." />
       <Button layoutX="518.0" layoutY="55.0" mnemonicParsing="false" text="Browse..." />
       <Button layoutX="518.0" layoutY="100.0" mnemonicParsing="false" text="Browse..." />
