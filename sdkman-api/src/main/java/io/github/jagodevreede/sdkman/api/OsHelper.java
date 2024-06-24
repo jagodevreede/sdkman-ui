@@ -1,11 +1,9 @@
 package io.github.jagodevreede.sdkman.api;
 
-import io.github.jagodevreede.sdkman.api.files.ProcessStarter;
+import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.WinReg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
 
 public class OsHelper {
 
@@ -44,12 +42,11 @@ public class OsHelper {
     public static String getGlobalPath() {
         if (OsHelper.isWindows()) {
             try {
-                String pathQuery = ProcessStarter.runInGetOutput(new File("./"), "reg.exe", "query", "HKCU\\Environment", "/v", "Path");
+                // Don't use reg.exe in windows as some policy's might forbid the execution of reg.exe
+                String pathQuery = Advapi32Util.registryGetStringValue(WinReg.HKEY_CURRENT_USER, "Environment", "Path");
                 String[] split = pathQuery.split("\\s");
 
                 return split[split.length - 1].trim();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             } catch (IllegalStateException e) {
                 // this can happen if there is no path set in the users environment variables
                 log.debug("Failed to get global path: {}", e.getMessage());
@@ -61,12 +58,7 @@ public class OsHelper {
 
     public static String setGlobalPath(String path) {
         if (OsHelper.isWindows()) {
-            try {
-                // Call with get output, as the output of the command will be "Task completed successfully"
-                ProcessStarter.runInGetOutput(new File("./"), "reg.exe", "add", "HKCU\\Environment", "/v", "Path", "/t", "REG_EXPAND_SZ", "/d", path, "/f");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Environment", "Path", path);
         }
         return null;
     }

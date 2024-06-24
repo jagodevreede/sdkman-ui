@@ -7,6 +7,7 @@ module sdkmanui {
     requires org.slf4j.simple;
     requires jdk.crypto.cryptoki;
     requires java.desktop;
+    requires com.sun.jna.platform;
 
     exports io.github.jagodevreede.sdkmanui;
     opens io.github.jagodevreede.sdkmanui to javafx.fxml;
