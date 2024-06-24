@@ -95,6 +95,14 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </HBox>
+            <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="14.0" layoutY="462.0" onMouseClicked="#openConfig" pickOnBounds="true" preserveRatio="true">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <image>
+                  <Image url="@images/settings-icon.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
       <ImageView fitHeight="83.0" fitWidth="156.0" layoutX="69.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
