@@ -1,6 +1,12 @@
 package io.github.jagodevreede.sdkmanui;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,16 +21,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Objects;
 
 public class Main extends Application {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
@@ -54,7 +50,7 @@ public class Main extends Application {
         Scene scene = new Scene(root, 800, 580);
         stage.setResizable(false);
 
-        stage.setTitle("SDKMAN UI");
+        stage.setTitle("SDKMAN UI - " + ApplicationVersion.INSTANCE.getVersion());
         stage.setScene(scene);
         stage.show();
         checkInstalled();
