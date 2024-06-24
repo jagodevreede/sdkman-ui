@@ -1,4 +1,4 @@
-package io.github.jagodevreede.sdkmanui;
+package io.github.jagodevreede.sdkmanui.controller;
 
 import java.io.IOException;
 import java.net.URL;
@@ -11,6 +11,7 @@ import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
+import io.github.jagodevreede.sdkmanui.Main;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
 import io.github.jagodevreede.sdkmanui.view.PopupView;
@@ -20,7 +21,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
@@ -28,6 +32,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,15 +96,17 @@ public class MainScreenController implements Initializable {
                 List<CandidateVersion> updatedVersions = api.getVersions(selectedCandidate).stream()
                         .filter(j -> !showInstalledOnly.isSelected() || j.installed())
                         .filter(j -> !showAvailableOnly.isSelected() || j.available())
-                         .filter(j -> {
-                             if(searchField == null || searchField.getText().isBlank()) {
-                                 return true;
-                             } else {
-                                 final boolean vendorMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.vendor()).find();
-                                 final boolean identifierMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.identifier()).find();
-                                 return vendorMatchesSearch || identifierMatchesSearch;
-                             }
-                         })
+                        .filter(j -> {
+                            if (searchField == null || searchField.getText().isBlank()) {
+                                return true;
+                            } else {
+                                final boolean vendorMatchesSearch =
+                                        Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.vendor()).find();
+                                final boolean identifierMatchesSearch =
+                                        Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.identifier()).find();
+                                return vendorMatchesSearch || identifierMatchesSearch;
+                            }
+                        })
                         .toList();
                 Platform.runLater(() -> {
                     if (tableData == null || tableData.size() != updatedVersions.size()) {
@@ -183,6 +190,18 @@ public class MainScreenController implements Initializable {
 
     public void mavenSelected() {
         switchCandidate("maven");
+    }
+
+    public void openConfig() throws IOException {
+        URL configFxml = Main.class.getClassLoader().getResource("config.fxml");
+        Parent root = FXMLLoader.load(configFxml);
+
+        Scene scene = new Scene(root, 800, 580);
+        Stage stage = new Stage();
+        stage.setTitle("SDKMAN UI - configuration");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
     }
 
     private void switchCandidate(String candidate) {
