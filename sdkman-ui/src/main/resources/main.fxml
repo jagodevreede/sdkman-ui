@@ -95,9 +95,9 @@
             </HBox>
          </children>
       </AnchorPane>
-      <ImageView fitHeight="83.0" fitWidth="156.0" layoutX="35.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="83.0" fitWidth="156.0" layoutX="69.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/sdkman-logo.png" />
+            <Image url="@images/sdkman_ui_logo.png" />
          </image>
       </ImageView>
       <AnchorPane layoutX="215.0" prefHeight="83.0" prefWidth="585.0">
