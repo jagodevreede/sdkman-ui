@@ -27,6 +27,7 @@
 
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
         <gluonfx.plugin.version>1.0.22</gluonfx.plugin.version>
+        <jna-platform.version>5.14.0</jna-platform.version>
     </properties>
 
     <build>
@@ -67,6 +68,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
                 <version>${commons-compress.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna-platform</artifactId>
+                <version>${jna-platform.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>

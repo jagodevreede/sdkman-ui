@@ -97,10 +97,10 @@ public class MainScreenController implements Initializable {
                             }
                         });
                     }
+                    if (onLoaded != null) {
+                        onLoaded.run();
+                    }
                 });
-                if (onLoaded != null) {
-                    onLoaded.run();
-                }
             } catch (IOException | InterruptedException e) {
                 popupView.showError(e);
             }
