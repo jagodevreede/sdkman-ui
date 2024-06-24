@@ -20,10 +20,10 @@
         <maven.compiler.target>17</maven.compiler.target>
 
         <junit.version>5.10.2</junit.version>
-        <assertj.version>3.25.3</assertj.version>
-        <mockito.version>5.11.0</mockito.version>
+        <assertj.version>3.26.0</assertj.version>
+        <mockito.version>5.12.0</mockito.version>
         <slf4j.version>2.0.13</slf4j.version>
-        <commons-compress.version>1.26.1</commons-compress.version>
+        <commons-compress.version>1.26.2</commons-compress.version>
 
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
         <gluonfx.plugin.version>1.0.22</gluonfx.plugin.version>
