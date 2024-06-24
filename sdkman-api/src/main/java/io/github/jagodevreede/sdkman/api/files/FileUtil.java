@@ -49,4 +49,16 @@ public final class FileUtil {
                     }
                 });
     }
+
+    public static void makeAccessible(final File f) {
+        if (!f.exists()) {
+            return;
+        }
+        f.setWritable(true);
+        if (f.isDirectory()) {
+            for (File c : f.listFiles()) {
+                makeAccessible(c);
+            }
+        }
+    }
 }

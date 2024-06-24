@@ -1,11 +1,11 @@
 package io.github.jagodevreede.sdkman.api.files;
 
-import io.github.jagodevreede.sdkman.api.SdkManApi;
-import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+
+import io.github.jagodevreede.sdkman.api.SdkManApi;
+import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
 
 public final class ZipExtractTask {
 
@@ -26,6 +26,7 @@ public final class ZipExtractTask {
 
             File sourceExtractedFolder = tempDir.listFiles()[0];
             destination.getParentFile().mkdirs();
+            FileUtil.makeAccessible(sourceExtractedFolder);
             Files.move(sourceExtractedFolder.toPath(), destination.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
