@@ -95,7 +95,7 @@ public class VersionView {
             if (result.isPresent() && (result.get() == buttonYesAndClose || result.get() == buttonYes)) {
                 SdkManApi api = ServiceRegistry.INSTANCE.getApi();
                 try {
-                    api.changeGlobal("java", candidateVersion.identifier());
+                    api.changeGlobal(controller.getSelectedCandidate(), candidateVersion.identifier());
                 } catch (IOException e) {
                     ServiceRegistry.INSTANCE.getPopupView().showError(e);
                 }
