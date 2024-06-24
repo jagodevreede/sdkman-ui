@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
-import io.github.jagodevreede.sdkmanui.MainScreenController;
+import io.github.jagodevreede.sdkmanui.controller.MainScreenController;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -79,7 +79,7 @@ public class VersionView {
     }
 
     private EventHandler<MouseEvent> globalEventHandler(CandidateVersion candidateVersion) {
-        return (event) -> {
+        return event -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Set global SDK");
             alert.setHeaderText("Are you sure that you want to set " + candidateVersion.identifier() + " as your global SDK?");
@@ -110,7 +110,7 @@ public class VersionView {
     }
 
     private EventHandler<MouseEvent> useEventHandler(CandidateVersion candidateVersion) {
-        return (event) -> {
+        return event -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Set local SDK");
             alert.setHeaderText("Are you sure that you want to set " + candidateVersion.identifier() + " as your local SDK?");
