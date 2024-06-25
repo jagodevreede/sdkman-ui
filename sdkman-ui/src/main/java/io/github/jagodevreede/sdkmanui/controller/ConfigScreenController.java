@@ -82,8 +82,8 @@ public class ConfigScreenController implements Initializable {
         tarExecutablePath.setText(path);
     }
 
-    public void retrySymlinkCreation() throws IOException {
-        final SdkManUiPreferences sdkManUiPreferences = SdkManUiPreferences.load();
+    public void retrySymlinkCreation() {
+        final SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
         if (checkSymlink()) {
             symlinkState.setText("connected");
             sdkManUiPreferences.hasSymlink = true;
@@ -93,13 +93,18 @@ public class ConfigScreenController implements Initializable {
         }
     }
 
-    public void saveAndCloseConfigWindow() throws IOException {
-        final SdkManUiPreferences sdkManUiPreferences = SdkManUiPreferences.load();
+    public void saveAndCloseConfigWindow() {
+        final SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
+
         sdkManUiPreferences.zipExecutable = zipExecutablePath.getText();
         sdkManUiPreferences.unzipExecutable = unzipExecutablePath.getText();
         sdkManUiPreferences.tarExecutable = tarExecutablePath.getText();
 
-        sdkManUiPreferences.save();
+        try {
+            sdkManUiPreferences.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         this.closeConfigWindow();
     }
