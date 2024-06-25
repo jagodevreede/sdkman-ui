@@ -77,6 +77,7 @@ public class Main extends Application {
                         ServiceRegistry.INSTANCE.getApi().configureEnvironmentPath();
                         try {
                             Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("sdkui.cmd"), new File(installFolder, "sdkui.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                            Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("version.txt"), new File(installFolder, "version.txt").toPath(), StandardCopyOption.REPLACE_EXISTING);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
