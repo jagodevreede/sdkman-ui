@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class ConfigurationUtil {
+public final class ConfigurationUtil {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationUtil.class);
 
     static boolean preCheck(Stage stage) throws IOException {
@@ -31,7 +31,6 @@ final class ConfigurationUtil {
                 return false;
             }
             if (!isWindows()) {
-                // other than windows can create symlinks
                 sdkManUiPreferences.canCreateSymlink = true;
                 String tarExecutable = testExecutable("tar", stage);
                 if (tarExecutable == null) {
@@ -49,7 +48,7 @@ final class ConfigurationUtil {
         return true;
     }
 
-    static boolean checkSymlink() {
+    public static boolean checkSymlink() {
         File sourceFolder = new File(SdkManApi.DEFAULT_SDKMAN_HOME, "/tmp/src");
         sourceFolder.mkdirs();
         File targetFolder = new File(SdkManApi.DEFAULT_SDKMAN_HOME, "/tmp/target");

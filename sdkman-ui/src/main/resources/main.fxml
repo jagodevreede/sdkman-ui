@@ -45,7 +45,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.jagodevreede.sdkmanui.MainScreenController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.jagodevreede.sdkmanui.controller.MainScreenController">
    <children>
       <AnchorPane layoutY="85.0" prefHeight="495.0" prefWidth="221.0" styleClass="sidebar">
          <children>
@@ -95,6 +95,14 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </HBox>
+            <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="14.0" layoutY="457.0" onMouseClicked="#openConfig" pickOnBounds="true" preserveRatio="true">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <image>
+                  <Image url="@images/settings-icon.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
       <ImageView fitHeight="83.0" fitWidth="156.0" layoutX="69.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">

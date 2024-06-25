@@ -12,4 +12,6 @@ module sdkmanui {
     exports io.github.jagodevreede.sdkmanui;
     opens io.github.jagodevreede.sdkmanui to javafx.fxml;
     opens io.github.jagodevreede.sdkmanui.view to javafx.base;
+    exports io.github.jagodevreede.sdkmanui.controller;
+    opens io.github.jagodevreede.sdkmanui.controller to javafx.fxml;
 }
