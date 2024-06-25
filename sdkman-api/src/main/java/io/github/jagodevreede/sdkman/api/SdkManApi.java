@@ -1,9 +1,16 @@
 package io.github.jagodevreede.sdkman.api;
 
-import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalPath;
-import static io.github.jagodevreede.sdkman.api.OsHelper.getPlatformName;
-import static java.io.File.separator;
-import static java.net.http.HttpClient.newHttpClient;
+import io.github.jagodevreede.sdkman.api.domain.Candidate;
+import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
+import io.github.jagodevreede.sdkman.api.domain.Vendor;
+import io.github.jagodevreede.sdkman.api.files.FileUtil;
+import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
+import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
+import io.github.jagodevreede.sdkman.api.http.DownloadTask;
+import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
+import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,17 +28,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import io.github.jagodevreede.sdkman.api.domain.Candidate;
-import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
-import io.github.jagodevreede.sdkman.api.domain.Vendor;
-import io.github.jagodevreede.sdkman.api.files.FileUtil;
-import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
-import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
-import io.github.jagodevreede.sdkman.api.http.DownloadTask;
-import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
-import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalPath;
+import static io.github.jagodevreede.sdkman.api.OsHelper.getPlatformName;
+import static java.io.File.separator;
+import static java.net.http.HttpClient.newHttpClient;
 
 public class SdkManApi {
     private static Logger logger = LoggerFactory.getLogger(SdkManApi.class);
@@ -117,6 +117,10 @@ public class SdkManApi {
 
         result.sort(CandidateVersion::compareTo);
         return result;
+    }
+
+    public void changeLocal(String candidate, String toIdentifier) {
+        changes.put(candidate, toIdentifier);
     }
 
     public void changeGlobal(String candidate, String toIdentifier) throws IOException {
@@ -205,12 +209,12 @@ public class SdkManApi {
     }
 
     private void createExitScript(String candidate, String identifier) throws IOException {
-        changes.put(candidate, identifier);
         final String exportCommand = OsHelper.isWindows() ? "set " : "export ";
 
         try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
             writer.write(exportCommand + "PATH=" + updatePathForCandidate(candidate, identifier));
             writer.write(exportCommand + candidate.toUpperCase(Locale.ROOT) + "_HOME=" + getCandidateFolder(candidate, identifier));
+            writer.write("echo Now using " + identifier + " for " + candidate);
         }
     }
 
@@ -245,12 +249,14 @@ public class SdkManApi {
      */
     public void registerShutdownHook() {
         Thread printingHook = new Thread(() -> {
+            logger.debug("Creating exit scripts");
             File exitScriptFile = getExitScriptFile();
             try {
                 if (!exitScriptFile.exists()) {
                     exitScriptFile.createNewFile();
                 }
                 for (Map.Entry<String, String> changesEntry : changes.entrySet()) {
+                    logger.debug("Creating exit entry for {}", changesEntry.getKey());
                     createExitScript(changesEntry.getKey(), changesEntry.getValue());
                 }
             } catch (IOException e) {
@@ -283,15 +289,17 @@ public class SdkManApi {
         }
     }
 
-    public void configureEnvironmentPath() {
+    public boolean configureEnvironmentPath() {
         var pathName = baseFolder + separator + "ui";
         // Only a thing on windows (yet)
         if (OsHelper.isWindows()) {
             String globalPath = getGlobalPath();
             if (isPathConfigured(pathName, globalPath) == null) {
                 OsHelper.setGlobalPath(pathName + File.pathSeparator + globalPath);
+                return true;
             }
         }
+        return false;
     }
 
     private String isPathConfigured(String pathName, String paths) {

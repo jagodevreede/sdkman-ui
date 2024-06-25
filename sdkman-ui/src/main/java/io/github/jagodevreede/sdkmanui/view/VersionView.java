@@ -1,11 +1,5 @@
 package io.github.jagodevreede.sdkmanui.view;
 
-import static io.github.jagodevreede.sdkmanui.view.Images.globalIcon;
-import static io.github.jagodevreede.sdkmanui.view.Images.useIcon;
-
-import java.io.IOException;
-import java.util.Optional;
-
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkmanui.MainScreenController;
@@ -25,6 +19,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import static io.github.jagodevreede.sdkmanui.view.Images.globalIcon;
+import static io.github.jagodevreede.sdkmanui.view.Images.useIcon;
 
 public class VersionView {
 
@@ -127,6 +127,9 @@ public class VersionView {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && (result.get() == buttonYesAndClose || result.get() == buttonYes)) {
+                SdkManApi api = ServiceRegistry.INSTANCE.getApi();
+                api.changeLocal(controller.getSelectedCandidate(), candidateVersion.identifier());
+
                 if (result.get() == buttonYesAndClose) {
                     Platform.exit();
                 } else {
