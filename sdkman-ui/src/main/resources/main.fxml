@@ -95,7 +95,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </HBox>
-            <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="14.0" layoutY="462.0" onMouseClicked="#openConfig" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="14.0" layoutY="457.0" onMouseClicked="#openConfig" pickOnBounds="true" preserveRatio="true">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
