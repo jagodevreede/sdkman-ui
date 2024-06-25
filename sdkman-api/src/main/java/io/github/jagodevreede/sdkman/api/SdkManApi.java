@@ -1,16 +1,9 @@
 package io.github.jagodevreede.sdkman.api;
 
-import io.github.jagodevreede.sdkman.api.domain.Candidate;
-import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
-import io.github.jagodevreede.sdkman.api.domain.Vendor;
-import io.github.jagodevreede.sdkman.api.files.FileUtil;
-import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
-import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
-import io.github.jagodevreede.sdkman.api.http.DownloadTask;
-import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
-import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalPath;
+import static io.github.jagodevreede.sdkman.api.OsHelper.getPlatformName;
+import static java.io.File.separator;
+import static java.net.http.HttpClient.newHttpClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,10 +21,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalPath;
-import static io.github.jagodevreede.sdkman.api.OsHelper.getPlatformName;
-import static java.io.File.separator;
-import static java.net.http.HttpClient.newHttpClient;
+import io.github.jagodevreede.sdkman.api.domain.Candidate;
+import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
+import io.github.jagodevreede.sdkman.api.domain.Vendor;
+import io.github.jagodevreede.sdkman.api.files.FileUtil;
+import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
+import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
+import io.github.jagodevreede.sdkman.api.http.DownloadTask;
+import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
+import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SdkManApi {
     private static Logger logger = LoggerFactory.getLogger(SdkManApi.class);
@@ -306,7 +306,8 @@ public class SdkManApi {
         var pathsSplit = paths.split(File.pathSeparator);
         for (var p : pathsSplit) {
             if (p.startsWith(pathName)) {
-                return p;
+                String nameWithBin = p.substring(pathName.length() + 1);
+                return nameWithBin.substring(0, nameWithBin.lastIndexOf(File.separator));
             }
         }
         return null;
