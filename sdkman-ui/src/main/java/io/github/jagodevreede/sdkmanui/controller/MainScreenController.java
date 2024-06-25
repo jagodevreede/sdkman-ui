@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
+import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
 import io.github.jagodevreede.sdkmanui.Main;
@@ -70,11 +71,22 @@ public class MainScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ServiceRegistry.INSTANCE.setProgressIndicator(progressSpinner);
+        final SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
+        showInstalledOnly.setSelected(sdkManUiPreferences.showInstalled);
+        showAvailableOnly.setSelected(sdkManUiPreferences.showAvailable);
         table.getColumns().clear();
 
         javaSelected();
-        showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
-        showAvailableOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
+        showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            sdkManUiPreferences.showInstalled = newValue;
+            sdkManUiPreferences.saveQuite();
+            loadData();
+        });
+        showAvailableOnly.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            sdkManUiPreferences.showAvailable = newValue;
+            sdkManUiPreferences.saveQuite();
+            loadData();
+        });
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchFieldPause.setOnFinished(event -> loadData());
             searchFieldPause.playFromStart();
@@ -98,7 +110,7 @@ public class MainScreenController implements Initializable {
                         .filter(j -> !showInstalledOnly.isSelected() || j.installed())
                         .filter(j -> !showAvailableOnly.isSelected() || j.available())
                         .filter(j -> {
-                            if (searchField == null || searchField.getText().isBlank()) {
+                            if (searchField == null || searchField.getText() == null || searchField.getText().isBlank()) {
                                 return true;
                             } else {
                                 final boolean vendorMatchesSearch =
@@ -219,7 +231,7 @@ public class MainScreenController implements Initializable {
 
     private void checkIfEnvironmentIsConfigured(String candidate) {
         // Only on windows, check if the environment is configured
-        if (OsHelper.isWindows() && hasInstalledVersion() && !api.hasEnvironmentConfigured(candidate)) {
+        if (OsHelper.isWindows() && hasInstalledVersion() && !api.hasCandidateEnvironmentPathConfigured(candidate)) {
             Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate,
                     candidate + " is not in the environment (path variable) yet, do you want to add it?", () -> {
                         api.configureWindowsEnvironment(candidate);

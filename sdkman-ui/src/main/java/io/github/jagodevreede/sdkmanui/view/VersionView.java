@@ -10,6 +10,7 @@ import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkmanui.controller.MainScreenController;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
+import io.github.jagodevreede.sdkmanui.service.TaskRunner;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -97,16 +98,18 @@ public class VersionView {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && (result.get() == buttonYesAndClose || result.get() == buttonYes)) {
                 SdkManApi api = ServiceRegistry.INSTANCE.getApi();
-                try {
-                    api.changeGlobal(controller.getSelectedCandidate(), candidateVersion.identifier());
-                } catch (IOException e) {
-                    ServiceRegistry.INSTANCE.getPopupView().showError(e);
-                }
-                if (result.get() == buttonYesAndClose) {
-                    Platform.exit();
-                } else {
-                    controller.loadData();
-                }
+                TaskRunner.run(() -> {
+                    try {
+                        api.changeGlobal(controller.getSelectedCandidate(), candidateVersion.identifier());
+                        if (result.get() == buttonYesAndClose) {
+                            Platform.exit();
+                        } else {
+                            controller.loadData();
+                        }
+                    } catch (IOException e) {
+                        ServiceRegistry.INSTANCE.getPopupView().showError(e);
+                    }
+                });
             }
             alert.close();
         };
@@ -128,11 +131,8 @@ public class VersionView {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && (result.get() == buttonYesAndClose || result.get() == buttonYes)) {
                 SdkManApi api = ServiceRegistry.INSTANCE.getApi();
-                try {
-                    api.createExitScript("java", candidateVersion.identifier());
-                } catch (IOException e) {
-                    ServiceRegistry.INSTANCE.getPopupView().showError(e);
-                }
+                api.changeLocal(controller.getSelectedCandidate(), candidateVersion.identifier());
+
                 if (result.get() == buttonYesAndClose) {
                     Platform.exit();
                 } else {

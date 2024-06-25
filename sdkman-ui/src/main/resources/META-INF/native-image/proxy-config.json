@@ -1,2 +1,5 @@
 [
+  {
+    "interfaces":["com.sun.jna.platform.win32.Advapi32"]}
+  
 ]
