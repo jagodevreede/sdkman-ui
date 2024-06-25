@@ -1,9 +1,16 @@
 package io.github.jagodevreede.sdkmanui.view;
 
+import static io.github.jagodevreede.sdkmanui.view.Images.globalIcon;
+import static io.github.jagodevreede.sdkmanui.view.Images.useIcon;
+
+import java.io.IOException;
+import java.util.Optional;
+
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkmanui.MainScreenController;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
+import io.github.jagodevreede.sdkmanui.service.TaskRunner;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -19,12 +26,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-
-import java.io.IOException;
-import java.util.Optional;
-
-import static io.github.jagodevreede.sdkmanui.view.Images.globalIcon;
-import static io.github.jagodevreede.sdkmanui.view.Images.useIcon;
 
 public class VersionView {
 
@@ -97,16 +98,18 @@ public class VersionView {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && (result.get() == buttonYesAndClose || result.get() == buttonYes)) {
                 SdkManApi api = ServiceRegistry.INSTANCE.getApi();
-                try {
-                    api.changeGlobal(controller.getSelectedCandidate(), candidateVersion.identifier());
-                } catch (IOException e) {
-                    ServiceRegistry.INSTANCE.getPopupView().showError(e);
-                }
-                if (result.get() == buttonYesAndClose) {
-                    Platform.exit();
-                } else {
-                    controller.loadData();
-                }
+                TaskRunner.run(() -> {
+                    try {
+                        api.changeGlobal(controller.getSelectedCandidate(), candidateVersion.identifier());
+                        if (result.get() == buttonYesAndClose) {
+                            Platform.exit();
+                        } else {
+                            controller.loadData();
+                        }
+                    } catch (IOException e) {
+                        ServiceRegistry.INSTANCE.getPopupView().showError(e);
+                    }
+                });
             }
             alert.close();
         };
