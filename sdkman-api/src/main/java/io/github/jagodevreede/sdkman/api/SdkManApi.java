@@ -129,7 +129,7 @@ public class SdkManApi {
             throw new IllegalArgumentException("No such identifier for candidate " + candidate + ": " + toIdentifier);
         }
         File currentFolder = new File(baseFolder, "candidates" + separator + candidate + separator + "current");
-        if (SdkManUiPreferences.load().canCreateSymlink) {
+        if (SdkManUiPreferences.getInstance().canCreateSymlink) {
             if (currentFolder.exists()) {
                 currentFolder.delete();
             }

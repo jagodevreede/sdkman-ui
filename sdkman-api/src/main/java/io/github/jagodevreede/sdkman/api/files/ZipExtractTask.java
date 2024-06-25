@@ -15,7 +15,7 @@ public final class ZipExtractTask {
 
     public static void extract(File zipFile, File destination) {
         try {
-            String unzipExecutable = SdkManUiPreferences.load().unzipExecutable;
+            String unzipExecutable = SdkManUiPreferences.getInstance().unzipExecutable;
             File tempDir = new File(SdkManApi.DEFAULT_SDKMAN_HOME, "tmp/out");
             FileUtil.deleteRecursively(tempDir);
             FileUtil.deleteRecursively(destination);

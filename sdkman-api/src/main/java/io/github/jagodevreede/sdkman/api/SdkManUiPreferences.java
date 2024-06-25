@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class SdkManUiPreferences {
+    private static SdkManUiPreferences INSTACE;
     public static final File PROPERTY_LOCATION = new File(SdkManApi.DEFAULT_SDKMAN_HOME + "/etc/sdkmanui.preferences");
     public boolean offline;
     public boolean donePreCheck;
@@ -17,7 +18,7 @@ public class SdkManUiPreferences {
     public boolean showInstalled;
     public boolean showAvailable;
 
-    public static SdkManUiPreferences load() throws IOException {
+    private static SdkManUiPreferences load() throws IOException {
         PROPERTY_LOCATION.getParentFile().mkdirs();
         if (!PROPERTY_LOCATION.exists()) {
             PROPERTY_LOCATION.createNewFile();
@@ -34,6 +35,17 @@ public class SdkManUiPreferences {
         uiPreferences.showInstalled = Boolean.parseBoolean(properties.getProperty("showInstalled", "false"));
         uiPreferences.showAvailable = Boolean.parseBoolean(properties.getProperty("showAvailable", "false"));
         return uiPreferences;
+    }
+
+    public static SdkManUiPreferences getInstance()  {
+        if (INSTACE == null) {
+            try {
+                INSTACE = load();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return INSTACE;
     }
 
     public void saveQuite() {

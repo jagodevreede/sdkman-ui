@@ -1,5 +1,15 @@
 package io.github.jagodevreede.sdkmanui;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.Objects;
+
 import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
@@ -12,18 +22,9 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Objects;
-
 public class Main extends Application {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final ServiceRegistry SERVICE_REGISTRY = ServiceRegistry.INSTANCE;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -40,7 +41,7 @@ public class Main extends Application {
             logger.warn("Failed pre-check");
             return;
         }
-        ServiceRegistry.INSTANCE.getApi().registerShutdownHook();
+        SERVICE_REGISTRY.getApi().registerShutdownHook();
 
         Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
 
@@ -57,39 +58,45 @@ public class Main extends Application {
     }
 
     private void checkInstalled() {
+        final String applicationVersion = ApplicationVersion.INSTANCE.getVersion();
+        final String currentInstalledUIVersion = SERVICE_REGISTRY.getApi().getCurrentInstalledUIVersion();
+        if (!applicationVersion.equals(currentInstalledUIVersion)) {
+            logger.info("Running a different UI version {} then the one installed {}", applicationVersion, currentInstalledUIVersion);
+            install();
+        }
+    }
+
+    private static void install() {
         try {
-            final String applicationVersion = ApplicationVersion.INSTANCE.getVersion();
-            final String currentInstalledUIVersion = ServiceRegistry.INSTANCE.getApi().getCurrentInstalledUIVersion();
-            if (!applicationVersion.equals(currentInstalledUIVersion)) {
-                logger.info("Running a different UI version {} then the one installed {}", applicationVersion, currentInstalledUIVersion);
-                URL location = Main.class.getProtectionDomain().getCodeSource().getLocation();
-                File currentExecutable = Paths.get(location.toURI()).toFile();
-                if (!currentExecutable.isFile()) {
-                    logger.info("Not running executable, so unable to install");
-                    // Probably dev mode, or failed to get location, we can't check for installation
-                    return;
-                }
-                File currentRunningFolder = currentExecutable.getParentFile();
-                File installFolder = new File(ServiceRegistry.INSTANCE.getApi().getBaseFolder(), "ui");
-                if (!currentRunningFolder.equals(installFolder)) {
-                    ServiceRegistry.INSTANCE.getPopupView().showConfirmation("Installation", "Do you want to install/update SDKMAN UI?", () -> {
-                        installFolder.mkdirs();
-                        boolean configured = ServiceRegistry.INSTANCE.getApi().configureEnvironmentPath();
-                        try {
-                            Files.copy(currentExecutable.toPath(), new File(installFolder, currentExecutable.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                            Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("sdkui.cmd"), new File(installFolder, "sdkui.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
-                            Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("version.txt"), new File(installFolder, "version.txt").toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        StringBuilder confirmationMessage = new StringBuilder("SDKMAN UI has been installed, you can now remove ");
-                        confirmationMessage.append(currentExecutable.getAbsolutePath());
-                        if (configured) {
-                            confirmationMessage.append("\nyou need to relogin to be able to use `sdkui` from the command line.");
-                        }
-                        ServiceRegistry.INSTANCE.getPopupView().showInformation(confirmationMessage.toString());
-                    });
-                }
+            URL location = Main.class.getProtectionDomain().getCodeSource().getLocation();
+            File currentExecutable = Paths.get(location.toURI()).toFile();
+            if (!currentExecutable.isFile()) {
+                logger.info("Not running executable, so unable to install");
+                // Probably dev mode, or failed to get location, we can't check for installation
+                return;
+            }
+            File currentRunningFolder = currentExecutable.getParentFile();
+            File installFolder = new File(SERVICE_REGISTRY.getApi().getBaseFolder(), "ui");
+            if (!currentRunningFolder.equals(installFolder)) {
+                SERVICE_REGISTRY.getPopupView().showConfirmation("Installation", "Do you want to install/update SDKMAN UI?", () -> {
+                    installFolder.mkdirs();
+                    boolean configured = SERVICE_REGISTRY.getApi().configureEnvironmentPath();
+                    try {
+                        Files.copy(currentExecutable.toPath(), new File(installFolder, currentExecutable.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("sdkui.cmd"), new File(installFolder, "sdkui.cmd").toPath(),
+                                StandardCopyOption.REPLACE_EXISTING);
+                        Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("version.txt"), new File(installFolder, "version.txt").toPath(),
+                                StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    StringBuilder confirmationMessage = new StringBuilder("SDKMAN UI has been installed, you can now remove ");
+                    confirmationMessage.append(currentExecutable.getAbsolutePath());
+                    if (configured) {
+                        confirmationMessage.append("\nyou need to relogin to be able to use `sdkui` from the command line.");
+                    }
+                    SERVICE_REGISTRY.getPopupView().showInformation(confirmationMessage.toString());
+                });
             }
         } catch (URISyntaxException e) {
             logger.warn("Failed to check if installed, assuming so");
@@ -99,7 +106,7 @@ public class Main extends Application {
     private void loadServiceRegistry() {
         Thread loaderThread = new Thread(() -> {
             // Load the preferences, then everything is ready to go
-            ServiceRegistry.INSTANCE.getSdkManUiPreferences();
+            SERVICE_REGISTRY.getSdkManUiPreferences();
         });
         loaderThread.setDaemon(true);
         loaderThread.setName("ServiceRegistry loader");
