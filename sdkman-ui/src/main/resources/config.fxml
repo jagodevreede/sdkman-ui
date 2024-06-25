@@ -25,6 +25,6 @@
       </ButtonBar>
       <Text layoutX="20.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Symlink capability:" />
       <Button layoutX="518.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#checkSymlinkCapability" prefHeight="25.0" prefWidth="62.0" text="Recheck" />
-      <Text fx:id="symlinkCapability" layoutX="135.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="n/a" />
+      <Text fx:id="symlinkCapability" layoutX="124.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="n/a" />
    </children>
 </AnchorPane>
