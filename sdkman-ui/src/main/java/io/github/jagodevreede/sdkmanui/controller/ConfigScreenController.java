@@ -51,13 +51,13 @@ public class ConfigScreenController implements Initializable {
         final String zipExecutablePropertyPath = properties.getProperty("zipExecutable");
         final String unzipExecutablePropertyPath = properties.getProperty("unzipExecutable");
         final String tarExecutablePropertyPath = properties.getProperty("tarExecutable");
-        final boolean hasSymlinkCapability = Boolean.parseBoolean(properties.getProperty("hasSymlinkCapability"));
+        final boolean canCreateSymlink = Boolean.parseBoolean(properties.getProperty("canCreateSymlink"));
 
         zipExecutablePath.setText(zipExecutablePropertyPath);
         unzipExecutablePath.setText(unzipExecutablePropertyPath);
         tarExecutablePath.setText(tarExecutablePropertyPath);
 
-        if (hasSymlinkCapability) {
+        if (canCreateSymlink) {
             symlinkCapability.setText(SYMLINK_CAPABLE);
         } else {
             symlinkCapability.setText(SYMLINK_NOT_CAPABLE);
@@ -83,10 +83,10 @@ public class ConfigScreenController implements Initializable {
         final SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
         if (checkSymlink()) {
             symlinkCapability.setText(SYMLINK_CAPABLE);
-            sdkManUiPreferences.hasSymlinkCapability = true;
+            sdkManUiPreferences.canCreateSymlink = true;
         } else {
             symlinkCapability.setText(SYMLINK_NOT_CAPABLE);
-            sdkManUiPreferences.hasSymlinkCapability = false;
+            sdkManUiPreferences.canCreateSymlink = false;
         }
     }
 

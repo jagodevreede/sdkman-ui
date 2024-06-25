@@ -15,7 +15,6 @@ public class SdkManUiPreferences {
     public String zipExecutable;
     public String tarExecutable;
     public boolean canCreateSymlink;
-    public boolean hasSymlinkCapability;
     public boolean showInstalled;
     public boolean showAvailable;
 
@@ -33,7 +32,6 @@ public class SdkManUiPreferences {
         uiPreferences.zipExecutable = properties.getProperty("zipExecutable", "zip");
         uiPreferences.tarExecutable = properties.getProperty("tarExecutable", "tar");
         uiPreferences.canCreateSymlink = Boolean.parseBoolean(properties.getProperty("canCreateSymlink", "true"));
-        uiPreferences.hasSymlinkCapability = Boolean.parseBoolean(properties.getProperty("hasSymlink", "false"));
         uiPreferences.showInstalled = Boolean.parseBoolean(properties.getProperty("showInstalled", "false"));
         uiPreferences.showAvailable = Boolean.parseBoolean(properties.getProperty("showAvailable", "false"));
         return uiPreferences;
@@ -66,7 +64,6 @@ public class SdkManUiPreferences {
         properties.setProperty("zipExecutable", zipExecutable);
         properties.setProperty("tarExecutable", tarExecutable);
         properties.setProperty("canCreateSymlink", String.valueOf(canCreateSymlink));
-        properties.setProperty("hasSymlinkCapability", String.valueOf(hasSymlinkCapability));
         properties.setProperty("showInstalled", String.valueOf(showInstalled));
         properties.setProperty("showAvailable", String.valueOf(showAvailable));
         properties.store(new FileOutputStream(PROPERTY_LOCATION), null);
