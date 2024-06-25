@@ -11,13 +11,13 @@
       "pattern":"\\Qmain.fxml\\E"
     }, 
     {
+      "pattern":"\\Qsdkui.cmd\\E"
+    }, 
+    {
       "pattern":"\\Qsimplelogger.properties\\E"
     }, 
     {
       "pattern":"\\Qversion.txt\\E"
-    },
-    {
-      "pattern":"\\Qsdkui.cmd\\E"
     }
   ]},
   "bundles":[

@@ -156,7 +156,7 @@
   ]
 },
 {
-  "name":"io.github.jagodevreede.sdkmanui.MainScreenController",
+  "name":"io.github.jagodevreede.sdkmanui.controller.MainScreenController",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "methods":[
