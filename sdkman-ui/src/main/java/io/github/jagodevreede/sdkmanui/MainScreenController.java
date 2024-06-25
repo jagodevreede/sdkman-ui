@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
+import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
@@ -64,11 +65,22 @@ public class MainScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ServiceRegistry.INSTANCE.setProgressIndicator(progressSpinner);
+        final SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
+        showInstalledOnly.setSelected(sdkManUiPreferences.showInstalled);
+        showAvailableOnly.setSelected(sdkManUiPreferences.showAvailable);
         table.getColumns().clear();
 
         javaSelected();
-        showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
-        showAvailableOnly.selectedProperty().addListener((observable, oldValue, newValue) -> loadData());
+        showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            sdkManUiPreferences.showInstalled = newValue;
+            sdkManUiPreferences.saveQuite();
+            loadData();
+        });
+        showAvailableOnly.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            sdkManUiPreferences.showAvailable = newValue;
+            sdkManUiPreferences.saveQuite();
+            loadData();
+        });
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchFieldPause.setOnFinished(event -> loadData());
             searchFieldPause.playFromStart();

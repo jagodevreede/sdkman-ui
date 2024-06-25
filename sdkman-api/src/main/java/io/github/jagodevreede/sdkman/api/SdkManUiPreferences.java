@@ -14,6 +14,8 @@ public class SdkManUiPreferences {
     public String zipExecutable;
     public String tarExecutable;
     public boolean canCreateSymlink;
+    public boolean showInstalled;
+    public boolean showAvailable;
 
     public static SdkManUiPreferences load() throws IOException {
         PROPERTY_LOCATION.getParentFile().mkdirs();
@@ -29,7 +31,17 @@ public class SdkManUiPreferences {
         uiPreferences.zipExecutable = properties.getProperty("zipExecutable", "zip");
         uiPreferences.tarExecutable = properties.getProperty("tarExecutable", "tar");
         uiPreferences.canCreateSymlink = Boolean.parseBoolean(properties.getProperty("canCreateSymlink", "true"));
+        uiPreferences.showInstalled = Boolean.parseBoolean(properties.getProperty("showInstalled", "false"));
+        uiPreferences.showAvailable = Boolean.parseBoolean(properties.getProperty("showAvailable", "false"));
         return uiPreferences;
+    }
+
+    public void saveQuite() {
+        try {
+            save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void save() throws IOException {
@@ -40,6 +52,8 @@ public class SdkManUiPreferences {
         properties.setProperty("zipExecutable", zipExecutable);
         properties.setProperty("tarExecutable", tarExecutable);
         properties.setProperty("canCreateSymlink", String.valueOf(canCreateSymlink));
+        properties.setProperty("showInstalled", String.valueOf(showInstalled));
+        properties.setProperty("showAvailable", String.valueOf(showAvailable));
         properties.store(new FileOutputStream(PROPERTY_LOCATION), null);
     }
 }
