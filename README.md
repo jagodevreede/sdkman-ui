@@ -1,7 +1,7 @@
 # sdkman-ui
 
-This project aims to offer a Graphical User Interface for [SDKMAN](https://sdkman.io/). And a out of the box
-implementation for windows.
+This project aims to offer a Graphical User Interface for [SDKMAN](https://sdkman.io/). And a out of
+the box implementation for windows.
 
 > This project is still under heavy development and testing. And is not yet ready for public use!
 
@@ -11,16 +11,23 @@ implementation for windows.
 
 ## Requirements
 
-tar, unzip and zip should be present on the system. You can install them with your favourite package manager on *inx
-systems. 
+tar, unzip and zip should be present on the system. You can install them with your favourite package
+manager on *inx systems.
 
-And for windows:
+### Windows:
 
 - tar: no need for tar as it is not used on windows
-- zip: [https://gnuwin32.sourceforge.net/packages/zip.htm]()
-  or [direct download](http://downloads.sourceforge.net/gnuwin32/zip-3.0-bin.zip)
-- unzip: [https://gnuwin32.sourceforge.net/packages/unzip.htm]()
-  or [direct download](https://gnuwin32.sourceforge.net/downlinks/unzip-bin-zip.php)
+- zip: [https://gnuwin32.sourceforge.net/packages/zip.htm](https://gnuwin32.sourceforge.net/packages/zip.htm)
+or [direct download](http://downloads.sourceforge.net/gnuwin32/zip-3.0-bin.zip)
+- unzip: [https://gnuwin32.sourceforge.net/packages/unzip.htm](https://gnuwin32.sourceforge.net/packages/unzip.htm)
+or [direct download](https://gnuwin32.sourceforge.net/downlinks/unzip-bin-zip.php)
+
+#### Symlinks
+
+Most versions of Windows do not allow the creation on symlinks by default, SDKMAN UI will work
+around that by using copy, however this is a lot slower. You can enable development mode in windows
+see [https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development)
+for more information.
 
 ## Available platforms
 
@@ -38,7 +45,8 @@ Some platforms are not yet available as they are not yet setup and/or tested.
 
 ### Windows
 
-Download the latest version and extract the zip, then run the `install.cmd`. Then it should be available from the
+Download the latest version and extract the zip, then run the `install.cmd`. Then it should be
+available from the
 commandline as `sdkui`
 
 ## build steps:
