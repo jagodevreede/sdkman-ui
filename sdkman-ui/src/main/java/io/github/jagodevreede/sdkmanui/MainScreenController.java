@@ -208,7 +208,7 @@ public class MainScreenController implements Initializable {
         if (tableData == null) {
             return false;
         }
-        return this.tableData.stream().anyMatch(j -> j.getInstalled().isSelected());
+        return this.tableData.stream().anyMatch(VersionView::isInstalled);
     }
 
     private void install(String identifier, String version) {
