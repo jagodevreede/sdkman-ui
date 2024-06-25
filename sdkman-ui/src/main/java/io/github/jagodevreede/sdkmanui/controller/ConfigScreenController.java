@@ -24,6 +24,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class ConfigScreenController implements Initializable {
+    final String SYMLINK_CAPABLE = "Capable";
+    final String SYMLINK_NOT_CAPABLE = "Not capable";
 
     @FXML
     TextField zipExecutablePath;
@@ -32,7 +34,7 @@ public class ConfigScreenController implements Initializable {
     @FXML
     TextField tarExecutablePath;
     @FXML
-    Text symlinkState;
+    Text symlinkCapability;
 
     @FXML
     Button closeConfigButton;
@@ -49,21 +51,16 @@ public class ConfigScreenController implements Initializable {
         final String zipExecutablePropertyPath = properties.getProperty("zipExecutable");
         final String unzipExecutablePropertyPath = properties.getProperty("unzipExecutable");
         final String tarExecutablePropertyPath = properties.getProperty("tarExecutable");
-        final boolean canCreateSymlink = Boolean.parseBoolean(properties.getProperty("canCreateSymlink"));
-        final boolean hasSymlink = Boolean.parseBoolean(properties.getProperty("hasSymlink"));
+        final boolean hasSymlinkCapability = Boolean.parseBoolean(properties.getProperty("hasSymlinkCapability"));
 
         zipExecutablePath.setText(zipExecutablePropertyPath);
         unzipExecutablePath.setText(unzipExecutablePropertyPath);
         tarExecutablePath.setText(tarExecutablePropertyPath);
 
-        if (canCreateSymlink) {
-            if (hasSymlink) {
-                symlinkState.setText("connected");
-            } else {
-                symlinkState.setText("no connection");
-            }
+        if (hasSymlinkCapability) {
+            symlinkCapability.setText(SYMLINK_CAPABLE);
         } else {
-            symlinkState.setText("n/a");
+            symlinkCapability.setText(SYMLINK_NOT_CAPABLE);
         }
     }
 
@@ -82,14 +79,14 @@ public class ConfigScreenController implements Initializable {
         tarExecutablePath.setText(path);
     }
 
-    public void retrySymlinkCreation() {
+    public void checkSymlinkCapability() {
         final SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
         if (checkSymlink()) {
-            symlinkState.setText("connected");
-            sdkManUiPreferences.hasSymlink = true;
+            symlinkCapability.setText(SYMLINK_CAPABLE);
+            sdkManUiPreferences.hasSymlinkCapability = true;
         } else {
-            symlinkState.setText("no connection");
-            sdkManUiPreferences.hasSymlink = false;
+            symlinkCapability.setText(SYMLINK_NOT_CAPABLE);
+            sdkManUiPreferences.hasSymlinkCapability = false;
         }
     }
 

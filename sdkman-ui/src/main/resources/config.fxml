@@ -23,8 +23,8 @@
             <Button fx:id="closeConfigButton" mnemonicParsing="false" onMouseClicked="#closeConfigWindow" text="Cancel" />
         </buttons>
       </ButtonBar>
-      <Text layoutX="20.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Symlink connection:" />
-      <Button layoutX="518.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#retrySymlinkCreation" prefHeight="25.0" prefWidth="62.0" text="Connect" />
-      <Text fx:id="symlinkState" layoutX="135.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="n/a" />
+      <Text layoutX="20.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Symlink capability:" />
+      <Button layoutX="518.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#checkSymlinkCapability" prefHeight="25.0" prefWidth="62.0" text="Recheck" />
+      <Text fx:id="symlinkCapability" layoutX="135.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="n/a" />
    </children>
 </AnchorPane>
