@@ -196,7 +196,7 @@ public class MainScreenController implements Initializable {
         URL configFxml = Main.class.getClassLoader().getResource("config.fxml");
         Parent root = FXMLLoader.load(configFxml);
 
-        Scene scene = new Scene(root, 800, 580);
+        Scene scene = new Scene(root, 600, 400);
         Stage stage = new Stage();
         stage.setTitle("SDKMAN UI - configuration");
         stage.setScene(scene);
