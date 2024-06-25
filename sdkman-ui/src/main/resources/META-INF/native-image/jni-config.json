@@ -18,6 +18,56 @@
   "methods":[{"name":"<init>","parameterTypes":["int","int"] }]
 },
 {
+  "name":"com.sun.javafx.font.directwrite.D2D1_COLOR_F",
+  "fields":[
+    {"name":"a"}, 
+    {"name":"b"}, 
+    {"name":"g"}, 
+    {"name":"r"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.font.directwrite.D2D1_MATRIX_3X2_F",
+  "fields":[
+    {"name":"_11"}, 
+    {"name":"_12"}, 
+    {"name":"_21"}, 
+    {"name":"_22"}, 
+    {"name":"_31"}, 
+    {"name":"_32"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.font.directwrite.D2D1_PIXEL_FORMAT",
+  "fields":[
+    {"name":"alphaMode"}, 
+    {"name":"format"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.font.directwrite.D2D1_POINT_2F",
+  "fields":[
+    {"name":"x"}, 
+    {"name":"y"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.font.directwrite.D2D1_RENDER_TARGET_PROPERTIES",
+  "fields":[
+    {"name":"dpiX"}, 
+    {"name":"dpiY"}, 
+    {"name":"minLevel"}, 
+    {"name":"pixelFormat"}, 
+    {"name":"type"}, 
+    {"name":"usage"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.sun.javafx.font.directwrite.DWRITE_GLYPH_METRICS",
   "fields":[
     {"name":"advanceHeight"}, 

@@ -109,6 +109,10 @@
   "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
 },
 {
+  "name":"com.sun.prism.shader.Mask_TextureSuper_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
   "name":"com.sun.prism.shader.Solid_Color_Loader",
   "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
 },
@@ -156,12 +160,23 @@
   ]
 },
 {
+  "name":"io.github.jagodevreede.sdkmanui.controller.ConfigScreenController",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"saveAndCloseConfigWindow","parameterTypes":[] }
+  ]
+},
+{
   "name":"io.github.jagodevreede.sdkmanui.controller.MainScreenController",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
-    {"name":"mavenSelected","parameterTypes":[] }
+    {"name":"javaSelected","parameterTypes":[] }, 
+    {"name":"mavenSelected","parameterTypes":[] }, 
+    {"name":"openConfig","parameterTypes":[] }
   ]
 },
 {
@@ -332,6 +347,21 @@
   "name":"javafx.scene.Scene"
 },
 {
+  "name":"javafx.scene.control.Button",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"javafx.scene.control.ButtonBar",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getButtons","parameterTypes":[] }
+  ]
+},
+{
   "name":"javafx.scene.control.ButtonBase",
   "queryAllDeclaredMethods":true
 },
@@ -465,13 +495,28 @@
   "name":"javafx.scene.shape.SVGPath"
 },
 {
-  "name":"javafx.scene.shape.Shape"
+  "name":"javafx.scene.shape.Shape",
+  "queryAllDeclaredMethods":true,
+  "methods":[
+    {"name":"setStrokeType","parameterTypes":["javafx.scene.shape.StrokeType"] }, 
+    {"name":"setStrokeWidth","parameterTypes":["double"] }
+  ]
+},
+{
+  "name":"javafx.scene.shape.StrokeType",
+  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"javafx.scene.text.Font"
 },
 {
-  "name":"javafx.scene.text.Text"
+  "name":"javafx.scene.text.Text",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setText","parameterTypes":["java.lang.String"] }
+  ]
 },
 {
   "name":"javafx.scene.transform.Transform"
