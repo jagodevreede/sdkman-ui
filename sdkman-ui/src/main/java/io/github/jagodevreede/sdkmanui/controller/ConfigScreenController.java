@@ -2,6 +2,7 @@ package io.github.jagodevreede.sdkmanui.controller;
 
 import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
 import static io.github.jagodevreede.sdkman.api.SdkManUiPreferences.PROPERTY_LOCATION;
+import static io.github.jagodevreede.sdkmanui.ConfigurationUtil.checkSymlink;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -29,6 +31,8 @@ public class ConfigScreenController implements Initializable {
     TextField unzipExecutablePath;
     @FXML
     TextField tarExecutablePath;
+    @FXML
+    Text symlinkState;
 
     @FXML
     Button closeConfigButton;
@@ -45,9 +49,22 @@ public class ConfigScreenController implements Initializable {
         final String zipExecutablePropertyPath = properties.getProperty("zipExecutable");
         final String unzipExecutablePropertyPath = properties.getProperty("unzipExecutable");
         final String tarExecutablePropertyPath = properties.getProperty("tarExecutable");
+        final boolean canCreateSymlink = Boolean.parseBoolean(properties.getProperty("canCreateSymlink"));
+        final boolean hasSymlink = Boolean.parseBoolean(properties.getProperty("hasSymlink"));
+
         zipExecutablePath.setText(zipExecutablePropertyPath);
         unzipExecutablePath.setText(unzipExecutablePropertyPath);
         tarExecutablePath.setText(tarExecutablePropertyPath);
+
+        if (canCreateSymlink) {
+            if (hasSymlink) {
+                symlinkState.setText("connected");
+            } else {
+                symlinkState.setText("no connection");
+            }
+        } else {
+            symlinkState.setText("n/a");
+        }
     }
 
     public void browseZipExecutablePath() {
@@ -65,13 +82,24 @@ public class ConfigScreenController implements Initializable {
         tarExecutablePath.setText(path);
     }
 
-    public void saveAndCloseConfigWindow() throws IOException {
-        final SdkManUiPreferences preferences = SdkManUiPreferences.load();
-        preferences.zipExecutable = zipExecutablePath.getText();
-        preferences.unzipExecutable = unzipExecutablePath.getText();
-        preferences.tarExecutable = tarExecutablePath.getText();
+    public void retrySymlinkCreation() throws IOException {
+        final SdkManUiPreferences sdkManUiPreferences = SdkManUiPreferences.load();
+        if (checkSymlink()) {
+            symlinkState.setText("connected");
+            sdkManUiPreferences.hasSymlink = true;
+        } else {
+            symlinkState.setText("no connection");
+            sdkManUiPreferences.hasSymlink = false;
+        }
+    }
 
-        preferences.save();
+    public void saveAndCloseConfigWindow() throws IOException {
+        final SdkManUiPreferences sdkManUiPreferences = SdkManUiPreferences.load();
+        sdkManUiPreferences.zipExecutable = zipExecutablePath.getText();
+        sdkManUiPreferences.unzipExecutable = unzipExecutablePath.getText();
+        sdkManUiPreferences.tarExecutable = tarExecutablePath.getText();
+
+        sdkManUiPreferences.save();
 
         this.closeConfigWindow();
     }
