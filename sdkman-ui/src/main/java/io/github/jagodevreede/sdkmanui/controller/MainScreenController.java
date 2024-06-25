@@ -32,6 +32,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
@@ -198,8 +199,11 @@ public class MainScreenController implements Initializable {
 
         Scene scene = new Scene(root, 600, 400);
         Stage stage = new Stage();
-        stage.setTitle("SDKMAN UI - configuration");
+
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(table.getScene().getWindow());
         stage.setScene(scene);
+        stage.setTitle("SDKMAN UI - Configuration");
         stage.setResizable(false);
         stage.show();
     }
