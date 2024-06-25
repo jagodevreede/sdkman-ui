@@ -153,9 +153,9 @@ public class MainScreenController implements Initializable {
         TableColumn<VersionView, String> versionCol = getTableColumn("Version", "version");
         TableColumn<VersionView, String> distCol = getTableColumn("Dist", "dist");
         TableColumn<VersionView, String> identifierCol = getTableColumn("Identifier", "identifier");
-        TableColumn<VersionView, String> installedCol = getTableColumn("installed", "installed");
-        TableColumn<VersionView, String> availableCol = getTableColumn("available", "available");
-        TableColumn<VersionView, String> actionCol = getTableColumn("actions", "actions");
+        TableColumn<VersionView, String> installedCol = getTableColumn("Installed", "installed");
+        TableColumn<VersionView, String> availableCol = getTableColumn("Available", "available");
+        TableColumn<VersionView, String> actionCol = getTableColumn("Actions", "actions");
 
         table.getColumns().clear();
         if ("java".equals(selectedCandidate)) {
@@ -243,7 +243,7 @@ public class MainScreenController implements Initializable {
         if (tableData == null) {
             return false;
         }
-        return this.tableData.stream().anyMatch(j -> j.getInstalled().isSelected());
+        return this.tableData.stream().anyMatch(VersionView::isInstalled);
     }
 
     private void install(String identifier, String version) {
