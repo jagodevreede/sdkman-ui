@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
-import io.github.jagodevreede.sdkmanui.MainScreenController;
+import io.github.jagodevreede.sdkmanui.controller.MainScreenController;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
 import javafx.application.Platform;
