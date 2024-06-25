@@ -14,6 +14,7 @@ import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -32,9 +33,6 @@ public class Main extends Application {
         loadServiceRegistry();
         Parameters params = getParameters();
         List<String> list = params.getRaw();
-        for (String each : list) {
-            System.out.println(each);
-        }
 
         setApplicationIconImage(stage);
         if (!ConfigurationUtil.preCheck(stage)) {
@@ -44,6 +42,19 @@ public class Main extends Application {
         SERVICE_REGISTRY.getApi().registerShutdownHook();
 
         Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
+
+        if (!list.isEmpty()) {
+            if (list.size() == 3 && (list.get(0).equalsIgnoreCase("u") || list.get(0).equalsIgnoreCase("use"))) {
+                SERVICE_REGISTRY.getApi().changeLocal(list.get(1), list.get(2));
+                Platform.exit();
+                return;
+            }
+            if (list.size() == 3 && (list.get(0).equalsIgnoreCase("d") || list.get(0).equalsIgnoreCase("default"))) {
+                SERVICE_REGISTRY.getApi().changeGlobal(list.get(1), list.get(2));
+                Platform.exit();
+                return;
+            }
+        }
 
         URL mainFxml = Main.class.getClassLoader().getResource("main.fxml");
         Parent root = FXMLLoader.load(mainFxml);
