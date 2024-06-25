@@ -306,7 +306,7 @@ public class SdkManApi {
         var pathsSplit = paths.split(File.pathSeparator);
         for (var p : pathsSplit) {
             if (p.startsWith(pathName)) {
-                if (p.length() == paths.length()) {
+                if (p.length() == pathName.length()) {
                     return p;
                 }
                 String nameWithBin = p.substring(pathName.length() + 1);
