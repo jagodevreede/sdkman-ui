@@ -169,6 +169,10 @@
   "queryAllDeclaredMethods":true,
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
+    {"name":"browseTarExecutablePath","parameterTypes":[] }, 
+    {"name":"browseUnzipExecutablePath","parameterTypes":[] }, 
+    {"name":"browseZipExecutablePath","parameterTypes":[] }, 
+    {"name":"checkSymlinkCapability","parameterTypes":[] }, 
     {"name":"closeConfigWindow","parameterTypes":[] }, 
     {"name":"saveAndCloseConfigWindow","parameterTypes":[] }
   ]

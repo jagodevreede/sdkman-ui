@@ -3,7 +3,21 @@
   "name":"[Lcom.sun.glass.ui.Screen;"
 },
 {
+  "name":"[Ljava.lang.String;"
+},
+{
   "name":"com.sun.glass.ui.Application"
+},
+{
+  "name":"com.sun.glass.ui.CommonDialogs",
+  "methods":[{"name":"createFileChooserResult","parameterTypes":["java.lang.String[]","com.sun.glass.ui.CommonDialogs$ExtensionFilter[]","int"] }]
+},
+{
+  "name":"com.sun.glass.ui.CommonDialogs$ExtensionFilter",
+  "methods":[
+    {"name":"extensionsToArray","parameterTypes":[] }, 
+    {"name":"getDescription","parameterTypes":[] }
+  ]
 },
 {
   "name":"com.sun.glass.ui.Cursor",
@@ -316,6 +330,7 @@
   "methods":[
     {"name":"<init>","parameterTypes":["byte[]"] }, 
     {"name":"<init>","parameterTypes":["byte[]","java.lang.String"] }, 
+    {"name":"concat","parameterTypes":["java.lang.String"] }, 
     {"name":"getBytes","parameterTypes":[] }, 
     {"name":"getBytes","parameterTypes":["java.lang.String"] }, 
     {"name":"toCharArray","parameterTypes":[] }
