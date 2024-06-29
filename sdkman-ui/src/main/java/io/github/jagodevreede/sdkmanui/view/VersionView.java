@@ -1,14 +1,5 @@
 package io.github.jagodevreede.sdkmanui.view;
 
-import static io.github.jagodevreede.sdkmanui.view.Images.checkIcon;
-import static io.github.jagodevreede.sdkmanui.view.Images.globalIcon;
-import static io.github.jagodevreede.sdkmanui.view.Images.installIcon;
-import static io.github.jagodevreede.sdkmanui.view.Images.removeIcon;
-import static io.github.jagodevreede.sdkmanui.view.Images.useIcon;
-
-import java.io.IOException;
-import java.util.Optional;
-
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkmanui.controller.MainScreenController;
@@ -24,11 +15,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import static io.github.jagodevreede.sdkmanui.view.Images.checkIcon;
+import static io.github.jagodevreede.sdkmanui.view.Images.globalIcon;
+import static io.github.jagodevreede.sdkmanui.view.Images.installIcon;
+import static io.github.jagodevreede.sdkmanui.view.Images.removeIcon;
+import static io.github.jagodevreede.sdkmanui.view.Images.useIcon;
 
 public class VersionView {
 
@@ -197,20 +198,19 @@ public class VersionView {
 
     private Button createImageButton(Image image, EventHandler<? super MouseEvent> eventHandler) {
         Button button = new Button();
-        ImageView globalActionImage = createImageView(image);
-        button.setGraphic(globalActionImage);
+        ImageView imageView = createImageView(image);
+        button.setGraphic(imageView);
         button.setCursor(Cursor.HAND);
-        button.setPrefHeight(10.0);
-        button.setMaxHeight(10.0);
         button.setOnMouseClicked(eventHandler);
+        button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         return button;
     }
 
     private static ImageView createImageView(Image image) {
         ImageView imageView = new ImageView();
         imageView.setImage(image);
-        imageView.setFitHeight(10.0);
-        imageView.setFitWidth(10.0);
+        imageView.setFitHeight(15.0);
+        imageView.setFitWidth(15.0);
         return imageView;
     }
 
