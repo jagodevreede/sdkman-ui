@@ -2,6 +2,7 @@ package io.github.jagodevreede.sdkmanui.service;
 
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
+import io.github.jagodevreede.sdkmanui.controller.MainScreenController;
 import io.github.jagodevreede.sdkmanui.updater.GitHubRelease;
 import io.github.jagodevreede.sdkmanui.view.PopupView;
 import javafx.scene.control.ProgressIndicator;
@@ -40,5 +41,9 @@ public class ServiceRegistry {
 
     public SdkManUiPreferences getSdkManUiPreferences() {
         return sdkManUiPreferences;
+    }
+
+    public MainScreenController getMainScreen() {
+        return MainScreenController.getInstance();
     }
 }

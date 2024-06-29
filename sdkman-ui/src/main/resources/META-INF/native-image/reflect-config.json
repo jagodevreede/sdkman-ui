@@ -40,6 +40,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.sun.crypto.provider.HmacCore$HmacSHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.sun.crypto.provider.HmacCore$HmacSHA384",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -165,6 +169,7 @@
   "queryAllDeclaredMethods":true,
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
+    {"name":"closeConfigWindow","parameterTypes":[] }, 
     {"name":"saveAndCloseConfigWindow","parameterTypes":[] }
   ]
 },
@@ -200,6 +205,10 @@
   "methods":[
     {"name":"forName","parameterTypes":["java.lang.Module","java.lang.String"] }, 
     {"name":"getModule","parameterTypes":[] }
+  ],
+  "queriedMethods":[
+    {"name":"getRecordComponents","parameterTypes":[] }, 
+    {"name":"isRecord","parameterTypes":[] }
   ]
 },
 {
@@ -265,6 +274,13 @@
   "queriedMethods":[{"name":"isVarArgs","parameterTypes":[] }]
 },
 {
+  "name":"java.lang.reflect.RecordComponent",
+  "queriedMethods":[
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getType","parameterTypes":[] }
+  ]
+},
+{
   "name":"java.nio.Buffer"
 },
 {
@@ -285,10 +301,19 @@
   "name":"java.security.SecureRandomParameters"
 },
 {
+  "name":"java.security.interfaces.ECPrivateKey"
+},
+{
+  "name":"java.security.interfaces.ECPublicKey"
+},
+{
   "name":"java.security.interfaces.RSAPrivateKey"
 },
 {
   "name":"java.security.interfaces.RSAPublicKey"
+},
+{
+  "name":"java.sql.Date"
 },
 {
   "name":"java.util.Date"
@@ -332,7 +357,8 @@
     {"name":"setOnMouseClicked","parameterTypes":["javafx.event.EventHandler"] }, 
     {"name":"setPickOnBounds","parameterTypes":["boolean"] }, 
     {"name":"setScaleX","parameterTypes":["double"] }, 
-    {"name":"setScaleY","parameterTypes":["double"] }
+    {"name":"setScaleY","parameterTypes":["double"] }, 
+    {"name":"setVisible","parameterTypes":["boolean"] }
   ]
 },
 {
@@ -457,7 +483,11 @@
 {
   "name":"javafx.scene.layout.Pane",
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"getChildren","parameterTypes":[] }]
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getChildren","parameterTypes":[] }
+  ]
 },
 {
   "name":"javafx.scene.layout.Region",

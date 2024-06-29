@@ -1,5 +1,16 @@
 package io.github.jagodevreede.sdkmanui;
 
+import io.github.jagodevreede.sdkman.api.OsHelper;
+import io.github.jagodevreede.sdkmanui.controller.MainScreenController;
+import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
+import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
+import io.github.jagodevreede.sdkmanui.updater.UpdateChecker;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -8,20 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Objects;
 
-import io.github.jagodevreede.sdkman.api.OsHelper;
-import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
-import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static io.github.jagodevreede.sdkmanui.view.Images.appIcon;
 
 public class Main extends Application {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
@@ -56,16 +55,10 @@ public class Main extends Application {
             }
         }
 
-        URL mainFxml = Main.class.getClassLoader().getResource("main.fxml");
-        Parent root = FXMLLoader.load(mainFxml);
+        MainScreenController.getInstance();
 
-        Scene scene = new Scene(root, 800, 580);
-        stage.setResizable(false);
-
-        stage.setTitle("SDKMAN UI - " + ApplicationVersion.INSTANCE.getVersion());
-        stage.setScene(scene);
-        stage.show();
         checkInstalled();
+        new UpdateChecker().checkForUpdate();
     }
 
     private void checkInstalled() {
@@ -127,7 +120,6 @@ public class Main extends Application {
     private void setApplicationIconImage(Stage stage) {
         if (!OsHelper.isMac()) {
             // Only for mac other os are not needed
-            Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/sdkman_ui_logo.png")));
             stage.getIcons().add(appIcon);
             return;
         }

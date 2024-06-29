@@ -1,17 +1,12 @@
 package io.github.jagodevreede.sdkmanui.controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.regex.Pattern;
-
 import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
+import io.github.jagodevreede.sdkmanui.ApplicationVersion;
 import io.github.jagodevreede.sdkmanui.Main;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
@@ -33,13 +28,23 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+
+import static io.github.jagodevreede.sdkmanui.view.Images.appIcon;
+
 public class MainScreenController implements Initializable {
+    private static MainScreenController INSTANCE = getInstance();
     private static final Logger logger = LoggerFactory.getLogger(MainScreenController.class);
     private final SdkManApi api = ServiceRegistry.INSTANCE.getApi();
     private final PopupView popupView = ServiceRegistry.INSTANCE.getPopupView();
@@ -57,16 +62,18 @@ public class MainScreenController implements Initializable {
     TextField searchField;
     @FXML
     ProgressIndicator progressSpinner;
+    @FXML
+    Pane updatePane;
+    @FXML
+    Label updateLabel;
 
-    PauseTransition searchFieldPause = new PauseTransition(Duration.millis(300));
-
-    ObservableList<VersionView> tableData;
+    private final PauseTransition searchFieldPause = new PauseTransition(Duration.millis(300));
+    private ObservableList<VersionView> tableData;
+    private String selectedCandidate;
 
     public String getSelectedCandidate() {
         return selectedCandidate;
     }
-
-    private String selectedCandidate;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -282,4 +289,40 @@ public class MainScreenController implements Initializable {
         api.uninstall(identifier, version);
         Platform.runLater(this::loadData);
     }
+
+    public void setUpdateAvailable(String latestRelease) {
+        Platform.runLater(() -> {
+            updatePane.setVisible(true);
+            updateLabel.setText("Update available: " + latestRelease);
+        });
+    }
+
+    public static synchronized MainScreenController getInstance() {
+        if (INSTANCE == null) {
+            try {
+                URL mainFxml = MainScreenController.class.getClassLoader().getResource("main.fxml");
+                FXMLLoader loader = new FXMLLoader(mainFxml);
+                Parent root = loader.load();
+                MainScreenController controller = loader.getController();
+                Scene scene = new Scene(root, 800, 580);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setResizable(false);
+
+                stage.setTitle("SDKMAN UI - " + ApplicationVersion.INSTANCE.getVersion());
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.show();
+            //    if (!OsHelper.isMac()) {
+                    // Mac is handled in Main on general level
+
+                    stage.getIcons().add(appIcon);
+            //    }
+                INSTANCE = controller;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return INSTANCE;
+    }
+
 }
