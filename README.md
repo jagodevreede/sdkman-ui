@@ -3,11 +3,19 @@
 This project aims to offer a Graphical User Interface for [SDKMAN](https://sdkman.io/). And a out of
 the box implementation for windows.
 
+> [!NOTE]  
 > This project is still under heavy development and testing. And is not yet ready for public use!
 
-## Sneek peak at UI (osx):
+> [!NOTE]  
+> Primary focus for now is to create a UI for windows, other OS's will come later.
+> Also only Java and Maven candidates are available in the first version, oter candidates will be added later.
 
-![Ui sneek peak](https://jagodevreede.github.io/sdkman-ui-images/Animatie.gif)
+## Screenshots
+
+<p align="center">
+    <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/gallery1.jpg" />
+    <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/gallery2.jpg" />
+</p>
 
 ## Requirements
 
