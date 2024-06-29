@@ -28,6 +28,7 @@
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
         <gluonfx.plugin.version>1.0.22</gluonfx.plugin.version>
         <jna-platform.version>5.14.0</jna-platform.version>
+        <gson.version>2.11.0</gson.version>
     </properties>
 
     <build>
@@ -74,6 +75,12 @@
                 <artifactId>jna-platform</artifactId>
                 <version>${jna-platform.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>

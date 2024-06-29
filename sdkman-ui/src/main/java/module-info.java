@@ -8,6 +8,8 @@ module sdkmanui {
     requires jdk.crypto.cryptoki;
     requires java.desktop;
     requires com.sun.jna.platform;
+    requires java.net.http;
+    requires com.google.gson;
 
     exports io.github.jagodevreede.sdkmanui;
     opens io.github.jagodevreede.sdkmanui to javafx.fxml;

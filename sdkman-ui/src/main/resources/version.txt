@@ -1,1 +1,1 @@
-${project.version}
+v${project.version}

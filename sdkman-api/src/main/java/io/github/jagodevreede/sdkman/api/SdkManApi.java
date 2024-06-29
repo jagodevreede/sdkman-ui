@@ -1,9 +1,16 @@
 package io.github.jagodevreede.sdkman.api;
 
-import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalPath;
-import static io.github.jagodevreede.sdkman.api.OsHelper.getPlatformName;
-import static java.io.File.separator;
-import static java.net.http.HttpClient.newHttpClient;
+import io.github.jagodevreede.sdkman.api.domain.Candidate;
+import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
+import io.github.jagodevreede.sdkman.api.domain.Vendor;
+import io.github.jagodevreede.sdkman.api.files.FileUtil;
+import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
+import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
+import io.github.jagodevreede.sdkman.api.http.DownloadTask;
+import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
+import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,17 +28,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import io.github.jagodevreede.sdkman.api.domain.Candidate;
-import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
-import io.github.jagodevreede.sdkman.api.domain.Vendor;
-import io.github.jagodevreede.sdkman.api.files.FileUtil;
-import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
-import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
-import io.github.jagodevreede.sdkman.api.http.DownloadTask;
-import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
-import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalPath;
+import static io.github.jagodevreede.sdkman.api.OsHelper.getPlatformName;
+import static java.io.File.separator;
+import static java.net.http.HttpClient.newHttpClient;
 
 public class SdkManApi {
     private static Logger logger = LoggerFactory.getLogger(SdkManApi.class);
@@ -46,6 +46,7 @@ public class SdkManApi {
 
     private final CachedHttpClient client;
     private final String baseFolder;
+    private final String httpCacheFolder;
     private Map<String, String> changes = new HashMap<>();
     private Map<String, Boolean> hasEnvironmentConfigured = new HashMap<>();
     private boolean offline;
@@ -54,7 +55,8 @@ public class SdkManApi {
     public SdkManApi(String baseFolder) {
         this.baseFolder = baseFolder;
         this.versionFile = new File(baseFolder, "ui" + separator + "version.txt");
-        this.client = new CachedHttpClient(baseFolder + separator + ".http_cache", DEFAUL_CACHE_DURATION, newHttpClient());
+        this.httpCacheFolder = baseFolder + separator + ".http_cache";
+        this.client = new CachedHttpClient(httpCacheFolder, DEFAUL_CACHE_DURATION, newHttpClient());
     }
 
     public boolean isOffline() {
@@ -63,6 +65,10 @@ public class SdkManApi {
 
     public void setOffline(boolean offline) {
         this.offline = offline;
+    }
+
+    public String getHttpCacheFolder() {
+        return httpCacheFolder;
     }
 
     public List<Candidate> getCandidates() throws Exception {

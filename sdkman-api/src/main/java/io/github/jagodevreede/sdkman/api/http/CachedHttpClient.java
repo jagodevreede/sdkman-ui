@@ -11,6 +11,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Map;
 
 public class CachedHttpClient {
     private static Logger logger = LoggerFactory.getLogger(CachedHttpClient.class);
@@ -26,6 +27,10 @@ public class CachedHttpClient {
     }
 
     public String get(String url, boolean offline) throws IOException, InterruptedException {
+        return get(url, offline, Map.of());
+    }
+
+    public String get(String url, boolean offline, Map<String, String> headers) throws IOException, InterruptedException {
         var cacheFile = new File(cacheFolder, url.replaceAll("[^a-zA-Z0-9]", "_"));
         var fromCache = loadFromCache(cacheFile, offline);
         if (fromCache != null) {
@@ -37,7 +42,10 @@ public class CachedHttpClient {
             throw new IllegalStateException(message);
         }
         try {
-            HttpRequest getRequest = HttpRequest.newBuilder().uri(java.net.URI.create(url)).build();
+            var httpBuilder = HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(url));
+            headers.forEach((k, v) -> httpBuilder.setHeader(k, v));
+            var getRequest = httpBuilder.build();
             var response = httpClient.send(getRequest, java.net.http.HttpResponse.BodyHandlers.ofString());
             try (var cacheOutputStream = new java.io.FileOutputStream(cacheFile)) {
                 var bytes = response.body().getBytes();
@@ -47,7 +55,7 @@ public class CachedHttpClient {
             }
         } catch (ConnectException connectException) {
             logger.warn("Failed to connect, assuming you are offline");
-            return get(url, true);
+            return get(url, true, headers);
         }
     }
 
