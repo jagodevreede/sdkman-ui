@@ -35,7 +35,6 @@ public class VersionView {
 
     private final SimpleStringProperty vendor;
     private final SimpleStringProperty version;
-    private final SimpleStringProperty dist;
     private final SimpleStringProperty identifier;
     private final HBox installed = new HBox();
     private final HBox actions = new HBox();
@@ -57,7 +56,6 @@ public class VersionView {
         configureActionsColumn();
         vendor = new SimpleStringProperty(candidateVersion.vendor());
         version = new SimpleStringProperty(candidateVersion.version());
-        dist = new SimpleStringProperty(candidateVersion.dist());
         identifier = new SimpleStringProperty(candidateVersion.identifier());
         available = new CheckBox();
         configureInstalledColumn();
@@ -220,10 +218,6 @@ public class VersionView {
 
     public String getVersion() {
         return version.get();
-    }
-
-    public String getDist() {
-        return dist.get();
     }
 
     public String getIdentifier() {

@@ -155,16 +155,21 @@ public class MainScreenController implements Initializable {
 
     private void createColumns() {
         TableColumn<VersionView, String> vendorCol = getTableColumn("Vendor", "vendor");
+        vendorCol.setPrefWidth(105.0);
         TableColumn<VersionView, String> versionCol = getTableColumn("Version", "version");
-        TableColumn<VersionView, String> distCol = getTableColumn("Dist", "dist");
+        versionCol.setPrefWidth(80.0);
         TableColumn<VersionView, String> identifierCol = getTableColumn("Identifier", "identifier");
+        identifierCol.setPrefWidth(120.0);
         TableColumn<VersionView, String> installedCol = getTableColumn("Installed", "installed");
+        installedCol.setPrefWidth(70.0);
         TableColumn<VersionView, String> availableCol = getTableColumn("Available", "available");
+        availableCol.setPrefWidth(70.0);
         TableColumn<VersionView, String> actionCol = getTableColumn("Actions", "actions");
+        actionCol.setPrefWidth(110.0);
 
         table.getColumns().clear();
         if ("java".equals(selectedCandidate)) {
-            table.getColumns().addAll(vendorCol, versionCol, distCol, identifierCol, installedCol, availableCol, actionCol);
+            table.getColumns().addAll(vendorCol, versionCol, identifierCol, installedCol, availableCol, actionCol);
         } else {
             table.getColumns().addAll(versionCol, installedCol, availableCol, actionCol);
         }
@@ -312,11 +317,7 @@ public class MainScreenController implements Initializable {
                 stage.setTitle("SDKMAN UI - " + ApplicationVersion.INSTANCE.getVersion());
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
-            //    if (!OsHelper.isMac()) {
-                    // Mac is handled in Main on general level
-
-                    stage.getIcons().add(appIcon);
-            //    }
+                stage.getIcons().add(appIcon);
                 INSTANCE = controller;
             } catch (IOException e) {
                 throw new RuntimeException(e);
