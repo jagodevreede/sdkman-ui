@@ -1,14 +1,10 @@
 package io.github.jagodevreede.sdkmanui;
 
-import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
+import io.github.jagodevreede.sdkman.api.files.FileUtil;
 import io.github.jagodevreede.sdkman.api.files.ProcessStarter;
+import io.github.jagodevreede.sdkmanui.bundle.BundledSoftware;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
@@ -16,23 +12,38 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
+import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
+import static java.io.File.separator;
+
 public final class ConfigurationUtil {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationUtil.class);
 
     static boolean preCheck(Stage stage) throws IOException {
         SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
         if (!sdkManUiPreferences.donePreCheck) {
-            String unzipExecutable = testExecutable("unzip", stage);
+            if (BundledSoftware.getSoftwareStream() != null) {
+                File installFolder = new File(ServiceRegistry.INSTANCE.getApi().getBaseFolder(), "ui" + separator + "3rdparty");
+                FileUtil.deleteRecursively(installFolder);
+                BundledSoftware.extract(installFolder.getParentFile());
+                String exePostFix = isWindows() ? ".exe" : "";
+                sdkManUiPreferences.unzipExecutable = installFolder.getAbsolutePath() + separator + "bin" + separator + "unzip" + exePostFix;
+                sdkManUiPreferences.zipExecutable = installFolder.getAbsolutePath() + separator + "bin" + separator + "zip" + exePostFix;
+            }
+            String unzipExecutable = testExecutable(sdkManUiPreferences.unzipExecutable, stage);
             if (unzipExecutable == null) {
                 return false;
             }
-            String zipExecutable = testExecutable("zip", stage);
+            String zipExecutable = testExecutable(sdkManUiPreferences.zipExecutable, stage);
             if (zipExecutable == null) {
                 return false;
             }
             if (!isWindows()) {
                 sdkManUiPreferences.canCreateSymlink = true;
-                String tarExecutable = testExecutable("tar", stage);
+                String tarExecutable = testExecutable(sdkManUiPreferences.tarExecutable, stage);
                 if (tarExecutable == null) {
                     return false;
                 }

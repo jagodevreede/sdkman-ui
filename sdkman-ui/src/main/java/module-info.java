@@ -3,6 +3,7 @@ module sdkmanui {
     requires javafx.fxml;
     requires javafx.graphics;
     requires sdkmanapi;
+    requires sdkmanui_bundled_software;
     requires org.slf4j;
     requires org.slf4j.simple;
     requires jdk.crypto.cryptoki;

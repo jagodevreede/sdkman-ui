@@ -11,6 +11,7 @@
     <modules>
         <module>sdkman-ui</module>
         <module>sdkman-api</module>
+        <module>sdkman-bundled-software</module>
     </modules>
 
     <properties>
@@ -53,6 +54,11 @@
             <dependency>
                 <groupId>io.github.jagodevreede</groupId>
                 <artifactId>sdkman-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.jagodevreede</groupId>
+                <artifactId>sdkman-bundled-software</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

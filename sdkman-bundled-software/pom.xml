@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>sdkman-bundled-software</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>io.github.jagodevreede</groupId>
+        <artifactId>sdkman-ui-root</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <name>sdkman-bundled-software</name>
+
+    <properties>
+        <download.dir>${project.build.directory}/downloads</download.dir>
+        <unzip.dir>${project.build.directory}/unzipped</unzip.dir>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>windows-profile</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <!-- Configuration specific to Windows -->
+            <properties>
+                <zip-download.url>https://jagodevreede.github.io/sdkman-ui-images/zip-3.0-bin.zip</zip-download.url>
+                <unzip-download.url>https://jagodevreede.github.io/sdkman-ui-images/unzip-5.51-1-bin.zip
+                </unzip-download.url>
+            </properties>
+            <build>
+                <plugins>
+                    <!-- Plugin to download files -->
+                    <plugin>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>download-zip</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${zip-download.url}</url>
+                                    <outputDirectory>${download.dir}</outputDirectory>
+                                    <outputFileName>zip-3.0-bin.zip</outputFileName>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-unzip</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${unzip-download.url}</url>
+                                    <outputDirectory>${download.dir}</outputDirectory>
+                                    <outputFileName>unzip-5.51-1-bin.zip</outputFileName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Plugin to unzip files -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>unzip-zip</id>
+                                <phase>process-resources</phase>
+                                <configuration>
+                                    <tasks>
+                                        <unzip src="${download.dir}/zip-3.0-bin.zip" dest="${unzip.dir}/zip-3.0-bin"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+
+                            <execution>
+                                <id>unzip-unzip</id>
+                                <phase>process-resources</phase>
+                                <configuration>
+                                    <tasks>
+                                        <unzip src="${download.dir}/unzip-5.51-1-bin.zip"
+                                               dest="${unzip.dir}/unzip-5.51-1-bin"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Plugin to create a new combined zip file -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>3.7.1</version>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/zip.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <finalName>3rdparty</finalName>
+                            <outputDirectory>${build.outputDirectory}</outputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
