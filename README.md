@@ -13,8 +13,8 @@ the box implementation for windows.
 ## Screenshots
 
 <p align="center">
-    <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/gallery1.jpg" />
-    <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/gallery2.jpg" />
+    <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/gallery1.png" />
+    <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/gallery2.png" />
 </p>
 
 ## Requirements
