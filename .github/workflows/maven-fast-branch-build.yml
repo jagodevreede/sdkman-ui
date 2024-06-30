@@ -30,11 +30,25 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Build with Maven
         run: ./mvnw -B clean verify
+      - name: Delete latest_build to prepare for new one
+        uses: liudonghua123/delete-release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_name: "Latest build"
+          suppress_errors: false
       - name: Create tag
         # Only on main
         if: github.ref == 'refs/heads/main'
         run: |
           git tag -f latest_build
           git push -f origin latest_build
-#      - name: Build native
-#        run: ./mvnw gluonfx:build -f sdkman-ui
+      - name: Upload binaries to Latest release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          release_name: "Latest build"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: true
+          tag: latest_build
+          overwrite: true
+          body: "This is the latest build of skdman-ui, it should only be used for testing. Absolutely no guarantees are given. Please use at your own risk."

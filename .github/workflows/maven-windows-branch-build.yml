@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - '**'
+  release:
+    types: [created]
 
 env:
   JAVA_HOME: D:\a\sdkman-ui\sdkman-ui\jdk
@@ -47,15 +49,3 @@ jobs:
       - name: Assamble zip
         run: |
           ./mvnw org.apache.maven.plugins:maven-assembly-plugin:single@assemble-windows -f sdkman-ui
-      - name: Upload binaries to Latest release
-        if: contains(github.ref, 'latest_build')
-        uses: svenstaro/upload-release-action@v2
-        with:
-          release_name: "Latest build"
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: sdkman-ui/target/sdkman-ui-windows_x86_64-latest_build.zip
-          asset_name: sdkman-ui-windows_x86_64-latest_build.zip
-          prerelease: true
-          tag: latest_build
-          overwrite: true
-          body: "This is the latest build of skdman-ui, it should only be used for testing. Absolutely no guarantees are given. Please use at your own risk."

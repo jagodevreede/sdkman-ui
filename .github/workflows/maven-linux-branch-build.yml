@@ -1,10 +1,10 @@
 name: Linux branch build
 
 # Disable for now until we are going to release a linux artifact
-#on:
-#  push:
-#    branches:
-#      - 'main'
+on:
+  push:
+    branches:
+      - 'never'
 
 env:
   JAVA_HOME: /home/runner/jdk
