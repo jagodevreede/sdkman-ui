@@ -3,7 +3,7 @@ name: Windows branch build
 on:
   push:
     tags:
-      - '*'
+      - '**'
 
 env:
   JAVA_HOME: D:\a\sdkman-ui\sdkman-ui\jdk

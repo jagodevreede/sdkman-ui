@@ -1,10 +1,9 @@
 name: Linux branch build
 
-# Disable for now until we are going to release a linux artifact
-#on:
-#  push:
-#    branches:
-#      - 'main'
+on:
+  push:
+    branches:
+      - '**'
 
 env:
   JAVA_HOME: /home/runner/jdk
@@ -16,18 +15,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: robinraju/release-downloader@v1.10
+      - uses: actions/setup-java@v4
         with:
-          repository: "gluonhq/graal"
-          tag: "gluon-22.1.0.1-Final"
-          fileName: "*java17-linux-gluon*.tar.gz"
-      - name: Extract JDK
-        run: |
-          mkdir -p $JAVA_HOME
-          tar -xzf *java17-linux-gluon*.tar.gz -C $JAVA_HOME --strip-components=1
-      - name: Install libraries
-        run: |
-          sudo apt update && sudo apt install libasound2-dev libavcodec-dev libavformat-dev libavutil-dev libgl-dev libgtk-3-dev libpango1.0-dev libxtst-dev
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
@@ -38,8 +29,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Build with Maven
-        run: ./mvnw -B clean install
+        run: ./mvnw -B clean verify
       - name: Create tag
+        # Only on main
+        if: github.ref == 'refs/heads/main'
         run: |
           git tag -f latest_build
           git push -f origin latest_build
