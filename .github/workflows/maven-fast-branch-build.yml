@@ -1,0 +1,69 @@
+name: CI build
+
+on:
+  push:
+    branches:
+      - '**'
+
+env:
+  JAVA_HOME: /home/runner/jdk
+  GRAALVM_HOME: /home/runner/jdk
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          save-always: true
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Delete latest_build to prepare for new one
+        uses: sgpublic/delete-release-action@v1.1
+        with:
+          pre-release-drop: true
+          pre-release-keep-count: -1
+          pre-release-drop-tag: true
+          draft-drop: true
+          draft-drop-count: -1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Delete old latest tag
+        # Only on main
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git push --delete origin latest_build || true
+          git tag -d latest_build || true
+
+      - name: Build with Maven
+        run: ./mvnw -B clean verify
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: latest_build
+          release_name: "Latest build"
+          body: |
+            This is the latest build of skdman-ui, it should only be used for testing. Absolutely no guarantees are given. Please use at your own risk.
+          draft: false
+          prerelease: true
+      - name: Delete latest_build draft releases
+        uses: sgpublic/delete-release-action@v1.1
+        with:
+          draft-drop: true
+          draft-drop-count: -1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
