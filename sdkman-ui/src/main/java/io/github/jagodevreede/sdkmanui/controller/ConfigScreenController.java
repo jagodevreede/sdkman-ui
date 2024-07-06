@@ -1,16 +1,5 @@
 package io.github.jagodevreede.sdkmanui.controller;
 
-import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
-import static io.github.jagodevreede.sdkman.api.SdkManUiPreferences.PROPERTY_LOCATION;
-import static io.github.jagodevreede.sdkmanui.ConfigurationUtil.checkSymlink;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Properties;
-import java.util.ResourceBundle;
-
 import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
 import io.github.jagodevreede.sdkman.api.files.ProcessStarter;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
@@ -22,6 +11,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Properties;
+import java.util.ResourceBundle;
+
+import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
+import static io.github.jagodevreede.sdkman.api.SdkManUiPreferences.PROPERTY_LOCATION;
+import static io.github.jagodevreede.sdkmanui.ConfigurationUtil.checkSymlink;
 
 public class ConfigScreenController implements Initializable {
     final String SYMLINK_CAPABLE = "Capable";
@@ -66,17 +66,23 @@ public class ConfigScreenController implements Initializable {
 
     public void browseZipExecutablePath() {
         final String path = this.browsePath("zip", new Stage());
-        zipExecutablePath.setText(path);
+        if (path != null) {
+            zipExecutablePath.setText(path);
+        }
     }
 
     public void browseUnzipExecutablePath() {
         final String path = this.browsePath("unzip", new Stage());
-        unzipExecutablePath.setText(path);
+        if (path != null) {
+            unzipExecutablePath.setText(path);
+        }
     }
 
     public void browseTarExecutablePath() {
         final String path = this.browsePath("tar", new Stage());
-        tarExecutablePath.setText(path);
+        if (path != null) {
+            tarExecutablePath.setText(path);
+        }
     }
 
     public void checkSymlinkCapability() {
@@ -123,7 +129,10 @@ public class ConfigScreenController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(command, command + (isWindows() ? ".exe" : "")));
         fileChooser.setInitialFileName(command);
         File file = fileChooser.showOpenDialog(stage);
-        if (file == null || !ProcessStarter.testIfAvailable(file.getAbsolutePath())) {
+        if (file == null) {
+            return null;
+        }
+        if (!ProcessStarter.testIfAvailable(file.getAbsolutePath())) {
             String name = file != null ? file.getAbsolutePath() : command;
             ServiceRegistry.INSTANCE.getPopupView().showInformation("Failed to verify " + name, Alert.AlertType.INFORMATION);
             return null;
