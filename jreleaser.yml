@@ -1,0 +1,42 @@
+environment:
+  properties:
+    artifactsDir: sdkman-ui/target
+
+project:
+  name: sdkman-ui
+  description: This project aims to offer a Graphical User Interface for SDKMAN
+  authors:
+    - Jago de Vreede
+  license: Apache-2.0
+  links:
+    homepage: https://github.com/jagodevreede/sdkman-ui
+  java:
+    groupId: io.github.jagodevreede
+    version: 11
+  inceptionYear: 2024
+
+release:
+  github:
+    overwrite: true
+    changelog:
+      formatted: ALWAYS
+      preset: conventional-commits
+      contributors:
+        format: '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
+      hide:
+        categories:
+          - 'merge'
+          - 'build'
+          - '-'
+        contributors:
+          - 'GitHub'
+          - 'github-actions[bot]'
+      replacers:
+        - search: '\[chore\] '
+
+distributions:
+  sdkman-ui:
+    type: NATIVE_PACKAGE
+    artifacts:
+      - path: '{{artifactsDir}}/sdkman-ui-windows_x86_64-latest_build.zip'
+        platform: 'windows-x86_64'

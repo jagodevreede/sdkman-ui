@@ -44,6 +44,8 @@ Some platforms are not yet available as they are not yet setup and/or tested.
 | osx x86     |           | bash, zsh              |
 | osx arm     |           | bash, zsh              |
 
+Early access builds can be found here: [releases/tag/early-access](https://github.com/jagodevreede/sdkman-ui/releases/tag/early-access)
+
 ## Install instructions
 
 ### Windows

@@ -67,3 +67,7 @@ nb-configuration.xml
 #Windows stuff
 Thumbs.db:encryptable
 Thumbs.db
+
+#releaser
+out/
+JRELEASER_VERSION
