@@ -7,12 +7,12 @@ import io.github.jagodevreede.sdkman.api.files.FileUtil;
 import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
 import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
-import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
 import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -39,6 +40,8 @@ public class SdkManApi {
     public static final String BASE_URL = "https://api.sdkman.io/2";
     public static final Duration DEFAUL_CACHE_DURATION = Duration.of(1, ChronoUnit.HOURS);
     public static final String DEFAULT_SDKMAN_HOME = System.getProperty("user.home") + separator + ".sdkman";
+    private static final String exportCommand = OsHelper.isWindows() ? "set " : "export ";
+    private static final String newLine = OsHelper.isWindows() ? "\r\n" : "\n";
     /**
      * Used to extract name and dist from a identifier, first group is the name, second group is the dist
      */
@@ -51,6 +54,7 @@ public class SdkManApi {
     private Map<String, Boolean> hasEnvironmentConfigured = new HashMap<>();
     private boolean offline;
     private File versionFile;
+    private final List<String> exitMessages = new ArrayList<>();
 
     public SdkManApi(String baseFolder) {
         this.baseFolder = baseFolder;
@@ -71,9 +75,14 @@ public class SdkManApi {
         return httpCacheFolder;
     }
 
-    public List<Candidate> getCandidates() throws Exception {
-        String response = client.get(BASE_URL + "/candidates", offline);
-        return CandidateListParser.parse(response);
+    public List<Candidate> getCandidates() throws IOException, InterruptedException {
+        //String response = client.get(BASE_URL + "/candidates", offline);
+        //return CandidateListParser.parse(response);
+        // Use hard coded list for now as we don't support everything yet
+        return List.of(
+                new Candidate("java", "Java", "Java Development Kit"),
+                new Candidate("maven", "Maven", "Maven")
+        );
     }
 
     public List<CandidateVersion> getVersions(String candidate) throws IOException, InterruptedException {
@@ -193,7 +202,7 @@ public class SdkManApi {
 
     private String[] updatePathForCandidate(String candidate, String identifier, String paths[]) {
         var pathName = baseFolder + separator + "candidates" + separator + candidate;
-        return  Stream.of(paths).map(path -> {
+        return Stream.of(paths).map(path -> {
             if (path.startsWith(pathName)) {
                 return getCandidateFolder(candidate, identifier) + separator + "bin";
             }
@@ -254,8 +263,6 @@ public class SdkManApi {
                 if (!exitScriptFile.exists()) {
                     exitScriptFile.createNewFile();
                 }
-                final String exportCommand = OsHelper.isWindows() ? "set " : "export ";
-                final String newLine = OsHelper.isWindows() ? "\r\n" : "\n";
                 String[] paths = System.getenv("PATH").split(File.pathSeparator);
                 try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
                     for (Map.Entry<String, String> changesEntry : changes.entrySet()) {
@@ -264,9 +271,13 @@ public class SdkManApi {
                         logger.debug("Updating path entry for {}", changesEntry.getKey());
                         paths = updatePathForCandidate(candidate, identifier, paths);
                         writer.write(exportCommand + candidate.toUpperCase(Locale.ROOT) + "_HOME=" + getCandidateFolder(candidate, identifier) + newLine);
-                        writer.write("echo Now using " + identifier + " for " + candidate + newLine);
+                        exitMessages.add("Now using " + identifier + " for " + candidate);
                     }
                     writer.write(exportCommand + "PATH=" + pathsToString(paths) + newLine);
+                    for (String message : exitMessages) {
+                        writer.write("echo " + message + newLine);
+                        logger.debug("Exit message: {}", message);
+                    }
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -363,5 +374,52 @@ public class SdkManApi {
             }
         }
         return null;
+    }
+
+    private final File envFile = new File(".sdkmanrc");
+
+    public void useEnv() {
+        logger.debug("Using .sdkmanrc");
+        try (Scanner scanner = new Scanner(envFile)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (!line.startsWith("#")) {
+                    String[] parts = line.split("=");
+                    if (parts.length == 2) {
+                        this.changeLocal(parts[0].trim(), parts[1].trim());
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            exitMessages.add(".sdkmanrc not found");
+        }
+    }
+
+    public void initEnv() {
+        logger.debug("Initializing .sdkmanrc");
+        try (var writer = Files.newBufferedWriter(envFile.toPath())) {
+            writer.write("# Add key=value pairs of SDKs to use below" + newLine);
+            List<Candidate> candidates = getCandidates();
+            for (Candidate candidate : candidates) {
+                String currentCandidateFromPath = getCurrentCandidateFromPath(candidate.id());
+                if (currentCandidateFromPath != null) {
+                    if ("current".equals(currentCandidateFromPath)) {
+                        currentCandidateFromPath = resolveCurrentVersion(candidate.id());
+                    }
+                    writer.write(candidate.id() + "=" + currentCandidateFromPath + newLine);
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void clearEnv() {
+        logger.debug("Clearing .sdkmanrc");
+        if (envFile.delete()) {
+            exitMessages.add("Removed .sdkmanrc");
+        } else {
+            exitMessages.add(".sdkmanrc not found");
+        }
     }
 }

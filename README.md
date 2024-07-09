@@ -36,13 +36,13 @@ will use the bundled versions:
 
 Some platforms are not yet available as they are not yet setup and/or tested.
 
-| Platform    | Available |  
-|-------------|-----------|
-| Windows x86 |           |
-| Linux x86   |           |           
-| Linux arm   |           |
-| osx x86     |           |
-| osx arm     |           |
+| Platform    | Available | Supported envirmoments |
+|-------------|-----------|------------------------|
+| Windows x86 |           | Powershell; cmd        |
+| Linux x86   |           | bash, zsh              |      
+| Linux arm   |           | bash, zsh              |
+| osx x86     |           | bash, zsh              |
+| osx arm     |           | bash, zsh              |
 
 ## Install instructions
 

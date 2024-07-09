@@ -22,6 +22,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.List;
 
 import static io.github.jagodevreede.sdkmanui.view.Images.appIcon;
@@ -40,32 +41,56 @@ public class Main extends Application {
         }
         logger.debug("Starting SDKMAN UI");
         Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
-        loadServiceRegistry();
-
-        setApplicationIconImage(stage);
         if (!ConfigurationUtil.preCheck(stage)) {
             logger.warn("Failed pre-check");
             return;
         }
         SERVICE_REGISTRY.getApi().registerShutdownHook();
 
-        if (!list.isEmpty()) {
-            if (list.size() == 3 && (list.get(0).equalsIgnoreCase("u") || list.get(0).equalsIgnoreCase("use"))) {
-                SERVICE_REGISTRY.getApi().changeLocal(list.get(1), list.get(2));
-                Platform.exit();
-                return;
-            }
-            if (list.size() == 3 && (list.get(0).equalsIgnoreCase("d") || list.get(0).equalsIgnoreCase("default"))) {
-                SERVICE_REGISTRY.getApi().changeGlobal(list.get(1), list.get(2));
-                Platform.exit();
-                return;
-            }
+        if (handleArguments(list)) {
+            Platform.exit();
+            return;
         }
+        setApplicationIconImage(stage);
+        loadServiceRegistry();
 
         MainScreenController.getInstance();
 
         checkInstalled();
         new UpdateChecker().checkForUpdate();
+    }
+
+    private boolean handleArguments(List<String> list) throws IOException {
+        if (!list.isEmpty()) {
+            if (list.size() == 3 && checkArgument(list.get(0), "u", "use")) {
+                SERVICE_REGISTRY.getApi().changeLocal(list.get(1), list.get(2));
+                return true;
+            }
+            if (list.size() == 3 && checkArgument(list.get(0), "d", "default")) {
+                SERVICE_REGISTRY.getApi().changeGlobal(list.get(1), list.get(2));
+                return true;
+            }
+            if (list.size() >= 1 && checkArgument(list.get(0), "e", "env")) {
+                if (list.size() == 1 || checkArgument(list.get(1), "u", "use")) {
+                    SERVICE_REGISTRY.getApi().useEnv();
+                    return true;
+                }
+                if (list.size() >= 2 && checkArgument(list.get(1), "i", "install")) {
+                    SERVICE_REGISTRY.getApi().initEnv();
+                    return true;
+                }
+                if (list.size() >= 2 && checkArgument(list.get(1), "c", "clear")) {
+                    SERVICE_REGISTRY.getApi().clearEnv();
+                    return true;
+                }
+            }
+            logger.warn("Invalid arguments: {}", list);
+        }
+        return false;
+    }
+
+    private static boolean checkArgument(String argument, String... checks) {
+        return Arrays.stream(checks).anyMatch(s -> argument.equalsIgnoreCase(s));
     }
 
     private void checkInstalled() {
