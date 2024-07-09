@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - '**'
+    tags:
+      - '**'
 
 env:
   JAVA_HOME: /home/runner/jdk

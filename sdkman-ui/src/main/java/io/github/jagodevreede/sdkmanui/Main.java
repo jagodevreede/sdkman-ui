@@ -11,8 +11,12 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -28,10 +32,15 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        logger.debug("Starting SDKMAN UI");
-        loadServiceRegistry();
         Parameters params = getParameters();
         List<String> list = params.getRaw();
+        if (list.size() == 1 && list.get(0).equalsIgnoreCase("--no-console")) {
+            System.setOut(outputFile("stdout.log"));
+            System.setErr(outputFile("stderr.log"));
+        }
+        logger.debug("Starting SDKMAN UI");
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
+        loadServiceRegistry();
 
         setApplicationIconImage(stage);
         if (!ConfigurationUtil.preCheck(stage)) {
@@ -39,8 +48,6 @@ public class Main extends Application {
             return;
         }
         SERVICE_REGISTRY.getApi().registerShutdownHook();
-
-        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
 
         if (!list.isEmpty()) {
             if (list.size() == 3 && (list.get(0).equalsIgnoreCase("u") || list.get(0).equalsIgnoreCase("use"))) {
@@ -142,6 +149,10 @@ public class Main extends Application {
         loaderThread.setDaemon(true);
         loaderThread.setName("Osx dock icon loader");
         loaderThread.start();
+    }
+
+    protected PrintStream outputFile(String name) throws FileNotFoundException {
+        return new PrintStream(new BufferedOutputStream(new FileOutputStream(name)), true);
     }
 
     public static void main(String[] args) {
