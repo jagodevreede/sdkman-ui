@@ -191,15 +191,18 @@ public class SdkManApi {
         return isPathConfigured(pathName, paths);
     }
 
-    private String updatePathForCandidate(String candidate, String identifier) {
-        var paths = System.getenv("PATH").split(File.pathSeparator);
+    private String[] updatePathForCandidate(String candidate, String identifier, String paths[]) {
         var pathName = baseFolder + separator + "candidates" + separator + candidate;
-        return String.join(File.pathSeparator, Stream.of(paths).map(path -> {
+        return  Stream.of(paths).map(path -> {
             if (path.startsWith(pathName)) {
                 return getCandidateFolder(candidate, identifier) + separator + "bin";
             }
             return path;
-        }).toList());
+        }).toArray(String[]::new);
+    }
+
+    private String pathsToString(String paths[]) {
+        return String.join(File.pathSeparator, Stream.of(paths).toList());
     }
 
     private String getCandidateFolder(String candidate, String identifier) {
@@ -211,16 +214,6 @@ public class SdkManApi {
             return new File(baseFolder, "tmp/exit-script.sh");
         } else {
             return new File(baseFolder, "tmp\\exit-script.cmd");
-        }
-    }
-
-    private void createExitScript(String candidate, String identifier) throws IOException {
-        final String exportCommand = OsHelper.isWindows() ? "set " : "export ";
-
-        try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
-            writer.write(exportCommand + "PATH=" + updatePathForCandidate(candidate, identifier));
-            writer.write(exportCommand + candidate.toUpperCase(Locale.ROOT) + "_HOME=" + getCandidateFolder(candidate, identifier));
-            writer.write("echo Now using " + identifier + " for " + candidate);
         }
     }
 
@@ -261,9 +254,19 @@ public class SdkManApi {
                 if (!exitScriptFile.exists()) {
                     exitScriptFile.createNewFile();
                 }
-                for (Map.Entry<String, String> changesEntry : changes.entrySet()) {
-                    logger.debug("Creating exit entry for {}", changesEntry.getKey());
-                    createExitScript(changesEntry.getKey(), changesEntry.getValue());
+                final String exportCommand = OsHelper.isWindows() ? "set " : "export ";
+                final String newLine = OsHelper.isWindows() ? "\r\n" : "\n";
+                String[] paths = System.getenv("PATH").split(File.pathSeparator);
+                try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
+                    for (Map.Entry<String, String> changesEntry : changes.entrySet()) {
+                        var candidate = changesEntry.getKey();
+                        var identifier = changesEntry.getValue();
+                        logger.debug("Updating path entry for {}", changesEntry.getKey());
+                        paths = updatePathForCandidate(candidate, identifier, paths);
+                        writer.write(exportCommand + candidate.toUpperCase(Locale.ROOT) + "_HOME=" + getCandidateFolder(candidate, identifier) + newLine);
+                        writer.write("echo Now using " + identifier + " for " + candidate + newLine);
+                    }
+                    writer.write(exportCommand + "PATH=" + pathsToString(paths) + newLine);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
