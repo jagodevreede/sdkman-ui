@@ -21,7 +21,6 @@
         <attach.version>4.0.19</attach.version>
         <native.maven.plugin.version>0.10.1</native.maven.plugin.version>
         <main.class>io.github.jagodevreede.sdkmanui.Main</main.class>
-        <releaseName>latest_build</releaseName>
     </properties>
 
     <dependencies>
@@ -136,7 +135,7 @@
                     <execution>
                         <id>assemble-windows</id>
                         <configuration>
-                            <finalName>sdkman-ui-windows_x86_64-${releaseName}</finalName>
+                            <finalName>sdkman-ui-windows_x86_64-${project.version}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
                                 <descriptor>src/main/assembly/zip-windows.xml</descriptor>

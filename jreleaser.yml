@@ -38,5 +38,5 @@ distributions:
   sdkman-ui:
     type: NATIVE_PACKAGE
     artifacts:
-      - path: '{{artifactsDir}}/sdkman-ui-windows_x86_64-latest_build.zip'
+      - path: '{{artifactsDir}}/sdkman-ui-windows_x86_64-{{projectVersion}}.zip'
         platform: 'windows-x86_64'
