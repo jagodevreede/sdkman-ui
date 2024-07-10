@@ -113,25 +113,18 @@ public class MainScreenController implements Initializable {
                 String pathVersionInUse = api.getCurrentCandidateFromPath(selectedCandidate);
                 setGlobalVersionLabel(globalVersionInUse);
                 setPathVersionLabel(pathVersionInUse);
-                List<CandidateVersion> updatedVersions = api.getVersions(selectedCandidate).stream()
-                        .filter(j -> !showInstalledOnly.isSelected() || j.installed())
-                        .filter(j -> !showAvailableOnly.isSelected() || j.available())
-                        .filter(j -> {
-                            if (searchField == null || searchField.getText() == null || searchField.getText().isBlank()) {
-                                return true;
-                            } else {
-                                final boolean vendorMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.vendor()).find();
-                                final boolean identifierMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.identifier()).find();
-                                return vendorMatchesSearch || identifierMatchesSearch;
-                            }
-                        })
-                        .toList();
+                List<CandidateVersion> updatedVersions = api.getVersions(selectedCandidate).stream().filter(j -> !showInstalledOnly.isSelected() || j.installed()).filter(j -> !showAvailableOnly.isSelected() || j.available()).filter(j -> {
+                    if (searchField == null || searchField.getText() == null || searchField.getText().isBlank()) {
+                        return true;
+                    } else {
+                        final boolean vendorMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.vendor()).find();
+                        final boolean identifierMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.identifier()).find();
+                        return vendorMatchesSearch || identifierMatchesSearch;
+                    }
+                }).toList();
                 Platform.runLater(() -> {
                     if (tableData == null || tableData.size() != updatedVersions.size()) {
-                        tableData = FXCollections.observableArrayList(
-                                updatedVersions.stream()
-                                        .map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz)).toList()
-                        );
+                        tableData = FXCollections.observableArrayList(updatedVersions.stream().map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz)).toList());
                         table.setItems(tableData);
                     } else {
                         tableData.forEach(oldData -> {
@@ -201,9 +194,7 @@ public class MainScreenController implements Initializable {
 
     private static TableColumn<VersionView, String> getTableColumn(String title, String property) {
         TableColumn<VersionView, String> vendorCol = new TableColumn<>(title);
-        vendorCol.setCellValueFactory(
-                new PropertyValueFactory<>(property)
-        );
+        vendorCol.setCellValueFactory(new PropertyValueFactory<>(property));
         return vendorCol;
     }
 
@@ -242,10 +233,9 @@ public class MainScreenController implements Initializable {
     private void checkIfEnvironmentIsConfigured(String candidate) {
         // Only on windows, check if the environment is configured
         if (OsHelper.isWindows() && hasInstalledVersion() && !api.hasCandidateEnvironmentPathConfigured(candidate)) {
-            Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate,
-                    candidate + " is not in the environment (path variable) yet, do you want to add it?", () -> {
-                        api.configureWindowsEnvironment(candidate);
-                    }));
+            Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate, candidate + " is not in the environment (path variable) yet, do you want to add it?", () -> {
+                api.configureWindowsEnvironment(candidate);
+            }));
         }
     }
 

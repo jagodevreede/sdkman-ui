@@ -37,7 +37,7 @@ public class SdkManUiPreferences {
         return uiPreferences;
     }
 
-    public static SdkManUiPreferences getInstance()  {
+    public static SdkManUiPreferences getInstance() {
         if (INSTACE == null) {
             try {
                 INSTACE = load();

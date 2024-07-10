@@ -11,9 +11,7 @@ class VersionListParserTest {
     void parseJava_small() throws Exception {
         String resource = loadFileFromResource("api_examples/candidates/java/linux/versions/list/small.txt");
         var javaVersions = VersionListParser.parse(resource);
-        assertThat(javaVersions)
-                .isNotNull()
-                .hasSize(5);
+        assertThat(javaVersions).isNotNull().hasSize(5);
 
         assertThat(javaVersions.get(0).vendor()).isEqualTo("Corretto");
         assertThat(javaVersions.get(0).version()).isEqualTo("22");
@@ -25,17 +23,13 @@ class VersionListParserTest {
     void parseJava() throws Exception {
         String resource = loadFileFromResource("api_examples/candidates/java/linux/versions/list/out.txt");
         var javaVersions = VersionListParser.parse(resource);
-        assertThat(javaVersions)
-                .isNotNull()
-                .hasSize(165);
+        assertThat(javaVersions).isNotNull().hasSize(165);
     }
 
     @Test
     void parseOther() throws Exception {
         String resource = loadFileFromResource("api_examples/candidates/maven/versions/list/out.txt");
         var javaVersions = VersionListParser.parse(resource);
-        assertThat(javaVersions)
-                .isNotNull()
-                .hasSize(42);
+        assertThat(javaVersions).isNotNull().hasSize(42);
     }
 }

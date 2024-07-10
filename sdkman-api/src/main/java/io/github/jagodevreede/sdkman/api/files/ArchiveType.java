@@ -10,9 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public enum ArchiveType {
-    ZIP,
-    TAR_GZ,
-    TAR;
+    ZIP, TAR_GZ, TAR;
 
     public ArchiveInputStream<?> getInputStream(File file) throws IOException {
         return switch (this) {

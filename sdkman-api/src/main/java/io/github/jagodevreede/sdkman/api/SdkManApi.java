@@ -80,8 +80,7 @@ public class SdkManApi {
         //return CandidateListParser.parse(response);
         // Use hard coded list for now as we don't support everything yet
         return List.of(
-                new Candidate("java", "Java", "Java Development Kit"),
-                new Candidate("maven", "Maven", "Maven")
+                new Candidate("java", "Java", "Java Development Kit"), new Candidate("maven", "Maven", "Maven")
         );
     }
 
@@ -104,11 +103,7 @@ public class SdkManApi {
             var available = localAvailable.remove(identifier);
             if (matcher.matches()) {
                 var dist = matcher.group(2);
-                var name = vendors.stream()
-                        .filter(v -> Objects.equals(v.dist(), dist))
-                        .findFirst()
-                        .map(Vendor::vendor)
-                        .orElse("Unclassified");
+                var name = vendors.stream().filter(v -> Objects.equals(v.dist(), dist)).findFirst().map(Vendor::vendor).orElse("Unclassified");
                 result.add(new CandidateVersion(name, matcher.group(1), dist, identifier, true, available));
             } else {
                 result.add(new CandidateVersion("Unclassified", "", "none", identifier, true, available));
@@ -119,11 +114,7 @@ public class SdkManApi {
             Matcher matcher = IDENTIFIER_PATTERN.matcher(identifier);
             if (matcher.matches()) {
                 var dist = matcher.group(2);
-                var name = vendors.stream()
-                        .filter(v -> Objects.equals(v.dist(), dist))
-                        .findFirst()
-                        .map(Vendor::vendor)
-                        .orElse("Unclassified");
+                var name = vendors.stream().filter(v -> Objects.equals(v.dist(), dist)).findFirst().map(Vendor::vendor).orElse("Unclassified");
                 result.add(new CandidateVersion(name, matcher.group(1), dist, identifier, false, true));
             } else {
                 result.add(new CandidateVersion("Unclassified", "", "none", identifier, false, true));
@@ -172,8 +163,7 @@ public class SdkManApi {
         if (!candidatesFolder.exists()) {
             return List.of();
         }
-        return List.of(Objects.requireNonNull(candidatesFolder.list((dir, name) ->
-                new File(dir, name).isDirectory() && !"current".equals(name))));
+        return List.of(Objects.requireNonNull(candidatesFolder.list((dir, name) -> new File(dir, name).isDirectory() && !"current".equals(name))));
     }
 
     private List<String> getLocalAvailableVersions(String candidate) {
@@ -181,10 +171,7 @@ public class SdkManApi {
         if (!archiveFolder.exists()) {
             return List.of();
         }
-        return Stream.of(Objects.requireNonNull(archiveFolder.list((dir, name) ->
-                        new File(dir, name).isFile() && name.startsWith(candidate) && name.endsWith(".zip"))))
-                .map(name -> name.substring(candidate.length() + 1, name.length() - 4))
-                .toList();
+        return Stream.of(Objects.requireNonNull(archiveFolder.list((dir, name) -> new File(dir, name).isFile() && name.startsWith(candidate) && name.endsWith(".zip")))).map(name -> name.substring(candidate.length() + 1, name.length() - 4)).toList();
     }
 
     public String getCurrentCandidateFromPath(String candidate) {

@@ -224,7 +224,9 @@ public class VersionView {
         return identifier.get();
     }
 
-    public HBox getInstalled() { return installed; }
+    public HBox getInstalled() {
+        return installed;
+    }
 
     public boolean isInstalled() {
         return isInstalled;

@@ -51,15 +51,13 @@ public class DownloadTask implements CancelableTask {
             connection.connect();
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new IllegalStateException("Server returned HTTP " + connection.getResponseCode()
-                        + " " + connection.getResponseMessage());
+                throw new IllegalStateException("Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage());
             }
 
             // this will be useful to display download percentage
             // might be -1: server did not report the length
             int fileLength = connection.getContentLength();
-            try (InputStream input = connection.getInputStream();
-                 OutputStream output = new FileOutputStream(tempFile)) {
+            try (InputStream input = connection.getInputStream(); OutputStream output = new FileOutputStream(tempFile)) {
 
                 byte[] data = new byte[4096];
                 long total = 0;

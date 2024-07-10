@@ -83,8 +83,7 @@ public final class ConfigurationUtil {
         logger.debug("Testing for {}", command);
         if (!ProcessStarter.testIfAvailable(command)) {
             logger.info("{} is not on path", command);
-            ServiceRegistry.INSTANCE.getPopupView().showInformation(command + " is not available,\n" +
-                    "Please install it or in the next dialog point to where it is.");
+            ServiceRegistry.INSTANCE.getPopupView().showInformation(command + " is not available,\n" + "Please install it or in the next dialog point to where it is.");
             FileChooser fileChooser = new FileChooser();
             if (isWindows()) {
                 fileChooser.setInitialDirectory(new File("./"));

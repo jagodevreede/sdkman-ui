@@ -36,18 +36,15 @@ public final class FileUtil {
         return null;
     }
 
-    public static void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation)
-            throws IOException {
-        Files.walk(Paths.get(sourceDirectoryLocation))
-                .forEach(source -> {
-                    Path destination = Paths.get(destinationDirectoryLocation, source.toString()
-                            .substring(sourceDirectoryLocation.length()));
-                    try {
-                        Files.copy(source, destination);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+    public static void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation) throws IOException {
+        Files.walk(Paths.get(sourceDirectoryLocation)).forEach(source -> {
+            Path destination = Paths.get(destinationDirectoryLocation, source.toString().substring(sourceDirectoryLocation.length()));
+            try {
+                Files.copy(source, destination);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public static void makeAccessible(final File f) {

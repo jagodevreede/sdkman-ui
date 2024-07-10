@@ -42,8 +42,7 @@ public class CachedHttpClient {
             throw new IllegalStateException(message);
         }
         try {
-            var httpBuilder = HttpRequest.newBuilder()
-                    .uri(java.net.URI.create(url));
+            var httpBuilder = HttpRequest.newBuilder().uri(java.net.URI.create(url));
             headers.forEach((k, v) -> httpBuilder.setHeader(k, v));
             var getRequest = httpBuilder.build();
             var response = httpClient.send(getRequest, java.net.http.HttpResponse.BodyHandlers.ofString());

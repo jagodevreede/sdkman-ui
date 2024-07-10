@@ -17,6 +17,7 @@ public class TaskRunner {
         t.setUncaughtExceptionHandler(new GlobalExceptionHandler());
         t.start();
     }
+
     public static void run(Runnable task) {
         run(new Task<Void>() {
             @Override

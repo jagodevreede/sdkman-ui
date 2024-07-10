@@ -15,8 +15,7 @@ public class GitHubRelease {
     private final CachedHttpClient cachedHttpClient;
     private final ServiceRegistry serviceRegistry = ServiceRegistry.INSTANCE;
     private final static Map<String, String> HEADERS = Map.of(
-            "Accept", "application/vnd.github+json",
-            "X-GitHub-Api-Version", "2022-11-28"
+            "Accept", "application/vnd.github+json", "X-GitHub-Api-Version", "2022-11-28"
     );
 
     public GitHubRelease(String cacheFolder, HttpClient httpClient) {

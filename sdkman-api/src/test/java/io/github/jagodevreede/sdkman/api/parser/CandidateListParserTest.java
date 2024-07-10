@@ -11,9 +11,7 @@ class CandidateListParserTest {
     void parse() throws Exception {
         String resource = loadFileFromResource("api_examples/candidates/list/out.txt");
         var candidates = CandidateListParser.parse(resource);
-        assertThat(candidates)
-                .isNotNull()
-                .hasSize(72);
+        assertThat(candidates).isNotNull().hasSize(72);
 
         assertThat(candidates.get(0).id()).isEqualTo("activemq");
         assertThat(candidates.get(0).name()).isEqualTo("Apache ActiveMQ");

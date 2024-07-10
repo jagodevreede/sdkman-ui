@@ -29,7 +29,6 @@ class GitHubReleaseTest {
         subject = new GitHubRelease(cachedHttpClient);
     }
 
-
     @Test
     void getLatestRelease() throws IOException, InterruptedException {
         String httpResponse = loadFileFromResource("github_api_examples/releases/latest.json");
