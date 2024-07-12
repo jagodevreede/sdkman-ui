@@ -40,21 +40,25 @@ public class OsHelper {
         return System.getProperty("os.name").toLowerCase().contains("windows");
     }
 
-    public static String getGlobalPath() {
+    public static String getGlobalEnvironment(String key) {
         if (OsHelper.isWindows()) {
             try {
                 // Don't use reg.exe in windows as some policy's might forbid the execution of reg.exe
-                String pathQuery = Advapi32Util.registryGetStringValue(WinReg.HKEY_CURRENT_USER, "Environment", "Path");
+                String pathQuery = Advapi32Util.registryGetStringValue(WinReg.HKEY_CURRENT_USER, "Environment", key);
                 String[] split = pathQuery.split("\\s");
 
                 return split[split.length - 1].trim();
             } catch (IllegalStateException | Win32Exception e) {
                 // this can happen if there is no path set in the users environment variables
-                log.debug("Failed to get global path: {}", e.getMessage());
+                log.debug("Failed to get global {}}: {}", key, e.getMessage());
                 return "";
             }
         }
         return null;
+    }
+
+    public static String getGlobalPath() {
+        return getGlobalEnvironment("Path");
     }
 
     public static void setGlobalEnvironment(String key, String value) {

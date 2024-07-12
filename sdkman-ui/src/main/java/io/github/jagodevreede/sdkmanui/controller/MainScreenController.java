@@ -232,10 +232,17 @@ public class MainScreenController implements Initializable {
 
     private void checkIfEnvironmentIsConfigured(String candidate) {
         // Only on windows, check if the environment is configured
-        if (OsHelper.isWindows() && hasInstalledVersion() && !api.hasCandidateEnvironmentPathConfigured(candidate)) {
-            Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate, candidate + " is not in the environment (path variable) yet, do you want to add it?", () -> {
-                api.configureWindowsEnvironment(candidate);
-            }));
+        if (OsHelper.isWindows() && hasInstalledVersion()) {
+            if (!api.hasCandidateEnvironmentPathConfigured(candidate)) {
+                Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate, candidate + " is not in the environment (path variable) yet, do you want to add it?", () -> {
+                    api.configureWindowsEnvironment(candidate);
+                }));
+            }
+            if (!api.hasCandidateEnvironmentHomeConfigured(candidate)) {
+                Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate, candidate.toUpperCase() + "_HOME is not in the environment yet, do you want to add it?", () -> {
+                    api.configureEnvironmentHome(candidate);
+                }));
+            }
         }
     }
 
@@ -252,7 +259,7 @@ public class MainScreenController implements Initializable {
             api.install(identifier, version);
             Platform.runLater(() -> {
                 progressWindow.alert().close();
-                loadData();
+                loadData(() -> checkIfEnvironmentIsConfigured(selectedCandidate));
             });
         });
     }

@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalEnvironment;
 import static io.github.jagodevreede.sdkman.api.OsHelper.getGlobalPath;
 import static io.github.jagodevreede.sdkman.api.OsHelper.getPlatformName;
 import static java.io.File.separator;
@@ -51,7 +52,8 @@ public class SdkManApi {
     private final String baseFolder;
     private final String httpCacheFolder;
     private Map<String, String> changes = new HashMap<>();
-    private Map<String, Boolean> hasEnvironmentConfigured = new HashMap<>();
+    private Map<String, Boolean> hasEnvironmentPathConfigured = new HashMap<>();
+    private Map<String, Boolean> hasEnvironmentHomeConfigured = new HashMap<>();
     private boolean offline;
     private File versionFile;
     private final List<String> exitMessages = new ArrayList<>();
@@ -327,14 +329,25 @@ public class SdkManApi {
         return null;
     }
 
+    public boolean hasCandidateEnvironmentHomeConfigured(String candidate) {
+        return hasEnvironmentHomeConfigured.computeIfAbsent(candidate, (k) -> {
+            if (OsHelper.isWindows()) {
+                String globalEnv = getGlobalEnvironment(candidate.toUpperCase() + "_HOME");
+                return !"".equals(globalEnv);
+            }
+            // Only a thing on windows (yet)
+            return true;
+        });
+    }
+
     public boolean hasCandidateEnvironmentPathConfigured(String candidate) {
-        return hasEnvironmentConfigured.computeIfAbsent(candidate, (k) -> {
+        return hasEnvironmentPathConfigured.computeIfAbsent(candidate, (k) -> {
             if (OsHelper.isWindows()) {
                 String globalPath = getGlobalPath();
                 String candidateInPath = findCandidateInPath(candidate, globalPath);
                 return candidateInPath != null;
             }
-            // Only a thing on windows  (yet)
+            // Only a thing on windows (yet)
             return true;
         });
     }
@@ -342,9 +355,16 @@ public class SdkManApi {
     public void configureWindowsEnvironment(String candidate) {
         logger.debug("Configuring environment for {}", candidate);
         String path = getGlobalPath();
-        path = baseFolder + "\\candidates\\" + candidate + "\\current\\bin;" + path;
+        path = baseFolder + separator + "candidates" + separator + candidate + separator + "current" + separator + "bin;" + path;
         OsHelper.setGlobalPath(path);
-        hasEnvironmentConfigured.put(candidate, true);
+        hasEnvironmentPathConfigured.put(candidate, true);
+    }
+
+    public void configureEnvironmentHome(String candidate) {
+        logger.debug("Configuring environment home for {}", candidate);
+        String envHome = baseFolder + separator + "candidates" + separator + candidate + separator + "current";
+        OsHelper.setGlobalEnvironment(candidate.toUpperCase() + "_HOME", envHome);
+        hasEnvironmentHomeConfigured.put(candidate, true);
     }
 
     public String getBaseFolder() {
