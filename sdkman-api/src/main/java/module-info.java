@@ -3,6 +3,7 @@ module sdkmanapi {
     requires org.slf4j;
     requires org.apache.commons.compress;
     requires com.sun.jna.platform;
+    requires com.sun.jna;
     exports io.github.jagodevreede.sdkman.api;
     exports io.github.jagodevreede.sdkman.api.domain;
     exports io.github.jagodevreede.sdkman.api.http;

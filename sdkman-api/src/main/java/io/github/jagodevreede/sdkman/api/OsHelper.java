@@ -1,6 +1,7 @@
 package io.github.jagodevreede.sdkman.api;
 
 import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public class OsHelper {
                 String[] split = pathQuery.split("\\s");
 
                 return split[split.length - 1].trim();
-            } catch (IllegalStateException e) {
+            } catch (IllegalStateException | Win32Exception e) {
                 // this can happen if there is no path set in the users environment variables
                 log.debug("Failed to get global path: {}", e.getMessage());
                 return "";
