@@ -18,9 +18,7 @@ public class BundledSoftware {
 
     public static void extract(File destinationFolder) throws IOException {
         InputStream softwareStream = getSoftwareStream();
-        if (softwareStream == null) {
-            return;
-        }
+        destinationFolder.mkdirs();
         // extract zip file
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(softwareStream);

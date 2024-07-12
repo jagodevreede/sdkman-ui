@@ -25,7 +25,9 @@ public final class ConfigurationUtil {
     static boolean preCheck(Stage stage) throws IOException {
         SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
         if (!sdkManUiPreferences.donePreCheck) {
+            logger.debug("Pre-check not done, checking");
             if (BundledSoftware.getSoftwareStream() != null) {
+                logger.info("Extracting bundled software");
                 File installFolder = new File(ServiceRegistry.INSTANCE.getApi().getBaseFolder(), "ui" + separator + "3rdparty");
                 FileUtil.deleteRecursively(installFolder);
                 BundledSoftware.extract(installFolder.getParentFile());
