@@ -5,7 +5,7 @@
 
     <groupId>io.github.jagodevreede</groupId>
     <artifactId>sdkman-ui-root</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
     <packaging>pom</packaging>
 
     <modules>
