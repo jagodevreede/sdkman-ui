@@ -11,6 +11,10 @@
             <outputDirectory>/</outputDirectory>
         </fileSet>
         <fileSet>
+            <directory>${project.build.directory}/unzipped/zip-3.0-dep</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>${project.build.directory}/unzipped/unzip-5.51-1-bin</directory>
             <outputDirectory>/</outputDirectory>
         </fileSet>

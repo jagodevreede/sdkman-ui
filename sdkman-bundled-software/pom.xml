@@ -31,6 +31,7 @@
             <!-- Configuration specific to Windows -->
             <properties>
                 <zip-download.url>https://jagodevreede.github.io/sdkman-ui-images/zip-3.0-bin.zip</zip-download.url>
+                <zip-dep-download.url>https://jagodevreede.github.io/sdkman-ui-images/zip-3.0-dep.zip</zip-dep-download.url>
                 <unzip-download.url>https://jagodevreede.github.io/sdkman-ui-images/unzip-5.51-1-bin.zip
                 </unzip-download.url>
             </properties>
@@ -52,6 +53,18 @@
                                     <url>${zip-download.url}</url>
                                     <outputDirectory>${download.dir}</outputDirectory>
                                     <outputFileName>zip-3.0-bin.zip</outputFileName>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-zip-dep</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${zip-dep-download.url}</url>
+                                    <outputDirectory>${download.dir}</outputDirectory>
+                                    <outputFileName>zip-3.0-dep.zip</outputFileName>
                                 </configuration>
                             </execution>
                             <execution>
@@ -81,6 +94,18 @@
                                 <configuration>
                                     <tasks>
                                         <unzip src="${download.dir}/zip-3.0-bin.zip" dest="${unzip.dir}/zip-3.0-bin"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>unzip-zip-dep</id>
+                                <phase>process-resources</phase>
+                                <configuration>
+                                    <tasks>
+                                        <unzip src="${download.dir}/zip-3.0-dep.zip" dest="${unzip.dir}/zip-3.0-dep"/>
                                     </tasks>
                                 </configuration>
                                 <goals>
