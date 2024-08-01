@@ -28,7 +28,7 @@
         <commons-compress.version>1.26.2</commons-compress.version>
 
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
-        <gluonfx.plugin.version>1.0.22</gluonfx.plugin.version>
+        <gluonfx.plugin.version>1.0.23</gluonfx.plugin.version>
         <jna-platform.version>5.14.0</jna-platform.version>
         <gson.version>2.11.0</gson.version>
     </properties>
