@@ -3,9 +3,6 @@
 This project aims to offer a Graphical User Interface for [SDKMAN](https://sdkman.io/).
 
 > [!NOTE]  
-> This project is still under heavy development and testing. And is not yet ready for public use!
-
-> [!NOTE]  
 > Primary focus for now is to create a UI for windows, other OS's will come later.
 > Also only Java and Maven candidates are available in the first version, other candidates will be added later.
 
