@@ -36,13 +36,13 @@ will use the bundled versions:
 
 Some platforms are not yet available as they are not yet setup and/or tested.
 
-| Platform    | Available  | Supported envirmoments |
-|-------------|------------|------------------------|
-| Windows x86 | [v0.0.1](https://github.com/jagodevreede/sdkman-ui/releases/download/v0.0.1/sdkman-ui-windows_x86_64-latest_build.zip) | Powershell; cmd        |
-| Linux x86   |            | bash, zsh              |      
-| Linux arm   |            | bash, zsh              |
-| osx x86     |            | bash, zsh              |
-| osx arm     |            | bash, zsh              |
+| Platform    | Available                                                                                                       | Supported envirmoments |
+|-------------|-----------------------------------------------------------------------------------------------------------------|------------------------|
+| Windows x86 | [v0.0.3](https://github.com/jagodevreede/sdkman-ui/releases/download/v0.0.3/sdkman-ui-windows_x86_64-0.0.3.zip) | cmd        |
+| Linux x86   |                                                                                                                 | bash, zsh              |      
+| Linux arm   |                                                                                                                 | bash, zsh              |
+| osx x86     |                                                                                                                 | bash, zsh              |
+| osx arm     |                                                                                                                 | bash, zsh              |
 
 Early access builds can be found here: [releases/tag/early-access](https://github.com/jagodevreede/sdkman-ui/releases/tag/early-access)
 
@@ -51,7 +51,9 @@ Early access builds can be found here: [releases/tag/early-access](https://githu
 ### Windows
 
 Download the latest version and extract the zip, then run the `sdkman-ui.exe`. And follow on screen instructions. Then
-it should be available from the commandline as `sdkui`
+it should be available from the commandline as `sdkui`.
+
+Also see the following [video](https://www.youtube.com/watch?v=oyYtHrihThk)
 
 #### Symlinks
 
