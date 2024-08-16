@@ -154,19 +154,21 @@ public class Main extends Application {
             return;
         }
         Thread loaderThread = new Thread(() -> {
-            final java.awt.Toolkit defaultToolkit = java.awt.Toolkit.getDefaultToolkit();
-            final URL imageResource = getClass().getResource("/images/sdkman_ui_logo.png");
-            final java.awt.Image image = defaultToolkit.getImage(imageResource);
-
-            final java.awt.Taskbar taskbar = java.awt.Taskbar.getTaskbar();
-
+            // This code does not work in graal native, see https://github.com/oracle/graal/issues/8273
             try {
+                final java.awt.Toolkit defaultToolkit = java.awt.Toolkit.getDefaultToolkit();
+                final URL imageResource = getClass().getResource("/images/sdkman_ui_logo.png");
+                final java.awt.Image image = defaultToolkit.getImage(imageResource);
+
+                final java.awt.Taskbar taskbar = java.awt.Taskbar.getTaskbar();
                 //set icon for mac os (and other systems which do support this method)
                 taskbar.setIconImage(image);
             } catch (final UnsupportedOperationException e) {
                 logger.debug("The os does not support: 'taskbar.setIconImage'");
             } catch (final SecurityException e) {
                 logger.debug("There was a security exception for: 'taskbar.setIconImage'");
+            } catch (final UnsatisfiedLinkError e) {
+                logger.debug("No awt support in native image...");
             }
         });
         loaderThread.setDaemon(true);
