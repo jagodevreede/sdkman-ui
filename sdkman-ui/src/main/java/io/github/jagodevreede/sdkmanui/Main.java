@@ -1,6 +1,7 @@
 package io.github.jagodevreede.sdkmanui;
 
 import io.github.jagodevreede.sdkman.api.OsHelper;
+import io.github.jagodevreede.sdkman.api.domain.Candidate;
 import io.github.jagodevreede.sdkmanui.controller.MainScreenController;
 import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
@@ -24,6 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import static io.github.jagodevreede.sdkmanui.view.Images.appIcon;
 
@@ -46,15 +48,17 @@ public class Main extends Application {
             return;
         }
         SERVICE_REGISTRY.getApi().registerShutdownHook();
-
         if (handleArguments(list)) {
             Platform.exit();
             return;
         }
+        Future<List<Candidate>> futureCandidates = SERVICE_REGISTRY.getApi().getCandidates();
         setApplicationIconImage(stage);
         loadServiceRegistry();
 
-        MainScreenController.getInstance();
+        MainScreenController mainScreenController = MainScreenController.getInstance();
+        List<Candidate> candidateList = futureCandidates.get();
+        mainScreenController.setCandidates(candidateList);
 
         checkInstalled();
         new UpdateChecker().checkForUpdate();

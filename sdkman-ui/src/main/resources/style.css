@@ -6,3 +6,25 @@
 .sidebar-button {
     -fx-background-color: #09101d;
 }
+
+.scroll-pane {
+ -fx-background-color: #151f32;
+}
+
+.scroll-pane > .viewport {
+   -fx-background-color: #151f32;
+   -fx-control-inner-background: #151f32;
+}
+
+.scroll-pane {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane:focused {
+    -fx-background-insets: 0;
+}
+
+.scroll-pane .corner {
+    -fx-background-insets: 0;
+}

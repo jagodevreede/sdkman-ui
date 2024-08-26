@@ -7,6 +7,7 @@ import io.github.jagodevreede.sdkman.api.files.FileUtil;
 import io.github.jagodevreede.sdkman.api.files.ZipExtractTask;
 import io.github.jagodevreede.sdkman.api.http.CachedHttpClient;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
+import io.github.jagodevreede.sdkman.api.parser.CandidateListParser;
 import io.github.jagodevreede.sdkman.api.parser.VersionListParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -47,7 +51,6 @@ public class SdkManApi {
      * Used to extract name and dist from a identifier, first group is the name, second group is the dist
      */
     private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("(.*)-(.+)");
-
     private final CachedHttpClient client;
     private final String baseFolder;
     private final String httpCacheFolder;
@@ -77,13 +80,15 @@ public class SdkManApi {
         return httpCacheFolder;
     }
 
-    public List<Candidate> getCandidates() throws IOException, InterruptedException {
-        //String response = client.get(BASE_URL + "/candidates", offline);
-        //return CandidateListParser.parse(response);
-        // Use hard coded list for now as we don't support everything yet
-        return List.of(
-                new Candidate("java", "Java", "Java Development Kit"), new Candidate("maven", "Maven", "Maven")
-        );
+    public Future<List<Candidate>> getCandidates() {
+       return CompletableFuture.supplyAsync(() -> {
+           try {
+               String response = client.get(BASE_URL + "/candidates/list", offline);
+               return CandidateListParser.parse(response);
+           } catch (IOException | InterruptedException e) {
+               throw new RuntimeException(e);
+           }
+        });
     }
 
     public List<CandidateVersion> getVersions(String candidate) throws IOException, InterruptedException {
@@ -105,7 +110,11 @@ public class SdkManApi {
             var available = localAvailable.remove(identifier);
             if (matcher.matches()) {
                 var dist = matcher.group(2);
-                var name = vendors.stream().filter(v -> Objects.equals(v.dist(), dist)).findFirst().map(Vendor::vendor).orElse("Unclassified");
+                var name = vendors.stream()
+                        .filter(v -> Objects.equals(v.dist(), dist))
+                        .findFirst()
+                        .map(Vendor::vendor)
+                        .orElse("Unclassified");
                 result.add(new CandidateVersion(name, matcher.group(1), dist, identifier, true, available));
             } else {
                 result.add(new CandidateVersion("Unclassified", "", "none", identifier, true, available));
@@ -116,7 +125,11 @@ public class SdkManApi {
             Matcher matcher = IDENTIFIER_PATTERN.matcher(identifier);
             if (matcher.matches()) {
                 var dist = matcher.group(2);
-                var name = vendors.stream().filter(v -> Objects.equals(v.dist(), dist)).findFirst().map(Vendor::vendor).orElse("Unclassified");
+                var name = vendors.stream()
+                        .filter(v -> Objects.equals(v.dist(), dist))
+                        .findFirst()
+                        .map(Vendor::vendor)
+                        .orElse("Unclassified");
                 result.add(new CandidateVersion(name, matcher.group(1), dist, identifier, false, true));
             } else {
                 result.add(new CandidateVersion("Unclassified", "", "none", identifier, false, true));
@@ -173,7 +186,9 @@ public class SdkManApi {
         if (!archiveFolder.exists()) {
             return List.of();
         }
-        return Stream.of(Objects.requireNonNull(archiveFolder.list((dir, name) -> new File(dir, name).isFile() && name.startsWith(candidate) && name.endsWith(".zip")))).map(name -> name.substring(candidate.length() + 1, name.length() - 4)).toList();
+        return Stream.of(Objects.requireNonNull(archiveFolder.list((dir, name) -> new File(dir, name).isFile() && name.startsWith(candidate) && name.endsWith(".zip"))))
+                .map(name -> name.substring(candidate.length() + 1, name.length() - 4))
+                .toList();
     }
 
     public String getCurrentCandidateFromPath(String candidate) {
@@ -406,7 +421,7 @@ public class SdkManApi {
         logger.debug("Initializing .sdkmanrc");
         try (var writer = Files.newBufferedWriter(envFile.toPath())) {
             writer.write("# Add key=value pairs of SDKs to use below" + newLine);
-            List<Candidate> candidates = getCandidates();
+            List<Candidate> candidates = getCandidates().get();
             for (Candidate candidate : candidates) {
                 String currentCandidateFromPath = getCurrentCandidateFromPath(candidate.id());
                 if (currentCandidateFromPath != null) {
@@ -416,7 +431,7 @@ public class SdkManApi {
                     writer.write(candidate.id() + "=" + currentCandidateFromPath + newLine);
                 }
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
@@ -428,5 +443,15 @@ public class SdkManApi {
         } else {
             exitMessages.add(".sdkmanrc not found");
         }
+    }
+
+    public List<String> getLocalInstalledCandidates() {
+        var archiveFolder = new File(baseFolder + separator + "candidates");
+        if (!archiveFolder.exists()) {
+            return List.of();
+        }
+        return Stream.of(Objects.requireNonNull(archiveFolder.list((dir, name) -> new File(dir, name).isDirectory())))
+                .sorted()
+                .toList();
     }
 }

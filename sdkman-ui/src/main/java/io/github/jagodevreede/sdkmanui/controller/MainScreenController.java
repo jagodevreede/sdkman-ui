@@ -4,21 +4,27 @@ import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkman.api.ProgressInformation;
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
+import io.github.jagodevreede.sdkman.api.domain.Candidate;
 import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkman.api.http.DownloadTask;
 import io.github.jagodevreede.sdkmanui.ApplicationVersion;
 import io.github.jagodevreede.sdkmanui.Main;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
+import io.github.jagodevreede.sdkmanui.view.Images;
 import io.github.jagodevreede.sdkmanui.view.PopupView;
 import io.github.jagodevreede.sdkmanui.view.VersionView;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
@@ -28,7 +34,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -36,12 +48,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
+import static io.github.jagodevreede.sdkmanui.view.Images.IMAGES_DIRECTORY;
 import static io.github.jagodevreede.sdkmanui.view.Images.appIcon;
+import static io.github.jagodevreede.sdkmanui.view.Images.defaultCandidateIcon;
 
 public class MainScreenController implements Initializable {
     private static MainScreenController INSTANCE = getInstance();
@@ -66,6 +82,8 @@ public class MainScreenController implements Initializable {
     Pane updatePane;
     @FXML
     Label updateLabel;
+    @FXML
+    AnchorPane candidateListPane;
 
     private final PauseTransition searchFieldPause = new PauseTransition(Duration.millis(300));
     private ObservableList<VersionView> tableData;
@@ -81,6 +99,7 @@ public class MainScreenController implements Initializable {
         final SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
         showInstalledOnly.setSelected(sdkManUiPreferences.showInstalled);
         showAvailableOnly.setSelected(sdkManUiPreferences.showAvailable);
+        table.setPlaceholder(new Label("No versions found"));
         table.getColumns().clear();
 
         javaSelected();
@@ -113,22 +132,36 @@ public class MainScreenController implements Initializable {
                 String pathVersionInUse = api.getCurrentCandidateFromPath(selectedCandidate);
                 setGlobalVersionLabel(globalVersionInUse);
                 setPathVersionLabel(pathVersionInUse);
-                List<CandidateVersion> updatedVersions = api.getVersions(selectedCandidate).stream().filter(j -> !showInstalledOnly.isSelected() || j.installed()).filter(j -> !showAvailableOnly.isSelected() || j.available()).filter(j -> {
-                    if (searchField == null || searchField.getText() == null || searchField.getText().isBlank()) {
-                        return true;
-                    } else {
-                        final boolean vendorMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.vendor()).find();
-                        final boolean identifierMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.identifier()).find();
-                        return vendorMatchesSearch || identifierMatchesSearch;
-                    }
-                }).toList();
+                List<CandidateVersion> updatedVersions = api.getVersions(selectedCandidate)
+                        .stream()
+                        .filter(j -> !showInstalledOnly.isSelected() || j.installed())
+                        .filter(j -> !showAvailableOnly.isSelected() || j.available())
+                        .filter(j -> {
+                            if (searchField == null || searchField.getText() == null || searchField.getText()
+                                    .isBlank()) {
+                                return true;
+                            } else {
+                                final boolean vendorMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE)
+                                        .matcher(j.vendor())
+                                        .find();
+                                final boolean identifierMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE)
+                                        .matcher(j.identifier())
+                                        .find();
+                                return vendorMatchesSearch || identifierMatchesSearch;
+                            }
+                        })
+                        .toList();
                 Platform.runLater(() -> {
                     if (tableData == null || tableData.size() != updatedVersions.size()) {
-                        tableData = FXCollections.observableArrayList(updatedVersions.stream().map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz)).toList());
+                        tableData = FXCollections.observableArrayList(updatedVersions.stream()
+                                .map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz))
+                                .toList());
                         table.setItems(tableData);
                     } else {
                         tableData.forEach(oldData -> {
-                            var found = updatedVersions.stream().filter(j -> j.identifier().equals(oldData.getIdentifier())).findFirst();
+                            var found = updatedVersions.stream()
+                                    .filter(j -> j.identifier().equals(oldData.getIdentifier()))
+                                    .findFirst();
                             if (found.isPresent()) {
                                 oldData.update(found.get(), globalVersionInUse, pathVersionInUse);
                             } else {
@@ -299,6 +332,73 @@ public class MainScreenController implements Initializable {
         });
     }
 
+    public void setCandidates(List<Candidate> candidateList) {
+        List<Candidate> candidates = new ArrayList<>(candidateList);
+        final double prefHeight = 30.0;
+        final double prefPadding = 5.0;
+        int count = 0;
+        candidateListPane.setPrefHeight((prefHeight + prefPadding) * candidateList.size() + 5.0);
+        candidateListPane.getChildren().clear();
+        List<String> localInstalledCandidates = api.getLocalInstalledCandidates();
+        for (String candidateId : localInstalledCandidates) {
+            Candidate candidate = candidates.stream()
+                    .filter(c -> c.id().equals(candidateId))
+                    .findFirst()
+                    .orElse(new Candidate(candidateId, candidateId, ""));
+            addCandateToScrollPane(candidate, count, prefHeight, prefPadding);
+            count++;
+        }
+
+        for (Candidate candidate : candidates) {
+            if (localInstalledCandidates.contains(candidate.id())) {
+                // We already added it
+                continue;
+            }
+            addCandateToScrollPane(candidate, count, prefHeight, prefPadding);
+            count++;
+        }
+    }
+
+    private void addCandateToScrollPane(Candidate candidate, int count, double prefHeight, double prefPadding) {
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        hBox.setLayoutX(4.0);
+        hBox.setLayoutY(count * (prefHeight + prefPadding));
+        hBox.setPrefHeight(prefHeight);
+        hBox.setPrefWidth(175.0);
+        hBox.getStyleClass().add("sidebar-button");
+        hBox.setCursor(Cursor.HAND);
+        hBox.setPadding(new Insets(5.0));
+        ImageView imageView = new ImageView();
+        imageView.setFitHeight(18.0);
+        imageView.setFitWidth(18.0);
+        imageView.setPickOnBounds(true);
+        imageView.setPreserveRatio(true);
+        InputStream imageResourceAsStream = Images.class.getResourceAsStream(IMAGES_DIRECTORY + "candidates/" + candidate.id()+ ".png");
+        if (imageResourceAsStream == null) {
+            imageView.setImage(defaultCandidateIcon);
+        } else {
+            imageView.setImage(new Image(imageResourceAsStream));
+        }
+
+        hBox.getChildren().add(imageView);
+        Label label = new Label();
+        label.setPrefHeight(17.0);
+        label.setPrefWidth(115.0);
+        label.setTranslateX(5.0);
+        label.setStyle("-fx-text-fill: white;");
+        label.setText(candidate.name());
+        label.setTextFill(Color.WHITE);
+        hBox.getChildren().add(label);
+
+        EventHandler<MouseEvent> mouseEventConsumer = (MouseEvent event) -> {
+            switchCandidate(candidate.id());
+            event.consume();
+        };
+        hBox.setOnMouseClicked(mouseEventConsumer);
+        candidateListPane.getChildren().add(hBox);
+    }
+
     public static synchronized MainScreenController getInstance() {
         if (INSTANCE == null) {
             try {
@@ -322,5 +422,4 @@ public class MainScreenController implements Initializable {
         }
         return INSTANCE;
     }
-
 }
