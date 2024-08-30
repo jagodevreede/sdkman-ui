@@ -11,7 +11,6 @@ import io.github.jagodevreede.sdkmanui.ApplicationVersion;
 import io.github.jagodevreede.sdkmanui.Main;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
-import io.github.jagodevreede.sdkmanui.view.Images;
 import io.github.jagodevreede.sdkmanui.view.PopupView;
 import io.github.jagodevreede.sdkmanui.view.VersionView;
 import javafx.animation.PauseTransition;
@@ -34,8 +33,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -48,16 +45,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
-import static io.github.jagodevreede.sdkmanui.view.Images.IMAGES_DIRECTORY;
 import static io.github.jagodevreede.sdkmanui.view.Images.appIcon;
-import static io.github.jagodevreede.sdkmanui.view.Images.defaultCandidateIcon;
 
 public class MainScreenController implements Initializable {
     private static MainScreenController INSTANCE = getInstance();
@@ -369,19 +363,7 @@ public class MainScreenController implements Initializable {
         hBox.getStyleClass().add("sidebar-button");
         hBox.setCursor(Cursor.HAND);
         hBox.setPadding(new Insets(5.0));
-        ImageView imageView = new ImageView();
-        imageView.setFitHeight(18.0);
-        imageView.setFitWidth(18.0);
-        imageView.setPickOnBounds(true);
-        imageView.setPreserveRatio(true);
-        InputStream imageResourceAsStream = Images.class.getResourceAsStream(IMAGES_DIRECTORY + "candidates/" + candidate.id()+ ".png");
-        if (imageResourceAsStream == null) {
-            imageView.setImage(defaultCandidateIcon);
-        } else {
-            imageView.setImage(new Image(imageResourceAsStream));
-        }
 
-        hBox.getChildren().add(imageView);
         Label label = new Label();
         label.setPrefHeight(17.0);
         label.setPrefWidth(115.0);

@@ -78,7 +78,7 @@
             </Pane>
             <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="38.0" prefHeight="409.0" prefWidth="200.0" vbarPolicy="ALWAYS">
               <content>
-                <AnchorPane fx:id="candidateListPane" minHeight="0.0" minWidth="0.0" prefHeight="128.0" prefWidth="200.0" styleClass="scroll-pane">
+                <AnchorPane fx:id="candidateListPane" minHeight="0.0" minWidth="0.0" prefHeight="128.0" prefWidth="184.0" styleClass="scroll-pane">
                      <children>
                         <HBox alignment="CENTER_LEFT" layoutX="4.0" layoutY="48.0" prefHeight="30.0" prefWidth="175.0" styleClass="sidebar-button">
                            <children>
