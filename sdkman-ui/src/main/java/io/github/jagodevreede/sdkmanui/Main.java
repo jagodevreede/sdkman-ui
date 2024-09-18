@@ -5,7 +5,7 @@ import io.github.jagodevreede.sdkman.api.domain.Candidate;
 import io.github.jagodevreede.sdkmanui.controller.MainScreenController;
 import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
-import io.github.jagodevreede.sdkmanui.updater.UpdateChecker;
+import io.github.jagodevreede.sdkmanui.updater.AutoUpdater;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -32,12 +32,13 @@ import static io.github.jagodevreede.sdkmanui.view.Images.appIcon;
 public class Main extends Application {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final ServiceRegistry SERVICE_REGISTRY = ServiceRegistry.INSTANCE;
+    private final File installFolder = new File(SERVICE_REGISTRY.getApi().getBaseFolder(), "ui");
 
     @Override
     public void start(Stage stage) throws Exception {
         Parameters params = getParameters();
-        List<String> list = params.getRaw();
-        if (list.size() == 1 && list.get(0).equalsIgnoreCase("--no-console")) {
+        List<String> paramatersList = params.getRaw();
+        if (paramatersList.contains("--no-console")) {
             System.setOut(outputFile("stdout.log"));
             System.setErr(outputFile("stderr.log"));
         }
@@ -48,7 +49,7 @@ public class Main extends Application {
             return;
         }
         SERVICE_REGISTRY.getApi().registerShutdownHook();
-        if (handleArguments(list)) {
+        if (handleArguments(paramatersList)) {
             Platform.exit();
             return;
         }
@@ -61,7 +62,11 @@ public class Main extends Application {
         mainScreenController.setCandidates(candidateList);
 
         checkInstalled();
-        new UpdateChecker().checkForUpdate();
+        AutoUpdater.getInstance().ifPresent(AutoUpdater::checkForUpdate);
+        if (paramatersList.contains("--update-complete")) {
+            mainScreenController.showToast("Update installation complete");
+            updateScriptAndVersion();
+        }
     }
 
     private boolean handleArguments(List<String> list) throws IOException {
@@ -106,7 +111,7 @@ public class Main extends Application {
         }
     }
 
-    private static void install() {
+    private void install() {
         try {
             URL location = Main.class.getProtectionDomain().getCodeSource().getLocation();
             File currentExecutable = Paths.get(location.toURI()).toFile();
@@ -116,15 +121,13 @@ public class Main extends Application {
                 return;
             }
             File currentRunningFolder = currentExecutable.getParentFile();
-            File installFolder = new File(SERVICE_REGISTRY.getApi().getBaseFolder(), "ui");
             if (!currentRunningFolder.equals(installFolder)) {
                 SERVICE_REGISTRY.getPopupView().showConfirmation("Installation", "Do you want to install/update SDKMAN UI?", () -> {
                     installFolder.mkdirs();
                     boolean configured = SERVICE_REGISTRY.getApi().configureEnvironmentPath();
                     try {
                         Files.copy(currentExecutable.toPath(), new File(installFolder, currentExecutable.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("sdkui.cmd"), new File(installFolder, "sdkui.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("version.txt"), new File(installFolder, "version.txt").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        updateScriptAndVersion();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -139,6 +142,12 @@ public class Main extends Application {
         } catch (URISyntaxException e) {
             logger.warn("Failed to check if installed, assuming so");
         }
+    }
+
+    private void updateScriptAndVersion() throws IOException {
+        Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("sdkui.cmd"), new File(installFolder, "sdkui.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("update.cmd"), new File(installFolder, "update.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("version.txt"), new File(installFolder, "version.txt").toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
     private void loadServiceRegistry() {

@@ -22,6 +22,10 @@ public class PopupView {
 
     private Alert currentShownAlert;
 
+    public void showError(String message) {
+        showInformation(message, Alert.AlertType.ERROR);
+    }
+
     public void showError(Throwable e) {
         logger.warn(e.getMessage(), e);
         Alert currentShownAlertNow = currentShownAlert;
@@ -70,7 +74,7 @@ public class PopupView {
     public void showInformation(String message, Alert.AlertType alertType) {
         Platform.runLater(() -> {
             Alert alert = new Alert(alertType);
-            alert.setTitle("Information");
+            alert.setTitle(alertType.name());
             alert.setHeaderText(message);
 
             currentShownAlert = alert;

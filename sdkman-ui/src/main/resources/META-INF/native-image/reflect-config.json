@@ -197,7 +197,8 @@
     {"name":"<init>","parameterTypes":[] }, 
     {"name":"javaSelected","parameterTypes":[] }, 
     {"name":"mavenSelected","parameterTypes":[] }, 
-    {"name":"openConfig","parameterTypes":[] }
+    {"name":"openConfig","parameterTypes":[] }, 
+    {"name":"startUpdate","parameterTypes":[] }
   ]
 },
 {
@@ -355,7 +356,10 @@
 },
 {
   "name":"javafx.scene.Cursor",
-  "fields":[{"name":"HAND"}]
+  "fields":[
+    {"name":"DEFAULT"}, 
+    {"name":"HAND"}
+  ]
 },
 {
   "name":"javafx.scene.Group"
@@ -374,6 +378,7 @@
     {"name":"setPickOnBounds","parameterTypes":["boolean"] }, 
     {"name":"setScaleX","parameterTypes":["double"] }, 
     {"name":"setScaleY","parameterTypes":["double"] }, 
+    {"name":"setStyle","parameterTypes":["java.lang.String"] }, 
     {"name":"setVisible","parameterTypes":["boolean"] }
   ]
 },
@@ -427,6 +432,7 @@
   "name":"javafx.scene.control.Labeled",
   "queryAllDeclaredMethods":true,
   "methods":[
+    {"name":"setAlignment","parameterTypes":["javafx.geometry.Pos"] }, 
     {"name":"setFont","parameterTypes":["javafx.scene.text.Font"] }, 
     {"name":"setMnemonicParsing","parameterTypes":["boolean"] }, 
     {"name":"setText","parameterTypes":["java.lang.String"] }, 
@@ -438,6 +444,21 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"javafx.scene.control.ScrollPane",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setContent","parameterTypes":["javafx.scene.Node"] }, 
+    {"name":"setHbarPolicy","parameterTypes":["javafx.scene.control.ScrollPane$ScrollBarPolicy"] }, 
+    {"name":"setVbarPolicy","parameterTypes":["javafx.scene.control.ScrollPane$ScrollBarPolicy"] }
+  ]
+},
+{
+  "name":"javafx.scene.control.ScrollPane$ScrollBarPolicy",
+  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"javafx.scene.control.TableColumnBase"

@@ -59,7 +59,7 @@
                   <Image url="@images/settings-icon.png" />
                </image>
             </ImageView>
-            <Pane fx:id="updatePane" layoutX="6.0" layoutY="3.0" prefHeight="43.0" prefWidth="215.0" visible="false">
+            <Pane fx:id="updatePane" layoutX="6.0" layoutY="3.0" onMouseClicked="#startUpdate" prefHeight="43.0" prefWidth="215.0" visible="false">
                <children>
                   <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="2.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                      <cursor>
@@ -75,6 +75,9 @@
                      </font>
                   </Label>
                </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Pane>
             <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="38.0" prefHeight="409.0" prefWidth="200.0" vbarPolicy="ALWAYS">
               <content>
@@ -153,5 +156,10 @@
         </columns>
       </TableView>
       <ProgressIndicator fx:id="progressSpinner" layoutX="450.0" layoutY="300.0" scaleX="2.0" scaleY="2.0" />
+      <Pane fx:id="toastBar" layoutX="200.0" layoutY="540.0" prefHeight="40.0" prefWidth="400.0" style="-fx-background-color: ffffff; -fx-border-radius: 8px; -fx-border-color: #000000;" visible="false">
+         <children>
+            <Label fx:id="toastLabel" alignment="CENTER" layoutX="8.0" layoutY="12.0" prefHeight="17.0" prefWidth="379.0" text="Update has been installed" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>
