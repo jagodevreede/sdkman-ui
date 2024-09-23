@@ -123,20 +123,25 @@ public class Main extends Application {
             File currentRunningFolder = currentExecutable.getParentFile();
             if (!currentRunningFolder.equals(installFolder)) {
                 SERVICE_REGISTRY.getPopupView().showConfirmation("Installation", "Do you want to install/update SDKMAN UI?", () -> {
-                    installFolder.mkdirs();
-                    boolean configured = SERVICE_REGISTRY.getApi().configureEnvironmentPath();
                     try {
+                        installFolder.mkdirs();
+                        boolean configured = SERVICE_REGISTRY.getApi().configureEnvironmentPath();
+
+                        // REPLACE_EXISTING seems to fail on windows, so remove and copy
+                        new File(installFolder, currentExecutable.getName()).delete();
                         Files.copy(currentExecutable.toPath(), new File(installFolder, currentExecutable.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
                         updateScriptAndVersion();
+
+                        StringBuilder confirmationMessage = new StringBuilder("SDKMAN UI has been installed, you can now remove ");
+                        confirmationMessage.append(currentExecutable.getAbsolutePath());
+                        if (configured) {
+                            confirmationMessage.append("\nyou need to relogin to be able to use `sdkui` from the command line.");
+                        }
+                        SERVICE_REGISTRY.getPopupView().showInformation(confirmationMessage.toString());
                     } catch (IOException e) {
+                        SERVICE_REGISTRY.getPopupView().showError(e);
                         throw new RuntimeException(e);
                     }
-                    StringBuilder confirmationMessage = new StringBuilder("SDKMAN UI has been installed, you can now remove ");
-                    confirmationMessage.append(currentExecutable.getAbsolutePath());
-                    if (configured) {
-                        confirmationMessage.append("\nyou need to relogin to be able to use `sdkui` from the command line.");
-                    }
-                    SERVICE_REGISTRY.getPopupView().showInformation(confirmationMessage.toString());
                 });
             }
         } catch (URISyntaxException e) {
@@ -145,6 +150,10 @@ public class Main extends Application {
     }
 
     private void updateScriptAndVersion() throws IOException {
+        // REPLACE_EXISTING seems to fail on windows, so remove and copy
+        new File(installFolder, "sdkui.cmd").delete();
+        new File(installFolder, "update.cmd").delete();
+        new File(installFolder, "version.txt").delete();
         Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("sdkui.cmd"), new File(installFolder, "sdkui.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
         Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("update.cmd"), new File(installFolder, "update.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
         Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("version.txt"), new File(installFolder, "version.txt").toPath(), StandardCopyOption.REPLACE_EXISTING);

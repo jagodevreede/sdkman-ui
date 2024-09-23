@@ -18,7 +18,10 @@
     }, 
     {
       "pattern":"\\Qsdkui.cmd\\E"
-    }, 
+    },
+    {
+      "pattern":"\\Qupdate.cmd\\E"
+    },
     {
       "pattern":"\\Qsimplelogger.properties\\E"
     }, 
