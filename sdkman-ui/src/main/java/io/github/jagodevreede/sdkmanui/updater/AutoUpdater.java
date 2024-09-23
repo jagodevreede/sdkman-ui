@@ -58,6 +58,9 @@ public abstract class AutoUpdater {
         try {
             File tempFile = new File(serviceRegistry.getApi().getBaseFolder(), "tmp/ui-update.tmp");
             File destFile = new File(serviceRegistry.getApi().getBaseFolder(), "tmp/ui-update.bin");
+            // Remove old first, as download could be interrupted
+            tempFile.delete();
+            destFile.delete();
 
             Optional<String> downloadUrl = getDownloadUrl(getLatestGitHubRelease().getLatestReleaseDownloads());
             if (!downloadUrl.isPresent()) {

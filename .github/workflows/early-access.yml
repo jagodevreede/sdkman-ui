@@ -35,8 +35,6 @@ jobs:
           path: ~/.m2/repository
           save-always: true
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
 
       - name: Version
         id: vars
