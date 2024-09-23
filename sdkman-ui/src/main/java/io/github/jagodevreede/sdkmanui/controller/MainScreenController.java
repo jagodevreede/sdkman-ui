@@ -135,8 +135,8 @@ public class MainScreenController implements Initializable {
                     if (searchField == null || searchField.getText() == null || searchField.getText().isBlank()) {
                         return true;
                     } else {
-                        final boolean vendorMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.vendor()).find();
-                        final boolean identifierMatchesSearch = Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.identifier()).find();
+                        final boolean vendorMatchesSearch = j.vendor() != null && Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.vendor()).find();
+                        final boolean identifierMatchesSearch = j.identifier() != null && Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.identifier()).find();
                         return vendorMatchesSearch || identifierMatchesSearch;
                     }
                 }).toList();
