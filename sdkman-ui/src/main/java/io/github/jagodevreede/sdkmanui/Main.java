@@ -122,18 +122,29 @@ public class Main extends Application {
             }
             File currentRunningFolder = currentExecutable.getParentFile();
             if (!currentRunningFolder.equals(installFolder)) {
-                SERVICE_REGISTRY.getPopupView().showConfirmation("Installation", "Do you want to install/update SDKMAN UI?", () -> {
+                File installedExecutable = new File(installFolder, currentExecutable.getName());
+                SERVICE_REGISTRY.getPopupView().showConfirmation("Installation", "Do you want to " + (installedExecutable.exists() ? "update" : "install") + " SDKMAN UI?", () -> {
                     try {
                         installFolder.mkdirs();
                         boolean configured = SERVICE_REGISTRY.getApi().configureEnvironmentPath();
 
                         // REPLACE_EXISTING seems to fail on windows, so remove and copy
-                        new File(installFolder, currentExecutable.getName()).delete();
-                        Files.copy(currentExecutable.toPath(), new File(installFolder, currentExecutable.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        boolean oldVersion = installedExecutable.delete();
+                        Files.copy(currentExecutable.toPath(), installedExecutable.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         updateScriptAndVersion();
 
-                        StringBuilder confirmationMessage = new StringBuilder("SDKMAN UI has been installed, you can now remove ");
-                        confirmationMessage.append(currentExecutable.getAbsolutePath());
+                        StringBuilder confirmationMessage = new StringBuilder("SDKMAN UI has been ");
+                        if (oldVersion) {
+                            confirmationMessage.append("updated");
+                        } else {
+                            confirmationMessage.append("installed");
+                        }
+                        String tmpdir = System.getProperty("java.io.tmpdir");
+                        if (!currentRunningFolder.getAbsolutePath().startsWith(tmpdir)) {
+                            confirmationMessage.append(",\nyou can now remove ");
+                            confirmationMessage.append(currentExecutable.getAbsolutePath());
+                        }
+
                         if (configured) {
                             confirmationMessage.append("\nyou need to relogin to be able to use `sdkui` from the command line.");
                         }
