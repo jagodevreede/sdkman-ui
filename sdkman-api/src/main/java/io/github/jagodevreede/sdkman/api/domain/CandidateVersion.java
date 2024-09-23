@@ -15,7 +15,7 @@ public record CandidateVersion(String vendor, String version, String dist, Strin
             cmp = this.dist.compareTo(((CandidateVersion) o).dist);
             if (cmp != 0) return cmp;
         }
-        cmp = this.version.compareTo(((CandidateVersion) o).version);
+        cmp = this.version.compareTo(((CandidateVersion) o).version) * -1; // We want to sort in descending order
         if (cmp != 0) return cmp;
 
         cmp = this.identifier.compareTo(((CandidateVersion) o).identifier);
