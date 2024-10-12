@@ -1,0 +1,2 @@
+# Ignore generated native image resources as the correct ones are copied into this folder
+src/main/resources/META-INF/native-image

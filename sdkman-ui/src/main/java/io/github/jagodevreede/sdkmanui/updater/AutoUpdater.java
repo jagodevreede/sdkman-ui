@@ -64,13 +64,11 @@ public abstract class AutoUpdater {
 
             Optional<String> downloadUrl = getDownloadUrl(getLatestGitHubRelease().getLatestReleaseDownloads());
             if (!downloadUrl.isPresent()) {
-                ServiceRegistry.INSTANCE.getPopupView()
-                        .showError("Did not find the download url yet please visit the github page, and download the update manually");
+                ServiceRegistry.INSTANCE.getPopupView().showError("Did not find the download url yet please visit the github page, and download the update manually");
                 return;
             }
             DownloadTask downloadTask = new DownloadTask(downloadUrl.get(), tempFile, destFile, null);
-            PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView()
-                    .showProgress("Download of update in progress", downloadTask);
+            PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Download of update in progress", downloadTask);
             ProgressInformation progressInformation = current -> {
                 if (current > 0) {
                     Platform.runLater(() -> progressWindow.progressBar().setProgress(current / 100.0));

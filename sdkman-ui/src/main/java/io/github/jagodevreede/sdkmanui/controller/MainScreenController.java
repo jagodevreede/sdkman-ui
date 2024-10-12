@@ -101,7 +101,7 @@ public class MainScreenController implements Initializable {
         table.setPlaceholder(new Label("No versions found"));
         table.getColumns().clear();
 
-        javaSelected();
+        switchCandidate("java");
         showInstalledOnly.selectedProperty().addListener((observable, oldValue, newValue) -> {
             sdkManUiPreferences.showInstalled = newValue;
             sdkManUiPreferences.saveQuite();
@@ -214,14 +214,6 @@ public class MainScreenController implements Initializable {
         TableColumn<VersionView, String> vendorCol = new TableColumn<>(title);
         vendorCol.setCellValueFactory(new PropertyValueFactory<>(property));
         return vendorCol;
-    }
-
-    public void javaSelected() {
-        switchCandidate("java");
-    }
-
-    public void mavenSelected() {
-        switchCandidate("maven");
     }
 
     public void openConfig() throws IOException {
