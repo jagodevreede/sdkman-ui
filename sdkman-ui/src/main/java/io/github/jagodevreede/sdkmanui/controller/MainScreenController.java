@@ -59,6 +59,7 @@ public class MainScreenController implements Initializable {
     private static final Logger logger = LoggerFactory.getLogger(MainScreenController.class);
     private final SdkManApi api = ServiceRegistry.INSTANCE.getApi();
     private final PopupView popupView = ServiceRegistry.INSTANCE.getPopupView();
+    private final SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
     @FXML
     TableView<VersionView> table;
     @FXML
@@ -95,7 +96,6 @@ public class MainScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ServiceRegistry.INSTANCE.setProgressIndicator(progressSpinner);
-        final SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
         showInstalledOnly.setSelected(sdkManUiPreferences.showInstalled);
         showAvailableOnly.setSelected(sdkManUiPreferences.showAvailable);
         table.setPlaceholder(new Label("No versions found"));
@@ -141,6 +141,7 @@ public class MainScreenController implements Initializable {
                     }
                 }).toList();
                 Platform.runLater(() -> {
+                    showAvailableOnly.setVisible(sdkManUiPreferences.keepDownloadsAvailable);
                     if (tableData == null || tableData.size() != updatedVersions.size()) {
                         tableData = FXCollections.observableArrayList(updatedVersions.stream().map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz)).toList());
                         table.setItems(tableData);
@@ -180,10 +181,15 @@ public class MainScreenController implements Initializable {
 
         table.getColumns().clear();
         if ("java".equals(selectedCandidate)) {
-            table.getColumns().addAll(vendorCol, versionCol, identifierCol, installedCol, availableCol, actionCol);
+
+            table.getColumns().addAll(vendorCol, versionCol, identifierCol, installedCol);
         } else {
-            table.getColumns().addAll(versionCol, installedCol, availableCol, actionCol);
+            table.getColumns().addAll(versionCol, installedCol);
         }
+        if (sdkManUiPreferences.keepDownloadsAvailable) {
+            table.getColumns().add(availableCol);
+        }
+        table.getColumns().add(actionCol);
     }
 
     private void setPathVersionLabel(String pathVersionInUse) {

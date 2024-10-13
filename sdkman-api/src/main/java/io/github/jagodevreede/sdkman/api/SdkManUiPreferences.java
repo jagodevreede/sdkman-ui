@@ -17,6 +17,7 @@ public class SdkManUiPreferences {
     public boolean canCreateSymlink;
     public boolean showInstalled;
     public boolean showAvailable;
+    public boolean keepDownloadsAvailable;
 
     private static SdkManUiPreferences load() throws IOException {
         PROPERTY_LOCATION.getParentFile().mkdirs();
@@ -34,6 +35,7 @@ public class SdkManUiPreferences {
         uiPreferences.canCreateSymlink = Boolean.parseBoolean(properties.getProperty("canCreateSymlink", "true"));
         uiPreferences.showInstalled = Boolean.parseBoolean(properties.getProperty("showInstalled", "false"));
         uiPreferences.showAvailable = Boolean.parseBoolean(properties.getProperty("showAvailable", "false"));
+        uiPreferences.keepDownloadsAvailable = Boolean.parseBoolean(properties.getProperty("keepDownloadsAvailable", "true"));
         return uiPreferences;
     }
 
@@ -66,6 +68,7 @@ public class SdkManUiPreferences {
         properties.setProperty("canCreateSymlink", String.valueOf(canCreateSymlink));
         properties.setProperty("showInstalled", String.valueOf(showInstalled));
         properties.setProperty("showAvailable", String.valueOf(showAvailable));
+        properties.setProperty("keepDownloadsAvailable", String.valueOf(keepDownloadsAvailable));
         properties.store(new FileOutputStream(PROPERTY_LOCATION), null);
     }
 }

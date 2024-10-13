@@ -1,11 +1,11 @@
 package io.github.jagodevreede.sdkman.api.files;
 
+import io.github.jagodevreede.sdkman.api.SdkManApi;
+import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-
-import io.github.jagodevreede.sdkman.api.SdkManApi;
-import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
 
 public final class ZipExtractTask {
 
@@ -14,8 +14,9 @@ public final class ZipExtractTask {
     }
 
     public static void extract(File zipFile, File destination) {
+        final SdkManUiPreferences sdkManUiPreferences = SdkManUiPreferences.getInstance();
         try {
-            String unzipExecutable = SdkManUiPreferences.getInstance().unzipExecutable;
+            String unzipExecutable = sdkManUiPreferences.unzipExecutable;
             File tempDir = new File(SdkManApi.DEFAULT_SDKMAN_HOME, "tmp/out");
             FileUtil.deleteRecursively(tempDir);
             FileUtil.deleteRecursively(destination);
@@ -30,6 +31,10 @@ public final class ZipExtractTask {
             Files.move(sourceExtractedFolder.toPath(), destination.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+             if (sdkManUiPreferences.keepDownloadsAvailable) {
+                 zipFile.delete();
+             }
         }
     }
 }

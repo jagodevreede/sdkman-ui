@@ -7,7 +7,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -38,9 +40,13 @@ public class ConfigScreenController implements Initializable {
 
     @FXML
     Button closeConfigButton;
+    @FXML
+    CheckBox checkBoxKeepDownloadsAvailable;
 
     @Override
     public void initialize(final URL url, final ResourceBundle resourceBundle) {
+        // Don't use the sdkManUiPreferences here, as we then change the properties directly event without saving,
+        // this way we are disconnected from the sdkManUiPreferences.
         Properties properties = new Properties();
         try {
             properties.load(new FileInputStream(PROPERTY_LOCATION));
@@ -52,6 +58,7 @@ public class ConfigScreenController implements Initializable {
         final String unzipExecutablePropertyPath = properties.getProperty("unzipExecutable");
         final String tarExecutablePropertyPath = properties.getProperty("tarExecutable");
         final boolean canCreateSymlink = Boolean.parseBoolean(properties.getProperty("canCreateSymlink"));
+        final boolean keepDownloadsAvailable = Boolean.parseBoolean(properties.getProperty("keepDownloadsAvailable", "true"));
 
         zipExecutablePath.setText(zipExecutablePropertyPath);
         unzipExecutablePath.setText(unzipExecutablePropertyPath);
@@ -62,6 +69,8 @@ public class ConfigScreenController implements Initializable {
         } else {
             symlinkCapability.setText(SYMLINK_NOT_CAPABLE);
         }
+        checkBoxKeepDownloadsAvailable.setSelected(keepDownloadsAvailable);
+        checkBoxKeepDownloadsAvailable.setTooltip(new Tooltip("Keep downloads available in SDKMAN_HOME/archives when they are extracted,\nthis will require more diskpace."));
     }
 
     public void browseZipExecutablePath() {
@@ -102,6 +111,7 @@ public class ConfigScreenController implements Initializable {
         sdkManUiPreferences.zipExecutable = zipExecutablePath.getText();
         sdkManUiPreferences.unzipExecutable = unzipExecutablePath.getText();
         sdkManUiPreferences.tarExecutable = tarExecutablePath.getText();
+        sdkManUiPreferences.keepDownloadsAvailable = checkBoxKeepDownloadsAvailable.isSelected();
 
         try {
             sdkManUiPreferences.save();
@@ -126,7 +136,8 @@ public class ConfigScreenController implements Initializable {
             fileChooser.setInitialDirectory(new File("/usr/bin"));
         }
         fileChooser.setTitle("Where is the " + command + " executable");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(command, command + (isWindows() ? ".exe" : "")));
+        fileChooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter(command, command + (isWindows() ? ".exe" : "")));
         fileChooser.setInitialFileName(command);
         File file = fileChooser.showOpenDialog(stage);
         if (file == null) {
@@ -134,7 +145,8 @@ public class ConfigScreenController implements Initializable {
         }
         if (!ProcessStarter.testIfAvailable(file.getAbsolutePath())) {
             String name = file != null ? file.getAbsolutePath() : command;
-            ServiceRegistry.INSTANCE.getPopupView().showInformation("Failed to verify " + name, Alert.AlertType.INFORMATION);
+            ServiceRegistry.INSTANCE.getPopupView()
+                    .showInformation("Failed to verify " + name, Alert.AlertType.INFORMATION);
             return null;
         }
         return file.getAbsolutePath();
