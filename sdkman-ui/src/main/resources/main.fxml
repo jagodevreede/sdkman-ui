@@ -86,14 +86,11 @@
                         <HBox alignment="CENTER_LEFT" layoutX="4.0" layoutY="48.0" prefHeight="30.0" prefWidth="175.0" styleClass="sidebar-button">
                            <children>
                               <ImageView fitHeight="18.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@images/Apache_Feather_Logo.svg.png" />
-                                 </image>
                                  <HBox.margin>
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Label onMouseClicked="#mavenSelected" prefHeight="17.0" prefWidth="115.0" styleClass="sidebar-label" text="Maven" textFill="WHITE">
+                              <Label prefHeight="17.0" prefWidth="115.0" styleClass="sidebar-label" text="Maven" textFill="WHITE">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -106,12 +103,9 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" layoutX="4.0" layoutY="14.0" onMouseClicked="#javaSelected" prefHeight="30.0" prefWidth="175.0" styleClass="sidebar-button">
+                        <HBox alignment="CENTER_LEFT" layoutX="4.0" layoutY="14.0" prefHeight="30.0" prefWidth="175.0" styleClass="sidebar-button">
                            <children>
                               <ImageView fitHeight="18.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@images/candidates/logo-java.png" />
-                                 </image>
                                  <HBox.margin>
                                     <Insets right="10.0" />
                                  </HBox.margin>

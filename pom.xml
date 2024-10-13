@@ -21,21 +21,30 @@
         <maven.compiler.target>17</maven.compiler.target>
         <code-style.configFile>../code-style/eclipse-formatter-config.xml</code-style.configFile>
 
-        <junit.version>5.10.3</junit.version>
-        <assertj.version>3.26.0</assertj.version>
-        <mockito.version>5.12.0</mockito.version>
-        <slf4j.version>2.0.13</slf4j.version>
-        <commons-compress.version>1.26.2</commons-compress.version>
+        <junit.version>5.11.2</junit.version>
+        <assertj.version>3.26.3</assertj.version>
+        <mockito.version>5.14.1</mockito.version>
+        <slf4j.version>2.0.16</slf4j.version>
+        <commons-compress.version>1.27.1</commons-compress.version>
 
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
-        <gluonfx.plugin.version>1.0.22</gluonfx.plugin.version>
-        <jna-platform.version>5.14.0</jna-platform.version>
+        <gluonfx.plugin.version>1.0.24</gluonfx.plugin.version>
+        <jna-platform.version>5.15.0</jna-platform.version>
         <gson.version>2.11.0</gson.version>
+        <versions-maven-plugin.version>2.1</versions-maven-plugin.version>
     </properties>
 
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${versions-maven-plugin.version}</version>
+                    <configuration>
+                        <rulesUri>file://${session.executionRootDirectory}/version-update-rules.xml</rulesUri>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>com.gluonhq</groupId>
                     <artifactId>gluonfx-maven-plugin</artifactId>

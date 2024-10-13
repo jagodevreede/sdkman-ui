@@ -1,0 +1,21 @@
+<ruleset comparisonMethod="maven"
+         xmlns="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0 http://mojo.codehaus.org/versions-maven-plugin/xsd/rule-2.0.0.xsd">
+    <ignoreVersions>
+        <ignoreVersion type="regex">.*[Aa][Ll]?[Pp]?[Hh]?[Aa]?.*</ignoreVersion>
+        <ignoreVersion type="regex">.*[Bb][Ee]?[Tt]?[Aa]?.*</ignoreVersion>
+        <ignoreVersion type="regex">.*M.*</ignoreVersion>
+        <ignoreVersion type="regex">.*jboss-.*</ignoreVersion>
+        <ignoreVersion type="regex">.*\.jre[6-7]</ignoreVersion>
+        <ignoreVersion type="regex">.*\.jre17</ignoreVersion>
+        <ignoreVersion type="regex">.*\.jre18</ignoreVersion>
+        <ignoreVersion type="regex">.*[Rr][Cc].*</ignoreVersion>
+        <ignoreVersion type="regex">.*atlassian.*</ignoreVersion>
+        <ignoreVersion type="regex">.*preview.*</ignoreVersion>
+        <ignoreVersion type="regex">.*redhat.*</ignoreVersion>
+        <ignoreVersion type="regex">.*-does-not-exist</ignoreVersion>
+        <!-- The purpose of the following rule is to exclude betas on the format -byymmdd[.hhmm]  -->
+        <ignoreVersion type="regex">-b\d+(\.\d+)*$</ignoreVersion>
+    </ignoreVersions>
+</ruleset>

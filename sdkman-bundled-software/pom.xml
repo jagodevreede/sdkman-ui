@@ -140,7 +140,7 @@
                             </descriptors>
                             <appendAssemblyId>false</appendAssemblyId>
                             <finalName>3rdparty</finalName>
-                            <outputDirectory>${build.outputDirectory}</outputDirectory>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                         </configuration>
                         <executions>
                             <execution>
