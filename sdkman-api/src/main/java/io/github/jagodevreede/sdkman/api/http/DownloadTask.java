@@ -1,6 +1,10 @@
 package io.github.jagodevreede.sdkman.api.http;
 
-import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
+import io.github.jagodevreede.sdkman.api.ProgressInformation;
+import io.github.jagodevreede.sdkman.api.files.CancelableTask;
+import io.github.jagodevreede.sdkman.api.files.PostProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,11 +16,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-import io.github.jagodevreede.sdkman.api.ProgressInformation;
-import io.github.jagodevreede.sdkman.api.files.CancelableTask;
-import io.github.jagodevreede.sdkman.api.files.PostProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static io.github.jagodevreede.sdkman.api.OsHelper.isWindows;
 
 public class DownloadTask implements CancelableTask {
     private static final Logger logger = LoggerFactory.getLogger(DownloadTask.class);
@@ -56,27 +56,29 @@ public class DownloadTask implements CancelableTask {
 
             // this will be useful to display download percentage
             // might be -1: server did not report the length
-            int fileLength = connection.getContentLength();
+            final int fileLength = connection.getContentLength();
             try (InputStream input = connection.getInputStream(); OutputStream output = new FileOutputStream(tempFile)) {
-
-                byte[] data = new byte[4096];
-                long total = 0;
+                int lastUpdatedProgress = 0;
+                byte[] data = new byte[16 * 1024]; // 16 KB
+                int total = 0;
                 int count;
                 while ((count = input.read(data)) != -1) {
                     if (isCancelled()) {
-                        input.close();
                         return;
                     }
                     total += count;
                     if (fileLength > 0 && progressInformation != null) { // only if total length is known
-                        progressInformation.publishProgress((int) (total * 100 / fileLength));
+                        int current = (total / 1024) * 100 / (fileLength/ 1024); // calculate using kb not bytes as we can overflow
+                        // Don't over update, as every update is done in a separate thread (ui thread)
+                        // So only update whole percentage
+                        if (current > lastUpdatedProgress) {
+                            lastUpdatedProgress = current;
+                            progressInformation.publishProgress(current);
+                        }
                     }
                     output.write(data, 0, count);
                 }
             }
-
-            postProcess();
-            progressInformation.publishState("Moving download to destination");
         } catch (Exception e) {
             throw new IllegalStateException("Error in download: " + this.url, e);
         } finally {
@@ -90,6 +92,9 @@ public class DownloadTask implements CancelableTask {
         }
         if (tempFile.exists()) {
             try {
+                logger.debug("Downloaded {} to {}", this.url, tempFile.getAbsolutePath());
+                postProcess();
+                progressInformation.publishState("Moving download to destination");
                 // Windows doesn't like atomic file moves, as it keeps the file in use
                 if (isWindows()) {
                     Files.copy(tempFile.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
