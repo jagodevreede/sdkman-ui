@@ -69,9 +69,14 @@ public abstract class AutoUpdater {
             }
             DownloadTask downloadTask = new DownloadTask(downloadUrl.get(), tempFile, destFile, null);
             PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Download of update in progress", downloadTask);
-            ProgressInformation progressInformation = current -> {
-                if (current > 0) {
+            ProgressInformation progressInformation = new ProgressInformation() {
+                @Override
+                public void publishProgress(int current) {
                     Platform.runLater(() -> progressWindow.progressBar().setProgress(current / 100.0));
+                }
+                @Override
+                public void publishState(String state) {
+                    Platform.runLater(() -> progressWindow.alert().setHeaderText(state));
                 }
             };
             downloadTask.setProgressInformation(progressInformation);

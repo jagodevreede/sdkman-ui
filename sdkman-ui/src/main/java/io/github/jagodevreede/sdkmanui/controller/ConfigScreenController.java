@@ -136,8 +136,7 @@ public class ConfigScreenController implements Initializable {
             fileChooser.setInitialDirectory(new File("/usr/bin"));
         }
         fileChooser.setTitle("Where is the " + command + " executable");
-        fileChooser.getExtensionFilters()
-                .add(new FileChooser.ExtensionFilter(command, command + (isWindows() ? ".exe" : "")));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(command, command + (isWindows() ? ".exe" : "")));
         fileChooser.setInitialFileName(command);
         File file = fileChooser.showOpenDialog(stage);
         if (file == null) {
@@ -145,8 +144,7 @@ public class ConfigScreenController implements Initializable {
         }
         if (!ProcessStarter.testIfAvailable(file.getAbsolutePath())) {
             String name = file != null ? file.getAbsolutePath() : command;
-            ServiceRegistry.INSTANCE.getPopupView()
-                    .showInformation("Failed to verify " + name, Alert.AlertType.INFORMATION);
+            ServiceRegistry.INSTANCE.getPopupView().showInformation("Failed to verify " + name, Alert.AlertType.INFORMATION);
             return null;
         }
         return file.getAbsolutePath();

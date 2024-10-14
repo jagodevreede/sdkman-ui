@@ -283,9 +283,18 @@ public class MainScreenController implements Initializable {
     public void download(String identifier, String version, boolean install) {
         DownloadTask downloadTask = api.download(identifier, version);
         PopupView.ProgressWindow progressWindow = popupView.showProgress("Download of " + identifier + " " + version + " in progress", downloadTask);
-        ProgressInformation progressInformation = current -> {
-            if (current > 0) {
-                Platform.runLater(() -> progressWindow.progressBar().setProgress(current / 100.0));
+        ProgressInformation progressInformation = new ProgressInformation() {
+            @Override
+            public void publishProgress(int current) {
+                if (current > 0) {
+                    Platform.runLater(() -> progressWindow.progressBar().setProgress(current / 100.0));
+                } else {
+                    Platform.runLater(() -> progressWindow.progressBar().setProgress(-1));
+                }
+            }
+            @Override
+            public void publishState(String state) {
+                Platform.runLater(() -> progressWindow.alert().setHeaderText(state));
             }
         };
         downloadTask.setProgressInformation(progressInformation);

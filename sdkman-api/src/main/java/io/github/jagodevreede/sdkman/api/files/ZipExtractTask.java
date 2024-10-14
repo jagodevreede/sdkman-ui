@@ -32,9 +32,9 @@ public final class ZipExtractTask {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-             if (sdkManUiPreferences.keepDownloadsAvailable) {
-                 zipFile.delete();
-             }
+            if (!sdkManUiPreferences.keepDownloadsAvailable) {
+                zipFile.delete();
+            }
         }
     }
 }
