@@ -195,7 +195,7 @@
   "queryAllDeclaredMethods":true,
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
-    {"name":"openConfig","parameterTypes":[] },
+    {"name":"openConfig","parameterTypes":[] }, 
     {"name":"startUpdate","parameterTypes":[] }
   ]
 },
@@ -203,7 +203,7 @@
   "name":"io.github.jagodevreede.sdkmanui.view.VersionView",
   "methods":[
     {"name":"getActions","parameterTypes":[] }, 
-    {"name":"getAvailable","parameterTypes":[] },
+    {"name":"getAvailable","parameterTypes":[] }, 
     {"name":"getIdentifier","parameterTypes":[] }, 
     {"name":"getInstalled","parameterTypes":[] }, 
     {"name":"getVendor","parameterTypes":[] }, 

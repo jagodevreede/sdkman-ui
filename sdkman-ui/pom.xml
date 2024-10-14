@@ -22,6 +22,7 @@
         <main.class>io.github.jagodevreede.sdkmanui.Main</main.class>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
+        <native-image-folder-name>native-image-unknown</native-image-folder-name>
     </properties>
 
     <dependencies>
@@ -125,7 +126,7 @@
                             <outputDirectory>${basedir}/src/main/resources/META-INF/native-image</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/resources/META-INF/native-image-${os.name}</directory>
+                                    <directory>src/main/resources/META-INF/${native-image-folder-name}</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
@@ -169,4 +170,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <name>Mac OS X</name>
+                </os>
+            </activation>
+            <properties>
+                <native-image-folder-name>native-image-mac</native-image-folder-name>
+            </properties>
+        </profile>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <native-image-folder-name>native-image-windows</native-image-folder-name>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>
