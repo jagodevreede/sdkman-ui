@@ -26,6 +26,7 @@ public class DownloadTask implements CancelableTask {
     private final String identifier;
     private boolean cancelled = false;
     private ProgressInformation progressInformation;
+    private PostProcessor postProcessor;
 
     public DownloadTask(String url, File tempFile, File destination, String identifier) {
         this.url = url;
@@ -109,7 +110,7 @@ public class DownloadTask implements CancelableTask {
     }
 
     private void postProcess() throws IOException {
-        PostProcessor postProcessor = new PostProcessor(progressInformation);
+        postProcessor = new PostProcessor(progressInformation);
         postProcessor.postProcess(tempFile, identifier);
     }
 
@@ -119,6 +120,9 @@ public class DownloadTask implements CancelableTask {
 
     public void cancel() {
         cancelled = true;
+        if (postProcessor != null) {
+            postProcessor.cancel();
+        }
     }
 
     public void setProgressInformation(ProgressInformation progressInformation) {
