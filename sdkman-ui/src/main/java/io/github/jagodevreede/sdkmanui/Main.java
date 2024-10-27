@@ -3,6 +3,7 @@ package io.github.jagodevreede.sdkmanui;
 import io.github.jagodevreede.sdkman.api.OsHelper;
 import io.github.jagodevreede.sdkman.api.domain.Candidate;
 import io.github.jagodevreede.sdkmanui.controller.MainScreenController;
+import io.github.jagodevreede.sdkmanui.install.UiInstaller;
 import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.updater.AutoUpdater;
@@ -13,16 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -32,7 +28,6 @@ import static io.github.jagodevreede.sdkmanui.view.Images.appIcon;
 public class Main extends Application {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final ServiceRegistry SERVICE_REGISTRY = ServiceRegistry.INSTANCE;
-    private final File installFolder = new File(SERVICE_REGISTRY.getApi().getBaseFolder(), "ui");
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -61,11 +56,11 @@ public class Main extends Application {
         List<Candidate> candidateList = futureCandidates.get();
         mainScreenController.setCandidates(candidateList);
 
-        checkInstalled();
+        UiInstaller.getInstance().ifPresent(UiInstaller::checkInstalled);
         AutoUpdater.getInstance().ifPresent(AutoUpdater::checkForUpdate);
         if (paramatersList.contains("--update-complete")) {
             mainScreenController.showToast("Update installation complete");
-            updateScriptAndVersion();
+            UiInstaller.getInstance().ifPresent(UiInstaller::updateScriptAndVersion);
         }
     }
 
@@ -99,75 +94,7 @@ public class Main extends Application {
     }
 
     private static boolean checkArgument(String argument, String... checks) {
-        return Arrays.stream(checks).anyMatch(s -> argument.equalsIgnoreCase(s));
-    }
-
-    private void checkInstalled() {
-        final String applicationVersion = ApplicationVersion.INSTANCE.getVersion();
-        final String currentInstalledUIVersion = SERVICE_REGISTRY.getApi().getCurrentInstalledUIVersion();
-        if (!applicationVersion.equals(currentInstalledUIVersion)) {
-            logger.info("Running a different UI version {} then the one installed {}", applicationVersion, currentInstalledUIVersion);
-            install();
-        }
-    }
-
-    private void install() {
-        try {
-            URL location = Main.class.getProtectionDomain().getCodeSource().getLocation();
-            File currentExecutable = Paths.get(location.toURI()).toFile();
-            if (!currentExecutable.isFile()) {
-                logger.info("Not running executable, so unable to install");
-                // Probably dev mode, or failed to get location, we can't check for installation
-                return;
-            }
-            File currentRunningFolder = currentExecutable.getParentFile();
-            if (!currentRunningFolder.equals(installFolder)) {
-                File installedExecutable = new File(installFolder, currentExecutable.getName());
-                SERVICE_REGISTRY.getPopupView().showConfirmation("Installation", "Do you want to " + (installedExecutable.exists() ? "update" : "install") + " SDKMAN UI?", () -> {
-                    try {
-                        installFolder.mkdirs();
-                        boolean configured = SERVICE_REGISTRY.getApi().configureEnvironmentPath();
-
-                        // REPLACE_EXISTING seems to fail on windows, so remove and copy
-                        boolean oldVersion = installedExecutable.delete();
-                        Files.copy(currentExecutable.toPath(), installedExecutable.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        updateScriptAndVersion();
-
-                        StringBuilder confirmationMessage = new StringBuilder("SDKMAN UI has been ");
-                        if (oldVersion) {
-                            confirmationMessage.append("updated");
-                        } else {
-                            confirmationMessage.append("installed");
-                        }
-                        String tmpdir = System.getProperty("java.io.tmpdir");
-                        if (!currentRunningFolder.getAbsolutePath().startsWith(tmpdir)) {
-                            confirmationMessage.append(",\nyou can now remove ");
-                            confirmationMessage.append(currentExecutable.getAbsolutePath());
-                        }
-
-                        if (configured) {
-                            confirmationMessage.append("\nyou need to relogin to be able to use `sdkui` from the command line.");
-                        }
-                        SERVICE_REGISTRY.getPopupView().showInformation(confirmationMessage.toString());
-                    } catch (IOException e) {
-                        SERVICE_REGISTRY.getPopupView().showError(e);
-                        throw new RuntimeException(e);
-                    }
-                });
-            }
-        } catch (URISyntaxException e) {
-            logger.warn("Failed to check if installed, assuming so");
-        }
-    }
-
-    private void updateScriptAndVersion() throws IOException {
-        // REPLACE_EXISTING seems to fail on windows, so remove and copy
-        new File(installFolder, "sdkui.cmd").delete();
-        new File(installFolder, "update.cmd").delete();
-        new File(installFolder, "version.txt").delete();
-        Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("sdkui.cmd"), new File(installFolder, "sdkui.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("update.cmd"), new File(installFolder, "update.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(ApplicationVersion.class.getClassLoader().getResourceAsStream("version.txt"), new File(installFolder, "version.txt").toPath(), StandardCopyOption.REPLACE_EXISTING);
+        return Arrays.stream(checks).anyMatch(argument::equalsIgnoreCase);
     }
 
     private void loadServiceRegistry() {
