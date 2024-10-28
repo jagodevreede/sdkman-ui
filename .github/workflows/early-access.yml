@@ -2,7 +2,7 @@ name: Early Access
 
 on:
   push:
-    branches: [ main ]
+    branches: [ osx-build ]
 
 env:
   JAVA_VERSION: '17'
@@ -43,13 +43,13 @@ jobs:
           VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
 
-  assemble-windows:
-    needs: [ precheck ]
-    if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
-    #todo switch to main
-    uses: jagodevreede/sdkman-ui/.github/workflows/windows-assemble.yml@osx-build
-    with:
-      project-version: ${{ needs.precheck.outputs.VERSION }}
+#  assemble-windows:
+#    needs: [ precheck ]
+#    if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT REMOVEME')
+#    #todo switch to main
+#    uses: jagodevreede/sdkman-ui/.github/workflows/windows-assemble.yml@osx-build
+#    with:
+#      project-version: ${{ needs.precheck.outputs.VERSION }}
 
   assemble-osx:
     needs: [ precheck ]
@@ -60,7 +60,7 @@ jobs:
       project-version: ${{ needs.precheck.outputs.VERSION }}
 
   release:
-    needs: [ precheck, assemble-windows ]
+    needs: [ precheck, assemble-osx ]
     if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
     runs-on: ubuntu-latest
     steps:

@@ -45,6 +45,8 @@ jobs:
           Rename-Item -path "graalvm-svm-java17-windows-gluon-${{ env.gluon_version }}" jdk
       - name: Set env for JAVA_HOME
         run: echo "JAVA_HOME=D:\a\sdkman-ui\sdkman-ui\jdk" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Set env for GRAALVM_HOME
+        run: echo "GRAALVM_HOME=D:\a\sdkman-ui\sdkman-ui\jdk" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build with Maven
         run: ./mvnw -B clean install -DskipTests
