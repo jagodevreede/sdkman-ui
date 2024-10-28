@@ -149,6 +149,7 @@
                 <artifactId>gluonfx-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>${main.class}</mainClass>
+                    <graalvmHome>${env.JAVA_HOME}</graalvmHome>
                 </configuration>
             </plugin>
             <plugin>
@@ -163,6 +164,16 @@
                             <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
                                 <descriptor>src/main/assembly/zip-windows.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>assemble-osx</id>
+                        <configuration>
+                            <finalName>sdkman-ui-osx_x86_64-${project.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>src/main/assembly/zip-osx.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>

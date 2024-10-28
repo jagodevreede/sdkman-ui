@@ -1,0 +1,63 @@
+name: Assemble
+
+on:
+  workflow_call:
+    inputs:
+      project-version:
+        required: true
+        type: string
+
+env:
+  gluon_version: 22.1.0.1-Final
+
+jobs:
+  assemble:
+    name: 'Assemble Windows'
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: | 
+            ~/.m2/repository
+            ~/.gluon
+          save-always: true
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: Visual Studio shell
+        uses: egor-tensin/vs-shell@v1
+      - uses: robinraju/release-downloader@v1.10
+        with:
+          repository: "gluonhq/graal"
+          tag: "gluon-${{ env.gluon_version }}"
+          fileName: "*java17-windows-gluon-*.zip"
+      - name: Extract JDK
+        run: |
+          unzip graalvm-svm-java17-windows-gluon-${{ env.gluon_version }}.zip
+          Rename-Item -path "graalvm-svm-java17-windows-gluon-${{ env.gluon_version }}" jdk
+      - name: Set env for JAVA_HOME
+        run: echo "JAVA_HOME=D:\a\sdkman-ui\sdkman-ui\jdk" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Build with Maven
+        run: ./mvnw -B clean install -DskipTests
+      - name: Build native
+        run: ./mvnw gluonfx:build -f sdkman-ui
+      - name: Assamble zip
+        run: |
+          ./mvnw org.apache.maven.plugins:maven-assembly-plugin:single@assemble-windows -f sdkman-ui
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 1
+          name: artifacts-${{ runner.os }}-${{ runner.arch }}
+          path: |
+            sdkman-ui/target/sdkman-ui-*.zip
