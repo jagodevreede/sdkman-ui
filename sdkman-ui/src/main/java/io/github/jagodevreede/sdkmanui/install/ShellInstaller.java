@@ -1,6 +1,7 @@
 package io.github.jagodevreede.sdkmanui.install;
 
 import io.github.jagodevreede.sdkmanui.ApplicationVersion;
+import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,21 +10,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-class WindowsInstaller extends UiInstaller {
-    private static final Logger logger = LoggerFactory.getLogger(WindowsInstaller.class);
+public class ShellInstaller extends UiInstaller {
+    private static final Logger logger = LoggerFactory.getLogger(ShellInstaller.class);
+    private static final ServiceRegistry SERVICE_REGISTRY = ServiceRegistry.INSTANCE;
+    private final File installFolder = new File(SERVICE_REGISTRY.getApi().getBaseFolder(), "ui");
 
     @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
     @Override
     public void updateScriptAndVersion() {
-        // REPLACE_EXISTING seems to fail on windows, so remove and copy
-        new File(installFolder, "sdkui.cmd").delete();
-        new File(installFolder, "update.cmd").delete();
-        new File(installFolder, "version.txt").delete();
         try {
             Files.copy(ApplicationVersion.class.getClassLoader()
-                    .getResourceAsStream("sdkui.cmd"), new File(installFolder, "sdkui.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    .getResourceAsStream("sdkui.sh"), new File(installFolder, "sdkui.sh").toPath(), StandardCopyOption.REPLACE_EXISTING);
+            new File(installFolder, "sdkui.sh").setExecutable(true, false);
             Files.copy(ApplicationVersion.class.getClassLoader()
-                    .getResourceAsStream("update.cmd"), new File(installFolder, "update.cmd").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    .getResourceAsStream("update.sh"), new File(installFolder, "update.sh").toPath(), StandardCopyOption.REPLACE_EXISTING);
+            new File(installFolder, "update.sh").setExecutable(true, false);
             Files.copy(ApplicationVersion.class.getClassLoader()
                     .getResourceAsStream("version.txt"), new File(installFolder, "version.txt").toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {

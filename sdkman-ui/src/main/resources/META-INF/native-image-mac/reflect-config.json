@@ -173,7 +173,7 @@
   "queryAllDeclaredMethods":true,
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
-    {"name":"openConfig","parameterTypes":[] },
+    {"name":"openConfig","parameterTypes":[] }, 
     {"name":"startUpdate","parameterTypes":[] }
   ]
 },

@@ -2,7 +2,7 @@ name: Early Access
 
 on:
   push:
-    branches: [ main ]
+    branches: [ osx-build ]
 
 env:
   JAVA_VERSION: '17'
@@ -33,7 +33,6 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          save-always: true
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
       - name: Version
@@ -46,19 +45,18 @@ jobs:
   assemble:
     needs: [ precheck ]
     if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
-    uses: jagodevreede/sdkman-ui/.github/workflows/reusable-assemble.yml@main
+    #todo switch to main
+    uses: jagodevreede/sdkman-ui/.github/workflows/assemble-native.yml@osx-build
     with:
       project-version: ${{ needs.precheck.outputs.VERSION }}
 
-  release:
+  release-early-access:
     needs: [ precheck, assemble ]
     if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Download artifacts
         uses: actions/download-artifact@v4

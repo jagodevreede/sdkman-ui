@@ -1,0 +1,64 @@
+name: Assemble
+
+on:
+  workflow_call:
+    inputs:
+      project-version:
+        required: true
+        type: string
+
+env:
+  gluon_version: 22.1.0.1-Final
+
+jobs:
+  assemble:
+    name: 'Assemble Windows'
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: | 
+            ~/.m2/repository
+            ~/.gluon
+            ~/.openjfx
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
+      - name: Add msbuild to PATH
+        if: matrix.os == 'windows-latest'
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: Visual Studio shell
+        if: matrix.os == 'windows-latest'
+        uses: egor-tensin/vs-shell@v1
+      - name: Setup Gluon's GraalVM
+        uses: gluonhq/setup-graalvm@master
+        with:
+          graalvm: '22.1.0.1-Final'
+          jdk: 'java17'
+          arch: 'x86_64'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build with Maven
+        run: ./mvnw -B clean install -DskipTests
+      - name: Compile native
+        run: ./mvnw -B gluonfx:compile -f sdkman-ui
+      - name: Link native
+        run: ./mvnw -B gluonfx:link -f sdkman-ui
+      - name: Assamble zip
+        run: |
+          ./mvnw -B org.apache.maven.plugins:maven-assembly-plugin:single@assemble-windows -f sdkman-ui
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 1
+          name: artifacts-${{ runner.os }}-${{ runner.arch }}
+          path: |
+            sdkman-ui/target/sdkman-ui-*.zip

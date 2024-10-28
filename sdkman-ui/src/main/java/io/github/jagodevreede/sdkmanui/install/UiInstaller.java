@@ -1,19 +1,93 @@
 package io.github.jagodevreede.sdkmanui.install;
 
 import io.github.jagodevreede.sdkman.api.OsHelper;
+import io.github.jagodevreede.sdkmanui.ApplicationVersion;
+import io.github.jagodevreede.sdkmanui.Main;
+import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
-public interface UiInstaller {
+public abstract class UiInstaller {
+    private static final Logger logger = LoggerFactory.getLogger(ShellInstaller.class);
+    protected static final ServiceRegistry SERVICE_REGISTRY = ServiceRegistry.INSTANCE;
+    protected final File installFolder = new File(SERVICE_REGISTRY.getApi().getBaseFolder(), "ui");
 
-    static Optional<UiInstaller> getInstance() {
+    public static Optional<UiInstaller> getInstance() {
         if (OsHelper.isWindows()) {
             return Optional.of(new WindowsInstaller());
         }
         return Optional.empty();
     }
 
-    void updateScriptAndVersion();
+    abstract public void updateScriptAndVersion();
 
-    void checkInstalled();
+    public void checkInstalled() {
+        final String applicationVersion = ApplicationVersion.INSTANCE.getVersion();
+        final String currentInstalledUIVersion = SERVICE_REGISTRY.getApi().getCurrentInstalledUIVersion();
+        if (!applicationVersion.equals(currentInstalledUIVersion)) {
+            logger.info("Running a different UI version {} then the one installed {}", applicationVersion, currentInstalledUIVersion);
+            install();
+        }
+    }
+
+    public void install() {
+        try {
+            URL location = Main.class.getProtectionDomain().getCodeSource().getLocation();
+            File currentExecutable = Paths.get(location.toURI()).toFile();
+            if (!currentExecutable.isFile()) {
+                logger.info("Not running executable, so unable to install");
+                // Probably dev mode, or failed to get location, we can't check for installation
+                return;
+            }
+            File currentRunningFolder = currentExecutable.getParentFile();
+            if (!currentRunningFolder.equals(installFolder)) {
+                File installedExecutable = new File(installFolder, currentExecutable.getName());
+                SERVICE_REGISTRY.getPopupView()
+                        .showConfirmation("Installation", "Do you want to " + (installedExecutable.exists() ? "update" : "install") + " SDKMAN UI?", () -> doInstall(currentRunningFolder, installedExecutable, currentExecutable));
+            }
+        } catch (URISyntaxException e) {
+            logger.warn("Failed to check if installed, assuming so");
+        }
+    }
+
+    protected void doInstall(File currentRunningFolder, File installedExecutable, File currentExecutable) {
+        try {
+            installFolder.mkdirs();
+            boolean configured = SERVICE_REGISTRY.getApi().configureEnvironmentPath();
+
+            // REPLACE_EXISTING seems to fail on windows, so remove and copy
+            boolean oldVersion = installedExecutable.delete();
+            Files.copy(currentExecutable.toPath(), installedExecutable.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            updateScriptAndVersion();
+
+            StringBuilder confirmationMessage = new StringBuilder("SDKMAN UI has been ");
+            if (oldVersion) {
+                confirmationMessage.append("updated");
+            } else {
+                confirmationMessage.append("installed");
+            }
+            String tmpDir = System.getProperty("java.io.tmpdir");
+            if (!currentRunningFolder.getAbsolutePath().startsWith(tmpDir)) {
+                confirmationMessage.append(",\nyou can now remove ");
+                confirmationMessage.append(currentExecutable.getAbsolutePath());
+            }
+
+            if (configured) {
+                confirmationMessage.append("\nyou need to relogin to be able to use `sdkui` from the command line.");
+            }
+            SERVICE_REGISTRY.getPopupView().showInformation(confirmationMessage.toString());
+        } catch (IOException e) {
+            SERVICE_REGISTRY.getPopupView().showError(e);
+            throw new RuntimeException(e);
+        }
+    }
 }

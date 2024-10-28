@@ -1,0 +1,88 @@
+name: Assemble
+
+on:
+  workflow_call:
+    inputs:
+      project-version:
+        required: true
+        type: string
+
+env:
+  gluon_version: 22.1.0.1-Final
+
+jobs:
+  assemble:
+    name: 'Assemble ${{ matrix.os }} ${{ matrix.jdk_arch }}'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-13, windows-latest ]
+        jdk_arch: [ x86_64, aarch64 ]
+        exclude:
+          - os: macos-13
+            jdk_arch: aarch64
+          - os: windows-latest
+            jdk_arch: aarch64
+    # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: "[Windows only] Add msbuild to PATH"
+        if: startsWith(matrix.os, 'windows')
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: "[Windows only] Visual Studio shell"
+        if: startsWith(matrix.os, 'windows')
+        uses: egor-tensin/vs-shell@v1
+      - name: "[macOS only] Setup Xcode"
+        uses: maxim-lobanov/setup-xcode@v1
+        if: startsWith(matrix.os, 'macos')
+        with:
+          xcode-version: 'latest-stable'
+      - name: "Setup Gluon's GraalVM"
+        uses: gluonhq/setup-graalvm@master
+        with:
+          graalvm: ${{ env.gluon_version }}
+          jdk: 'java17'
+          arch: ${{ matrix.jdk_arch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: | 
+            ~/.m2/repository
+            ~/.gluon
+            ~/.openjfx
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
+      - name: Build with Maven
+        run: ./mvnw -B clean install -DskipTests
+      - name: Compile native
+        run: ./mvnw -B gluonfx:compile -f sdkman-ui
+      - name: Remove windows lib
+        if: startsWith(matrix.os, 'windows') != true
+        # TODO remove this for oll other os as well
+        run: rm sdkman-ui/target/gluonfx/x86_64-darwin/gvm/lib/libjnidispatch.a
+      - name: Link native
+        run: ./mvnw -B gluonfx:link -f sdkman-ui
+      - name: Assemble zip
+        run: ./mvnw -B org.apache.maven.plugins:maven-assembly-plugin:single@make-zip-${{ matrix.jdk_arch }} -f sdkman-ui
+
+      - name: Upload workspace on failure only
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 1
+          name: workspace-files-${{ matrix.os }}-${{ matrix.jdk_arch }}
+          path: "**/*"
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 1
+          name: artifacts-${{ runner.os }}-${{ matrix.jdk_arch }}
+          path: |
+            sdkman-ui/target/sdkman-ui-*.zip

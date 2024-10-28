@@ -56,7 +56,10 @@
 },
 {
   "name":"com.sun.glass.ui.Screen",
-  "methods":[{"name":"<init>","parameterTypes":["long","int","int","int","int","int","int","int","int","int","int","int","int","int","int","int","float","float","float","float"] }]
+  "methods":[
+    {"name":"<init>","parameterTypes":["long","int","int","int","int","int","int","int","int","int","int","int","int","int","int","int","float","float","float","float"] }, 
+    {"name":"notifySettingsChanged","parameterTypes":[] }
+  ]
 },
 {
   "name":"com.sun.glass.ui.Size",
