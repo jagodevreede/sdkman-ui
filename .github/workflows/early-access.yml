@@ -33,7 +33,6 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          save-always: true
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
       - name: Version
@@ -43,31 +42,21 @@ jobs:
           VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
 
-#  assemble-windows:
-#    needs: [ precheck ]
-#    if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT REMOVEME')
-#    #todo switch to main
-#    uses: jagodevreede/sdkman-ui/.github/workflows/windows-assemble.yml@osx-build
-#    with:
-#      project-version: ${{ needs.precheck.outputs.VERSION }}
-
-  assemble-osx:
+  assemble:
     needs: [ precheck ]
     if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
     #todo switch to main
-    uses: jagodevreede/sdkman-ui/.github/workflows/osx-assemble.yml@osx-build
+    uses: jagodevreede/sdkman-ui/.github/workflows/assemble-native.yml@osx-build
     with:
       project-version: ${{ needs.precheck.outputs.VERSION }}
 
-  release:
-    needs: [ precheck, assemble-osx ]
+  release-early-access:
+    needs: [ precheck, assemble ]
     if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
