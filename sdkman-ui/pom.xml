@@ -16,7 +16,7 @@
     <name>sdkman-ui</name>
 
     <properties>
-        <javafx.version>22.0.2</javafx.version>
+        <javafx.version>24-ea+15</javafx.version>
         <charm.version>6.2.3</charm.version>
         <attach.version>4.0.19</attach.version>
         <main.class>io.github.jagodevreede.sdkmanui.Main</main.class>
