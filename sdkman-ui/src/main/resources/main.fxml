@@ -49,9 +49,9 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.jagodevreede.sdkmanui.controller.MainScreenController">
    <children>
-      <AnchorPane layoutY="85.0" prefHeight="495.0" prefWidth="221.0" styleClass="sidebar">
+      <AnchorPane layoutY="41.0" prefHeight="539.0" prefWidth="221.0" styleClass="sidebar">
          <children>
-            <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="14.0" layoutY="457.0" onMouseClicked="#openConfig" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="10.0" layoutY="503.0" onMouseClicked="#openConfig" pickOnBounds="true" preserveRatio="true">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -79,7 +79,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Pane>
-            <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="38.0" prefHeight="409.0" prefWidth="200.0" vbarPolicy="ALWAYS">
+            <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="38.0" prefHeight="462.0" prefWidth="208.0" vbarPolicy="ALWAYS">
               <content>
                 <AnchorPane fx:id="candidateListPane" minHeight="0.0" minWidth="0.0" prefHeight="128.0" prefWidth="184.0" styleClass="scroll-pane">
                      <children>
@@ -129,7 +129,7 @@
             </ScrollPane>
          </children>
       </AnchorPane>
-      <ImageView fitHeight="83.0" fitWidth="156.0" layoutX="69.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="43.0" fitWidth="208.0" layoutX="1.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@images/sdkman_ui_logo.png" />
          </image>

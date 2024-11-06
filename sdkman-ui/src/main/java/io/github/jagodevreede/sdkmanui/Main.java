@@ -190,7 +190,7 @@ public class Main extends Application {
             // This code does not work in graal native, see https://github.com/oracle/graal/issues/8273
             try {
                 final java.awt.Toolkit defaultToolkit = java.awt.Toolkit.getDefaultToolkit();
-                final URL imageResource = getClass().getResource("/images/sdkman_ui_logo.png");
+                final URL imageResource = getClass().getResource("/images/sdkman_ui_icon.png");
                 final java.awt.Image image = defaultToolkit.getImage(imageResource);
 
                 final java.awt.Taskbar taskbar = java.awt.Taskbar.getTaskbar();
