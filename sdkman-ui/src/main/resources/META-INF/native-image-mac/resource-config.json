@@ -9,10 +9,19 @@
     }, 
     {
       "pattern":"\\Qmain.fxml\\E"
-    }, 
+    },
+    {
+      "pattern":"\\Qsdkui.sh\\E"
+    },
     {
       "pattern":"\\Qsimplelogger.properties\\E"
-    }, 
+    },
+    {
+      "pattern":"\\Qupdate.sh\\E"
+    },
+    {
+      "pattern":"\\Qtemplate/bash_shell\\E"
+    },
     {
       "pattern":"\\Qversion.txt\\E"
     }

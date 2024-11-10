@@ -17,13 +17,16 @@ import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
 public abstract class UiInstaller {
-    private static final Logger logger = LoggerFactory.getLogger(ShellInstaller.class);
-    protected static final ServiceRegistry SERVICE_REGISTRY = ServiceRegistry.INSTANCE;
+    private static final Logger logger = LoggerFactory.getLogger(UiInstaller.class);
+    protected final ServiceRegistry SERVICE_REGISTRY = ServiceRegistry.INSTANCE;
     protected final File installFolder = new File(SERVICE_REGISTRY.getApi().getBaseFolder(), "ui");
 
     public static Optional<UiInstaller> getInstance() {
         if (OsHelper.isWindows()) {
             return Optional.of(new WindowsInstaller());
+        }
+        if (OsHelper.isMac()) {
+            return Optional.of(new ShellInstaller());
         }
         return Optional.empty();
     }

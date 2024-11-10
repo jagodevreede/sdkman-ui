@@ -1,0 +1,3 @@
+function sdkui {
+    source ~/.sdkman/ui/sdkui.sh
+}
