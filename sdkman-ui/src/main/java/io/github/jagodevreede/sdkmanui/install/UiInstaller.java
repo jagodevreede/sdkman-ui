@@ -72,7 +72,7 @@ public abstract class UiInstaller {
             Files.copy(currentExecutable.toPath(), installedExecutable.toPath(), StandardCopyOption.REPLACE_EXISTING);
             updateScriptAndVersion();
 
-            StringBuilder confirmationMessage = new StringBuilder("SDKMAN UI has been ");
+            StringBuilder confirmationMessage = new StringBuilder("SDKman UI has been ");
             if (oldVersion) {
                 confirmationMessage.append("updated");
             } else {

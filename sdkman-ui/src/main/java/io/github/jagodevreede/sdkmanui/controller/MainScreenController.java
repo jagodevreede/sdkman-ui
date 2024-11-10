@@ -234,7 +234,7 @@ public class MainScreenController implements Initializable {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(table.getScene().getWindow());
         stage.setScene(scene);
-        stage.setTitle("SDKMAN UI - Configuration");
+        stage.setTitle("SDKman UI - Configuration");
         stage.setResizable(false);
         stage.show();
     }
@@ -407,7 +407,7 @@ public class MainScreenController implements Initializable {
                 stage.setScene(scene);
                 stage.setResizable(false);
 
-                stage.setTitle("SDKMAN UI - " + ApplicationVersion.INSTANCE.getVersion());
+                stage.setTitle("SDKman UI - " + ApplicationVersion.INSTANCE.getVersion());
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
                 stage.getIcons().add(appIcon);

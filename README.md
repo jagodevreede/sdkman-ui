@@ -54,7 +54,7 @@ Also see the following [video](https://www.youtube.com/watch?v=oyYtHrihThk)
 
 #### Symlinks
 
-Most versions of Windows do not allow the creation on symlinks by default, SDKMAN UI will work
+Most versions of Windows do not allow the creation on symlinks by default, SDKman UI will work
 around that by using copy, however this is a lot slower. You can enable development mode in windows
 see [https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development)
 for more information.

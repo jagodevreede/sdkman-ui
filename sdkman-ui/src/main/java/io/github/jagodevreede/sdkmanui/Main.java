@@ -36,7 +36,7 @@ public class Main extends Application {
             System.setOut(outputFile("stdout.log"));
             System.setErr(outputFile("stderr.log"));
         }
-        logger.debug("Starting SDKMAN UI");
+        logger.debug("Starting SDKman UI");
         Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
         if (!ConfigurationUtil.preCheck(stage)) {
             logger.warn("Failed pre-check");
