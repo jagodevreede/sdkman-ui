@@ -8,7 +8,6 @@ import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.updater.AutoUpdater;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +44,7 @@ public class Main extends Application {
         }
         SERVICE_REGISTRY.getApi().registerShutdownHook();
         if (handleArguments(paramatersList)) {
-            Platform.exit();
+            stage.close();
             return;
         }
         Future<List<Candidate>> futureCandidates = SERVICE_REGISTRY.getApi().getCandidates();
@@ -88,7 +87,7 @@ public class Main extends Application {
                     return true;
                 }
             }
-            logger.warn("Invalid arguments: {}", list);
+            SERVICE_REGISTRY.getPopupView().showWarning("Invalid arguments: " + list);
         }
         return false;
     }

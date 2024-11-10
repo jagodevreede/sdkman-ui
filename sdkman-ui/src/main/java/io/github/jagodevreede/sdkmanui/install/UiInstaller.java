@@ -65,7 +65,7 @@ public abstract class UiInstaller {
     protected void doInstall(File currentRunningFolder, File installedExecutable, File currentExecutable) {
         try {
             installFolder.mkdirs();
-            boolean configured = SERVICE_REGISTRY.getApi().configureEnvironmentPath();
+            boolean configured = SERVICE_REGISTRY.getApi().addSkdmanUiToGlobalEnvironmentPath();
 
             // REPLACE_EXISTING seems to fail on windows, so remove and copy
             boolean oldVersion = installedExecutable.delete();

@@ -41,6 +41,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,7 @@ public class MainScreenController implements Initializable {
     private final PauseTransition searchFieldPause = new PauseTransition(Duration.millis(300));
     private ObservableList<VersionView> tableData;
     private String selectedCandidate;
+    private Stage stage;
 
     public String getSelectedCandidate() {
         return selectedCandidate;
@@ -409,6 +411,7 @@ public class MainScreenController implements Initializable {
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
                 stage.getIcons().add(appIcon);
+                controller.setStage(stage);
                 INSTANCE = controller;
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -417,7 +420,23 @@ public class MainScreenController implements Initializable {
         return INSTANCE;
     }
 
+    private void setStage(Stage stage) {
+        this.stage = stage;
+        stage.addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
+    }
+
+    private void closeWindowEvent(WindowEvent windowEvent) {
+        api.createExitScripts();
+    }
+
     public void startUpdate() {
         AutoUpdater.getInstance().ifPresent(AutoUpdater::runUpdate);
+    }
+
+    public void exitApplication() {
+        // Don't use Platform.exit() as in native the shutdown hook will not fire (on osx)
+        stage.close();
+        // stage close will not fire close event so we need to fire it manually
+        closeWindowEvent(null);
     }
 }

@@ -124,6 +124,10 @@ public class PopupView {
         }
     }
 
+    public void showWarning(String message) {
+        showInformation(message, Alert.AlertType.WARNING);
+    }
+
     public record ProgressWindow(ProgressBar progressBar, Alert alert) {
     }
 }

@@ -148,6 +148,7 @@
                 <groupId>com.gluonhq</groupId>
                 <artifactId>gluonfx-maven-plugin</artifactId>
                 <configuration>
+                    <nativeImageArgs>--install-exit-handlers</nativeImageArgs>
                     <mainClass>${main.class}</mainClass>
                 </configuration>
             </plugin>

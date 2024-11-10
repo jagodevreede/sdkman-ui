@@ -5,7 +5,6 @@ import io.github.jagodevreede.sdkman.api.domain.CandidateVersion;
 import io.github.jagodevreede.sdkmanui.controller.MainScreenController;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.service.TaskRunner;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -153,7 +152,7 @@ public class VersionView {
                     try {
                         api.changeGlobal(controller.getSelectedCandidate(), candidateVersion.identifier());
                         if (result.get() == buttonYesAndClose) {
-                            Platform.exit();
+                            controller.exitApplication();
                         } else {
                             controller.loadData();
                         }
@@ -185,7 +184,7 @@ public class VersionView {
                 api.changeLocal(controller.getSelectedCandidate(), candidateVersion.identifier());
 
                 if (result.get() == buttonYesAndClose) {
-                    Platform.exit();
+                    controller.exitApplication();
                 } else {
                     controller.loadData();
                 }

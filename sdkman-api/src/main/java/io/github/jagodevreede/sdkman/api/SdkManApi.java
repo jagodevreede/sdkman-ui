@@ -29,6 +29,7 @@ import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -60,6 +61,7 @@ public class SdkManApi {
     private boolean offline;
     private File versionFile;
     private final List<String> exitMessages = new ArrayList<>();
+    private final static AtomicBoolean exitScriptCreated = new AtomicBoolean(false);
 
     public SdkManApi(String baseFolder) {
         this.baseFolder = baseFolder;
@@ -250,34 +252,41 @@ public class SdkManApi {
      * Always create an exit file, as that is being called after the program exits.
      */
     public void registerShutdownHook() {
-        Thread printingHook = new Thread(() -> {
-            logger.debug("Creating exit scripts");
-            File exitScriptFile = getExitScriptFile();
-            try {
-                if (!exitScriptFile.exists()) {
-                    exitScriptFile.createNewFile();
-                }
-                String[] paths = System.getenv("PATH").split(File.pathSeparator);
-                try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
-                    for (Map.Entry<String, String> changesEntry : changes.entrySet()) {
-                        var candidate = changesEntry.getKey();
-                        var identifier = changesEntry.getValue();
-                        logger.debug("Updating path entry for {}", changesEntry.getKey());
-                        paths = updatePathForCandidate(candidate, identifier, paths);
-                        writer.write(exportCommand + candidate.toUpperCase(Locale.ROOT) + "_HOME=" + getCandidateFolder(candidate, identifier) + newLine);
-                        exitMessages.add("Now using " + identifier + " for " + candidate);
-                    }
-                    writer.write(exportCommand + "PATH=" + pathsToString(paths) + newLine);
-                    for (String message : exitMessages) {
-                        writer.write("echo " + message + newLine);
-                        logger.debug("Exit message: {}", message);
-                    }
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        logger.debug("Registering shutdown hook");
+        Thread printingHook = new Thread(this::createExitScripts);
         Runtime.getRuntime().addShutdownHook(printingHook);
+    }
+
+    public void createExitScripts() {
+        if (exitScriptCreated.getAndSet(true)) {
+            logger.debug("Already created exit scripts");
+            return;
+        }
+        logger.debug("Creating exit scripts");
+        File exitScriptFile = getExitScriptFile();
+        try {
+            if (!exitScriptFile.exists()) {
+                exitScriptFile.createNewFile();
+            }
+            String[] paths = System.getenv("PATH").split(File.pathSeparator);
+            try (var writer = Files.newBufferedWriter(getExitScriptFile().toPath())) {
+                for (Map.Entry<String, String> changesEntry : changes.entrySet()) {
+                    var candidate = changesEntry.getKey();
+                    var identifier = changesEntry.getValue();
+                    logger.debug("Updating path entry for {}", changesEntry.getKey());
+                    paths = updatePathForCandidate(candidate, identifier, paths);
+                    writer.write(exportCommand + candidate.toUpperCase(Locale.ROOT) + "_HOME=" + getCandidateFolder(candidate, identifier) + newLine);
+                    exitMessages.add("Now using " + identifier + " for " + candidate);
+                }
+                writer.write(exportCommand + "PATH=" + pathsToString(paths) + newLine);
+                for (String message : exitMessages) {
+                    writer.write("echo " + message + newLine);
+                    logger.debug("Exit message: {}", message);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public DownloadTask download(String identifier, String version) {
@@ -303,7 +312,7 @@ public class SdkManApi {
         }
     }
 
-    public boolean configureEnvironmentPath() {
+    public boolean addSkdmanUiToGlobalEnvironmentPath() {
         var pathName = baseFolder + separator + "ui";
         // Only a thing on windows (yet)
         if (OsHelper.isWindows()) {
