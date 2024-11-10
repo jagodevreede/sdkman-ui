@@ -54,8 +54,13 @@ public abstract class UiInstaller {
             File currentRunningFolder = currentExecutable.getParentFile();
             if (!currentRunningFolder.equals(installFolder)) {
                 File installedExecutable = new File(installFolder, currentExecutable.getName());
-                SERVICE_REGISTRY.getPopupView()
-                        .showConfirmation("Installation", "Do you want to " + (installedExecutable.exists() ? "update" : "install") + " SDKMAN UI?", () -> doInstall(currentRunningFolder, installedExecutable, currentExecutable));
+                if (!OsHelper.isWindows() && !new File(SERVICE_REGISTRY.getApi().getBaseFolder()).exists()) {
+                    SERVICE_REGISTRY.getPopupView()
+                            .showConfirmation("SDKman not installed", "Its highly recommended to install SDKman first before installing SDKman UI\nAre you sure you want to install SDKman UI now?",  () -> doInstall(currentRunningFolder, installedExecutable, currentExecutable));
+                } else {
+                    SERVICE_REGISTRY.getPopupView()
+                            .showConfirmation("Installation", "Do you want to " + (installedExecutable.exists() ? "update" : "install") + " SDKman UI?", () -> doInstall(currentRunningFolder, installedExecutable, currentExecutable));
+                }
             }
         } catch (URISyntaxException e) {
             logger.warn("Failed to check if installed, assuming so");
