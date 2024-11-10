@@ -69,7 +69,7 @@ public final class ConfigurationUtil {
             targetFolder.delete();
         }
         try {
-            Files.createSymbolicLink(sourceFolder.toPath(), targetFolder.toPath());
+            Files.createSymbolicLink(targetFolder.toPath(), sourceFolder.toPath());
             return true;
         } catch (IOException e) {
             logger.trace("Failed to create symlink", e);
