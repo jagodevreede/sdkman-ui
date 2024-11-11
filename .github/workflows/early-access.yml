@@ -3,6 +3,8 @@ name: Early Access
 on:
   push:
     branches: [ osx-build ]
+    paths-ignore:
+      - '**.md'
 
 env:
   JAVA_VERSION: '17'
@@ -45,8 +47,7 @@ jobs:
   assemble:
     needs: [ precheck ]
     if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
-    #todo switch to main
-    uses: jagodevreede/sdkman-ui/.github/workflows/assemble-native.yml@osx-build
+    uses: jagodevreede/sdkman-ui/.github/workflows/assemble-native.yml@main
     with:
       project-version: ${{ needs.precheck.outputs.VERSION }}
 

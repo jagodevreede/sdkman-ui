@@ -30,7 +30,7 @@ jobs:
 
   assemble:
     needs: [ precheck ]
-    uses: jagodevreede/sdkman-ui/.github/workflows/reusable-assemble.yml@main
+    uses: jagodevreede/sdkman-ui/.github/workflows/assemble-native.yml@main
     with:
       project-version: ${{ needs.precheck.outputs.VERSION }}
 
@@ -73,9 +73,12 @@ jobs:
         id: vars
         shell: bash
         run: |
-          ./mvnw -B versions:set versions:commit -DnextSnapshot=true
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Action"
+          sed -i '' 's/v[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}/v${{ github.event.inputs.VERSION }}/g; s/[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}\.zip/${{ github.event.inputs.VERSION }}.zip/g' README.md
+          git add README.md
+          git commit -m "Updating download links to version ${{ github.event.inputs.VERSION }}"
+          ./mvnw -B versions:set versions:commit -DnextSnapshot=true
           git commit -a -m "Preparing for next snapshot version"
           git push origin main
       
