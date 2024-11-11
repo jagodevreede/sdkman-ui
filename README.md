@@ -13,6 +13,22 @@ This project aims to offer a Graphical User Interface for [SDKMAN](https://sdkma
     <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/gallery2.png" />
 </p>
 
+## Available platforms
+
+Some platforms are not yet available as they are not yet setup and/or tested.
+
+| Platform    | Available                                                                                                       | Supported envirmoments |
+|-------------|-----------------------------------------------------------------------------------------------------------------|------------------------|
+| Windows x86 | [v0.0.3](https://github.com/jagodevreede/sdkman-ui/releases/download/v0.0.3/sdkman-ui-windows_x86_64-0.0.3.zip) | cmd                    |
+| Linux x86   |                                                                                                                 | bash, zsh              |      
+| Linux arm   |                                                                                                                 | bash, zsh              |
+| osx x86     |                                                                                                                 | bash, zsh              |
+| osx arm     |                                                                                                                 | bash, zsh              |
+
+Early access builds can be found
+here: [releases/tag/early-access](https://github.com/jagodevreede/sdkman-ui/releases/tag/early-access)
+
+
 ## Requirements
 
 tar, unzip and zip should be present on the system. You can install them with your favourite package manager on *inx
@@ -29,20 +45,6 @@ will use the bundled versions:
 - unzip: [https://gnuwin32.sourceforge.net/packages/unzip.htm](https://gnuwin32.sourceforge.net/packages/unzip.htm)
   or [direct download](https://gnuwin32.sourceforge.net/downlinks/unzip-bin-zip.php)
 
-## Available platforms
-
-Some platforms are not yet available as they are not yet setup and/or tested.
-
-| Platform    | Available                                                                                                       | Supported envirmoments |
-|-------------|-----------------------------------------------------------------------------------------------------------------|------------------------|
-| Windows x86 | [v0.0.3](https://github.com/jagodevreede/sdkman-ui/releases/download/v0.0.3/sdkman-ui-windows_x86_64-0.0.3.zip) | cmd        |
-| Linux x86   |                                                                                                                 | bash, zsh              |      
-| Linux arm   |                                                                                                                 | bash, zsh              |
-| osx x86     |                                                                                                                 | bash, zsh              |
-| osx arm     |                                                                                                                 | bash, zsh              |
-
-Early access builds can be found here: [releases/tag/early-access](https://github.com/jagodevreede/sdkman-ui/releases/tag/early-access)
-
 ## Install instructions
 
 ### Windows
@@ -58,6 +60,14 @@ Most versions of Windows do not allow the creation on symlinks by default, SDKma
 around that by using copy, however this is a lot slower. You can enable development mode in windows
 see [https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development)
 for more information.
+
+### OSX
+
+First install [SDKMAN](https://sdkman.io/) if you have not already done so. as SDKman UI relies on SDKMAN.
+
+Download the latest version with the correct cpu type (x86_64 or aarch64) and extract the zip, then run the `sdkman-ui`
+osx will complain about unable to verify developer identity, click ok and then go to privacy & security settings under
+system settings and click "Open Anyway". Then follow on screen instructions.
 
 ## build steps:
 
