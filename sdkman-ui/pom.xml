@@ -174,12 +174,12 @@
                         <version>${maven-assembly-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>make-zip-x86_64</id>
+                                <id>make-zip-${os.arch}</id>
                                 <configuration>
-                                    <finalName>sdkman-ui-osx_x86_64-${project.version}</finalName>
+                                    <finalName>sdkman-ui-osx_${os.arch}-${project.version}</finalName>
                                     <appendAssemblyId>false</appendAssemblyId>
                                     <descriptors>
-                                        <descriptor>src/main/assembly/zip-osx-x86_64.xml</descriptor>
+                                        <descriptor>src/main/assembly/zip-osx-${os.arch}.xml</descriptor>
                                     </descriptors>
                                 </configuration>
                             </execution>

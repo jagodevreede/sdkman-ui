@@ -16,13 +16,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-13, windows-latest ]
+        os: [ macos-13, macos-latest, windows-latest ]
         jdk_arch: [ x86_64, aarch64 ]
         exclude:
           - os: macos-13
             jdk_arch: aarch64
           - os: windows-latest
             jdk_arch: aarch64
+          - os: macos-latest
+            jdk_arch: x86_64
     # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
     runs-on: ${{ matrix.os }}
     steps:
@@ -65,7 +67,7 @@ jobs:
       - name: Remove windows lib
         if: startsWith(matrix.os, 'windows') != true
         # TODO remove this for oll other os as well
-        run: rm sdkman-ui/target/gluonfx/x86_64-darwin/gvm/lib/libjnidispatch.a
+        run: rm -f sdkman-ui/target/gluonfx/${{ matrix.jdk_arch }}-darwin/gvm/lib/libjnidispatch.a
       - name: Link native
         run: ./mvnw -B gluonfx:link -f sdkman-ui
       - name: Assemble zip
