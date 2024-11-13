@@ -80,6 +80,10 @@
   "methods":[{"name":"getFactory","parameterTypes":[] }]
 },
 {
+  "name":"com.sun.javafx.font.freetype.FTFactory",
+  "methods":[{"name":"getFactory","parameterTypes":[] }]
+},
+{
   "name":"com.sun.javafx.logging.PrintLogger",
   "methods":[{"name":"createInstance","parameterTypes":[] }]
 },
@@ -131,6 +135,10 @@
   "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
 },
 {
+  "name":"com.sun.prism.sw.SWPipeline",
+  "methods":[{"name":"getInstance","parameterTypes":[] }]
+},
+{
   "name":"com.sun.scenario.effect.impl.prism.PrRenderer",
   "methods":[{"name":"createRenderer","parameterTypes":["com.sun.scenario.effect.FilterContext"] }]
 },
@@ -141,6 +149,18 @@
 {
   "name":"com.sun.scenario.effect.impl.prism.ps.PPSRenderer",
   "methods":[{"name":"createRenderer","parameterTypes":["com.sun.scenario.effect.FilterContext"] }]
+},
+{
+  "name":"com.sun.scenario.effect.impl.prism.sw.PSWRenderer",
+  "methods":[{"name":"createRenderer","parameterTypes":["com.sun.scenario.effect.FilterContext"] }]
+},
+{
+  "name":"com.sun.scenario.effect.impl.sw.sse.SSEBoxShadowPeer",
+  "methods":[{"name":"<init>","parameterTypes":["com.sun.scenario.effect.FilterContext","com.sun.scenario.effect.impl.Renderer","java.lang.String"] }]
+},
+{
+  "name":"com.sun.scenario.effect.impl.sw.sse.SSERendererDelegate",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.sun.xml.internal.stream.XMLInputFactoryImpl",
@@ -420,6 +440,41 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"javafx.scene.layout.ColumnConstraints",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setFillWidth","parameterTypes":["boolean"] }, 
+    {"name":"setHgrow","parameterTypes":["javafx.scene.layout.Priority"] }, 
+    {"name":"setMaxWidth","parameterTypes":["double"] }, 
+    {"name":"setMinWidth","parameterTypes":["double"] }, 
+    {"name":"setPrefWidth","parameterTypes":["double"] }
+  ]
+},
+{
+  "name":"javafx.scene.layout.ConstraintsBase",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"javafx.scene.layout.GridPane",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getColumnConstraints","parameterTypes":[] }, 
+    {"name":"getRowConstraints","parameterTypes":[] }, 
+    {"name":"setColumnIndex","parameterTypes":["javafx.scene.Node","java.lang.Integer"] }, 
+    {"name":"setColumnSpan","parameterTypes":["javafx.scene.Node","java.lang.Integer"] }, 
+    {"name":"setRowIndex","parameterTypes":["javafx.scene.Node","java.lang.Integer"] }
+  ],
+  "queriedMethods":[
+    {"name":"getColumnIndex","parameterTypes":["javafx.scene.Node"] }, 
+    {"name":"getColumnSpan","parameterTypes":["javafx.scene.Node"] }, 
+    {"name":"getRowIndex","parameterTypes":["javafx.scene.Node"] }
+  ]
+},
+{
   "name":"javafx.scene.layout.HBox",
   "queryAllDeclaredMethods":true,
   "queryAllPublicConstructors":true,
@@ -439,6 +494,10 @@
   ]
 },
 {
+  "name":"javafx.scene.layout.Priority",
+  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
   "name":"javafx.scene.layout.Region",
   "queryAllDeclaredMethods":true,
   "methods":[
@@ -449,6 +508,17 @@
     {"name":"setPadding","parameterTypes":["javafx.geometry.Insets"] }, 
     {"name":"setPrefHeight","parameterTypes":["double"] }, 
     {"name":"setPrefWidth","parameterTypes":["double"] }
+  ]
+},
+{
+  "name":"javafx.scene.layout.RowConstraints",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setMinHeight","parameterTypes":["double"] }, 
+    {"name":"setPrefHeight","parameterTypes":["double"] }, 
+    {"name":"setVgrow","parameterTypes":["javafx.scene.layout.Priority"] }
   ]
 },
 {

@@ -26,8 +26,8 @@ import static io.github.jagodevreede.sdkman.api.SdkManUiPreferences.PROPERTY_LOC
 import static io.github.jagodevreede.sdkmanui.ConfigurationUtil.checkSymlink;
 
 public class ConfigScreenController implements Initializable {
-    final String SYMLINK_CAPABLE = "Capable";
-    final String SYMLINK_NOT_CAPABLE = "Not capable";
+    final String SYMLINK_CAPABLE = "Symlink capability: Capable";
+    final String SYMLINK_NOT_CAPABLE = "Symlink capability: Not capable";
 
     @FXML
     TextField zipExecutablePath;

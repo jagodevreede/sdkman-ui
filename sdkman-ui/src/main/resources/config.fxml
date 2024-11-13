@@ -5,28 +5,46 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.jagodevreede.sdkmanui.controller.ConfigScreenController">
    <children>
-      <Text layoutX="10.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select zip path:" />
-      <Text layoutX="10.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select unzip path:" />
-      <Text layoutX="10.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select tar path:" />
-      <TextField fx:id="zipExecutablePath" layoutX="114.0" layoutY="20.0" prefHeight="25.0" prefWidth="400.0" />
-      <TextField fx:id="unzipExecutablePath" layoutX="114.0" layoutY="60.0" prefHeight="25.0" prefWidth="400.0" />
-      <TextField fx:id="tarExecutablePath" layoutX="114.0" layoutY="100.0" prefHeight="25.0" prefWidth="400.0" />
-      <Button layoutX="520.0" layoutY="20.0" mnemonicParsing="false" onMouseClicked="#browseZipExecutablePath" prefWidth="70.0" text="Browse..." />
-      <Button layoutX="520.0" layoutY="60.0" mnemonicParsing="false" onMouseClicked="#browseUnzipExecutablePath" prefWidth="70.0" text="Browse..." />
-      <Button layoutX="520.0" layoutY="100.0" mnemonicParsing="false" onMouseClicked="#browseTarExecutablePath" prefWidth="70.0" text="Browse..." />
       <ButtonBar layoutX="320.0" layoutY="352.0" prefHeight="40.0" prefWidth="270.0">
         <buttons>
           <Button mnemonicParsing="false" onMouseClicked="#saveAndCloseConfigWindow" prefHeight="26.0" prefWidth="160.0" text="Save and Close" />
             <Button fx:id="closeConfigButton" mnemonicParsing="false" onMouseClicked="#closeConfigWindow" text="Cancel" />
         </buttons>
       </ButtonBar>
-      <Text layoutX="10.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Symlink capability:" />
-      <Button layoutX="520.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#checkSymlinkCapability" prefHeight="26.0" prefWidth="70.0" text="Recheck" />
-      <Text fx:id="symlinkCapability" layoutX="117.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="n/a" />
-      <CheckBox fx:id="checkBoxKeepDownloadsAvailable" layoutX="11.0" layoutY="175.0" mnemonicParsing="false" text="Keep downloads available" />
+      <GridPane layoutX="5.0" layoutY="20.0" prefHeight="177.0" prefWidth="582.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="281.0" minWidth="10.0" prefWidth="117.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="472.0" minWidth="10.0" prefWidth="375.0" />
+            <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <TextField fx:id="zipExecutablePath" prefHeight="25.0" prefWidth="385.0" GridPane.columnIndex="1" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select zip path:" />
+            <Button mnemonicParsing="false" onMouseClicked="#browseZipExecutablePath" prefWidth="90.0" text="Browse..." GridPane.columnIndex="2" />
+            <Button mnemonicParsing="false" onMouseClicked="#browseUnzipExecutablePath" prefWidth="90.0" text="Browse..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Button mnemonicParsing="false" onMouseClicked="#browseTarExecutablePath" prefWidth="90.0" text="Browse..." GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <TextField fx:id="unzipExecutablePath" prefHeight="26.0" prefWidth="385.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select unzip path:" GridPane.rowIndex="1" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select tar path:" GridPane.rowIndex="2" />
+            <TextField fx:id="tarExecutablePath" prefHeight="25.0" prefWidth="385.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Text fx:id="symlinkCapability" strokeType="OUTSIDE" strokeWidth="0.0" text="Symlink capability:" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+            <Button mnemonicParsing="false" onMouseClicked="#checkSymlinkCapability" prefHeight="26.0" prefWidth="90.0" text="Recheck" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <CheckBox fx:id="checkBoxKeepDownloadsAvailable" mnemonicParsing="false" text="Keep downloads available" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
    </children>
 </AnchorPane>

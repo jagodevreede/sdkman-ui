@@ -46,7 +46,7 @@ jobs:
 
   assemble:
     needs: [ precheck ]
-    if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
+    if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT') && ${{ github.ref == 'refs/heads/main' }}
     uses: jagodevreede/sdkman-ui/.github/workflows/assemble-native.yml@main
     with:
       project-version: ${{ needs.precheck.outputs.VERSION }}

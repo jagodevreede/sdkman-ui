@@ -211,7 +211,7 @@ public class MainScreenController implements Initializable {
     private void setGlobalVersionLabel(String globalVersionInUse) {
         Platform.runLater(() -> {
             if (globalVersionInUse != null) {
-                global_version_label.setText(globalVersionInUse);
+                global_version_label.setText("Global version: " + globalVersionInUse);
             } else {
                 global_version_label.setText("No global version in use");
             }

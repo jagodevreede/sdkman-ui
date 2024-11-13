@@ -10,6 +10,7 @@ on:
 jobs:
   precheck:
     name: Precheck
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     outputs:
       VERSION: ${{ steps.vars.outputs.VERSION }}
