@@ -75,7 +75,9 @@ system settings and click "Open Anyway". Then follow on screen instructions.
 - `export GRAALVM_HOME=$JAVA_HOME`
 - `./mvnw clean install -DskipTests`
 
-Native:
+### Native:
+
+Prerequisites: See https://www.graalvm.org/latest/reference-manual/native-image/#prerequisites
 
 To update native reflections `gluonfx:runagent`
 `./mvnw gluonfx:build -f sdkman-ui`
