@@ -6,7 +6,10 @@
     }, 
     {
       "pattern":"\\Qconfig.fxml\\E"
-    }, 
+    },
+    {
+      "pattern":"\\QcommitHash.txt\\E"
+    },
     {
       "pattern":"\\Qmain.fxml\\E"
     }, 

@@ -15,6 +15,10 @@
 
     <name>sdkman-ui</name>
 
+    <scm>
+        <connection>scm:git:git://github.com/jagodevreede/sdkman-ui.git</connection>
+    </scm>
+
     <properties>
         <javafx.version>22.0.2</javafx.version>
         <charm.version>6.2.3</charm.version>
@@ -100,6 +104,7 @@
                 <filtering>false</filtering>
                 <excludes>
                     <exclude>version.txt</exclude>
+                    <exclude>commitHash.txt</exclude>
                 </excludes>
             </resource>
             <resource>
@@ -107,6 +112,7 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>version.txt</include>
+                    <include>commitHash.txt</include>
                 </includes>
             </resource>
         </resources>
@@ -133,6 +139,25 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <shortRevisionLength>7</shortRevisionLength>
+                    <revisionOnScmFailure>unknown</revisionOnScmFailure>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.openjfx</groupId>

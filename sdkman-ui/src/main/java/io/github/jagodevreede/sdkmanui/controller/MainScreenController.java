@@ -133,23 +133,37 @@ public class MainScreenController implements Initializable {
                 String pathVersionInUse = api.getCurrentCandidateFromPath(selectedCandidate);
                 setGlobalVersionLabel(globalVersionInUse);
                 setPathVersionLabel(pathVersionInUse);
-                List<CandidateVersion> updatedVersions = api.getVersions(selectedCandidate).stream().filter(j -> !showInstalledOnly.isSelected() || j.installed()).filter(j -> !showAvailableOnly.isSelected() || j.available()).filter(j -> {
-                    if (searchField == null || searchField.getText() == null || searchField.getText().isBlank()) {
-                        return true;
-                    } else {
-                        final boolean vendorMatchesSearch = j.vendor() != null && Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.vendor()).find();
-                        final boolean identifierMatchesSearch = j.identifier() != null && Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE).matcher(j.identifier()).find();
-                        return vendorMatchesSearch || identifierMatchesSearch;
-                    }
-                }).toList();
+                List<CandidateVersion> updatedVersions = api.getVersions(selectedCandidate)
+                        .stream()
+                        .filter(j -> !showInstalledOnly.isSelected() || j.installed())
+                        .filter(j -> !showAvailableOnly.isSelected() || j.available())
+                        .filter(j -> {
+                            if (searchField == null || searchField.getText() == null || searchField.getText()
+                                    .isBlank()) {
+                                return true;
+                            } else {
+                                final boolean vendorMatchesSearch = j.vendor() != null && Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE)
+                                        .matcher(j.vendor())
+                                        .find();
+                                final boolean identifierMatchesSearch = j.identifier() != null && Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE)
+                                        .matcher(j.identifier())
+                                        .find();
+                                return vendorMatchesSearch || identifierMatchesSearch;
+                            }
+                        })
+                        .toList();
                 Platform.runLater(() -> {
                     showAvailableOnly.setVisible(sdkManUiPreferences.keepDownloadsAvailable);
                     if (tableData == null || tableData.size() != updatedVersions.size()) {
-                        tableData = FXCollections.observableArrayList(updatedVersions.stream().map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz)).toList());
+                        tableData = FXCollections.observableArrayList(updatedVersions.stream()
+                                .map(j -> new VersionView(j, globalVersionInUse, pathVersionInUse, thiz))
+                                .toList());
                         table.setItems(tableData);
                     } else {
                         tableData.forEach(oldData -> {
-                            var found = updatedVersions.stream().filter(j -> j.identifier().equals(oldData.getIdentifier())).findFirst();
+                            var found = updatedVersions.stream()
+                                    .filter(j -> j.identifier().equals(oldData.getIdentifier()))
+                                    .findFirst();
                             if (found.isPresent()) {
                                 oldData.update(found.get(), globalVersionInUse, pathVersionInUse);
                             } else {
@@ -294,6 +308,7 @@ public class MainScreenController implements Initializable {
                     Platform.runLater(() -> progressWindow.progressBar().setProgress(-1));
                 }
             }
+
             @Override
             public void publishState(String state) {
                 Platform.runLater(() -> progressWindow.alert().setHeaderText(state));
@@ -335,7 +350,10 @@ public class MainScreenController implements Initializable {
         candidateListPane.getChildren().clear();
         List<String> localInstalledCandidates = api.getLocalInstalledCandidates();
         for (String candidateId : localInstalledCandidates) {
-            Candidate candidate = candidates.stream().filter(c -> c.id().equals(candidateId)).findFirst().orElse(new Candidate(candidateId, candidateId, ""));
+            Candidate candidate = candidates.stream()
+                    .filter(c -> c.id().equals(candidateId))
+                    .findFirst()
+                    .orElse(new Candidate(candidateId, candidateId, ""));
             addCandateToScrollPane(candidate, count, prefHeight, prefPadding);
             count++;
         }
@@ -406,8 +424,8 @@ public class MainScreenController implements Initializable {
                 Stage stage = new Stage();
                 stage.setScene(scene);
                 stage.setResizable(false);
-
-                stage.setTitle("SDKman UI - " + ApplicationVersion.INSTANCE.getVersion());
+                ApplicationVersion applicationVersion = ApplicationVersion.INSTANCE;
+                stage.setTitle("SDKman UI - " + applicationVersion.getVersion() + " (" + applicationVersion.getCommitHash() + ")");
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
                 stage.getIcons().add(appIcon);
