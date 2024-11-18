@@ -63,6 +63,7 @@ public class Main extends Application {
         }
     }
 
+    /** Returns true if an argument was handled and leads to closing the application */
     private boolean handleArguments(List<String> list) throws IOException {
         if (!list.isEmpty()) {
             if (list.size() == 3 && checkArgument(list.get(0), "u", "use")) {
@@ -87,7 +88,9 @@ public class Main extends Application {
                     return true;
                 }
             }
-            SERVICE_REGISTRY.getPopupView().showWarning("Invalid arguments: " + list);
+            if (!list.get(0).equals("--update-complete") && !list.get(0).equals("--no-console")) {
+                SERVICE_REGISTRY.getPopupView().showWarning("Invalid arguments: " + list);
+            }
         }
         return false;
     }

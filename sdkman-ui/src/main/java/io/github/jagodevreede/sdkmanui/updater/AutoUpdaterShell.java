@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-class AutoUpdaterWindows extends AutoUpdater {
-    AutoUpdaterWindows() {
+class AutoUpdaterShell extends AutoUpdater {
+    AutoUpdaterShell() {
 
     }
 
@@ -22,7 +22,7 @@ class AutoUpdaterWindows extends AutoUpdater {
     public void finalizeUpdate(File tempFile) {
         ZipExtractTask.extract(tempFile, getUpdateFile());
         File installFolder = new File(serviceRegistry.getApi().getBaseFolder(), "ui");
-        ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "update.cmd");
+        ProcessBuilder builder = new ProcessBuilder("bash", "update.sh");
         builder.directory(installFolder);
         try {
             builder.start();
@@ -34,7 +34,7 @@ class AutoUpdaterWindows extends AutoUpdater {
 
     @Override
     public File getUpdateFile() {
-        return new File(serviceRegistry.getApi().getBaseFolder(), "ui/sdkman-ui-update.exe");
+        return new File(serviceRegistry.getApi().getBaseFolder(), "ui/sdkman-ui-update");
     }
 
 }

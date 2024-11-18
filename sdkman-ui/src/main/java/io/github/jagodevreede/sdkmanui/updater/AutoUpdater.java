@@ -17,6 +17,9 @@ import java.net.http.HttpClient;
 import java.util.List;
 import java.util.Optional;
 
+import static io.github.jagodevreede.sdkman.api.OsHelper.getOs;
+import static io.github.jagodevreede.sdkman.api.OsHelper.isMac;
+
 public abstract class AutoUpdater {
     private static final Logger logger = LoggerFactory.getLogger(AutoUpdater.class);
     protected final ServiceRegistry serviceRegistry = ServiceRegistry.INSTANCE;
@@ -24,6 +27,9 @@ public abstract class AutoUpdater {
     public static Optional<AutoUpdater> getInstance() {
         if (OsHelper.isWindows()) {
             return Optional.of(new AutoUpdaterWindows());
+        }
+        if (OsHelper.hasShell()) {
+            return Optional.of(new AutoUpdaterShell());
         }
         return Optional.empty();
     }
@@ -64,16 +70,19 @@ public abstract class AutoUpdater {
 
             Optional<String> downloadUrl = getDownloadUrl(getLatestGitHubRelease().getLatestReleaseDownloads());
             if (!downloadUrl.isPresent()) {
-                ServiceRegistry.INSTANCE.getPopupView().showError("Did not find the download url yet please visit the github page, and download the update manually");
+                ServiceRegistry.INSTANCE.getPopupView()
+                        .showError("Did not find the download url yet please visit the github page, and download the update manually");
                 return;
             }
             DownloadTask downloadTask = new DownloadTask(downloadUrl.get(), tempFile, destFile, null);
-            PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView().showProgress("Download of update in progress", downloadTask);
+            PopupView.ProgressWindow progressWindow = ServiceRegistry.INSTANCE.getPopupView()
+                    .showProgress("Download of update in progress", downloadTask);
             ProgressInformation progressInformation = new ProgressInformation() {
                 @Override
                 public void publishProgress(int current) {
                     Platform.runLater(() -> progressWindow.progressBar().setProgress(current / 100.0));
                 }
+
                 @Override
                 public void publishState(String state) {
                     Platform.runLater(() -> progressWindow.alert().setHeaderText(state));
@@ -99,5 +108,21 @@ public abstract class AutoUpdater {
 
     abstract public File getUpdateFile();
 
-    abstract public String getPlatformIdentifier();
+    public String getPlatformIdentifier() {
+        String result;
+        if (getOs().contains("windows")) {
+            result = "windows";
+        } else if (isMac()) {
+            result = "osx";
+        } else {
+            result = "linux";
+        }
+
+        if (System.getProperty("os.arch").equals("arm64") || System.getProperty("os.arch").equals("aarch64")) {
+            result += "_aarch64";
+        } else {
+            result += "_x86_64";
+        }
+        return result;
+    }
 }
