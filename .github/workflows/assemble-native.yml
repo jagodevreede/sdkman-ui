@@ -6,6 +6,9 @@ on:
       project-version:
         required: true
         type: string
+      build-sha:
+        required: false
+        type: string
 
 env:
   gluon_version: 22.1.0.1-Final
@@ -48,8 +51,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Checkout
+      - name: "Checkout ${{ github.event.inputs.build-sha }}"
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.build-sha }}
+          fetch-depth: 0
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
