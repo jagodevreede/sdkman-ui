@@ -1,16 +1,16 @@
 # sdkman-ui
 
-This project aims to offer a Graphical User Interface for [SDKMAN](https://sdkman.io/).
+This project aims to offer a (cross-platform) Graphical User Interface for [SDKMAN](https://sdkman.io/).
 
 > [!NOTE]  
-> Primary focus for now is to create a UI for windows, other OS's will come later.
-> Also only Java and Maven candidates are available in the first version, other candidates will be added later.
+> Primary focus for now is to create a UI for windows. Osx for intel is available arm will be added later. Linux x86
+> will be next.
 
 ## Screenshots
 
 <p align="center">
-    <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/gallery1.png" />
-    <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/gallery2.png" />
+    <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/windows version 0.2.0.png" />
+    <img height="150" src="https://jagodevreede.github.io/sdkman-ui-images/osx version 0.2.0.png" />
 </p>
 
 ## Available platforms
@@ -22,12 +22,11 @@ Some platforms are not yet available as they are not yet setup and/or tested.
 | Windows x86 | [v0.2.0](https://github.com/jagodevreede/sdkman-ui/releases/download/v0.2.0/sdkman-ui-windows_x86_64-0.2.0.zip) | cmd                    |
 | Linux x86   |                                                                                                                 | bash, zsh              |      
 | Linux arm   |                                                                                                                 | bash, zsh              |
-| osx x86     |                                                                                                                 | bash, zsh              |
+| osx x86     | [v0.2.0](https://github.com/jagodevreede/sdkman-ui/releases/download/v0.2.0/sdkman-ui-osx_x86_64-0.2.0.zip)     | bash, zsh              |
 | osx arm     |                                                                                                                 | bash, zsh              |
 
 Early access builds can be found
 here: [releases/tag/early-access](https://github.com/jagodevreede/sdkman-ui/releases/tag/early-access)
-
 
 ## Requirements
 
