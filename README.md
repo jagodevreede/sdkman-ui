@@ -19,7 +19,7 @@ Some platforms are not yet available as they are not yet setup and/or tested.
 
 | Platform    | Available                                                                                                       | Supported envirmoments |
 |-------------|-----------------------------------------------------------------------------------------------------------------|------------------------|
-| Windows x86 | [v0.0.3](https://github.com/jagodevreede/sdkman-ui/releases/download/v0.0.3/sdkman-ui-windows_x86_64-0.0.3.zip) | cmd                    |
+| Windows x86 | [v0.2.0](https://github.com/jagodevreede/sdkman-ui/releases/download/v0.2.0/sdkman-ui-windows_x86_64-0.2.0.zip) | cmd                    |
 | Linux x86   |                                                                                                                 | bash, zsh              |      
 | Linux arm   |                                                                                                                 | bash, zsh              |
 | osx x86     |                                                                                                                 | bash, zsh              |
