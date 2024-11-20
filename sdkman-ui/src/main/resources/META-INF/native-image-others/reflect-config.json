@@ -217,6 +217,10 @@
   "methods":[
     {"name":"forName","parameterTypes":["java.lang.Module","java.lang.String"] }, 
     {"name":"getModule","parameterTypes":[] }
+  ],
+  "queriedMethods":[
+    {"name":"getRecordComponents","parameterTypes":[] }, 
+    {"name":"isRecord","parameterTypes":[] }
   ]
 },
 {
@@ -242,6 +246,13 @@
   "name":"java.lang.String"
 },
 {
+  "name":"java.lang.reflect.RecordComponent",
+  "queriedMethods":[
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getType","parameterTypes":[] }
+  ]
+},
+{
   "name":"java.nio.ByteBuffer",
   "methods":[{"name":"order","parameterTypes":["java.nio.ByteOrder"] }]
 },
@@ -263,6 +274,9 @@
 },
 {
   "name":"java.security.interfaces.RSAPublicKey"
+},
+{
+  "name":"java.sql.Date"
 },
 {
   "name":"java.util.Date"
