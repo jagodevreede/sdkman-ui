@@ -54,7 +54,7 @@ jobs:
       - name: "Checkout ${{ github.event.inputs.build-sha }}"
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.build-sha }}
+          ref: 'main'
           fetch-depth: 0
 
       - name: Cache local Maven repository
