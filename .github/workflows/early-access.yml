@@ -4,6 +4,8 @@ on:
   push:
     paths-ignore:
       - '**.md'
+      - '.github/workflows/release.yml'
+      - '.github/dependabot.yml'
 
 env:
   JAVA_VERSION: '17'
