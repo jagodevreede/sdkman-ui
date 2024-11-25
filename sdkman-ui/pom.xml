@@ -189,7 +189,7 @@
                 </os>
             </activation>
             <properties>
-                <native-image-folder-name>native-image-others</native-image-folder-name>
+                <native-image-folder-name>native-image-osx</native-image-folder-name>
             </properties>
             <build>
                 <plugins>
@@ -253,7 +253,7 @@
                 </os>
             </activation>
             <properties>
-                <native-image-folder-name>native-image-others</native-image-folder-name>
+                <native-image-folder-name>native-image-linux</native-image-folder-name>
             </properties>
             <build>
                 <plugins>
