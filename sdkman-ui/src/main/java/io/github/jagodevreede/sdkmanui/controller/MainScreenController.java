@@ -452,9 +452,9 @@ public class MainScreenController implements Initializable {
     }
 
     public void exitApplication() {
-        // Don't use Platform.exit() as in native the shutdown hook will not fire (on osx)
-        stage.close();
         // stage close will not fire close event so we need to fire it manually
         closeWindowEvent(null);
+        // Don't use Platform.exit() as in native the shutdown hook will not fire (on osx)
+        Platform.runLater(() -> stage.close());
     }
 }
