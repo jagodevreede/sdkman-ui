@@ -175,6 +175,7 @@
                 <configuration>
                     <nativeImageArgs>--install-exit-handlers</nativeImageArgs>
                     <mainClass>${main.class}</mainClass>
+                    <enableSWRendering>true</enableSWRendering>
                 </configuration>
             </plugin>
         </plugins>
@@ -263,12 +264,12 @@
                         <version>${maven-assembly-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>make-zip-${os.arch}</id>
+                                <id>make-zip-x86_64</id>
                                 <configuration>
-                                    <finalName>sdkman-ui-linux_${os.arch}-${project.version}</finalName>
+                                    <finalName>sdkman-ui-linux_x86_64-${project.version}</finalName>
                                     <appendAssemblyId>false</appendAssemblyId>
                                     <descriptors>
-                                        <descriptor>src/main/assembly/zip-linux-${os.arch}.xml</descriptor>
+                                        <descriptor>src/main/assembly/zip-linux-x86_64.xml</descriptor>
                                     </descriptors>
                                 </configuration>
                             </execution>
