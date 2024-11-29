@@ -2,12 +2,16 @@ package io.github.jagodevreede.sdkman.api.files;
 
 import io.github.jagodevreede.sdkman.api.SdkManApi;
 import io.github.jagodevreede.sdkman.api.SdkManUiPreferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 
 public final class ZipExtractTask {
+    private static Logger logger = LoggerFactory.getLogger(ZipExtractTask.class);
 
     private ZipExtractTask() {
         // no instantiation
@@ -28,7 +32,12 @@ public final class ZipExtractTask {
             File sourceExtractedFolder = tempDir.listFiles()[0];
             destination.getParentFile().mkdirs();
             FileUtil.makeAccessible(sourceExtractedFolder);
-            Files.move(sourceExtractedFolder.toPath(), destination.toPath());
+            try {
+                Files.move(sourceExtractedFolder.toPath(), destination.toPath());
+            } catch (AccessDeniedException accessDeniedException) {
+                logger.info("Could not move reverting to copy {}", accessDeniedException.getMessage());
+                FileUtil.copyDirectory(sourceExtractedFolder.getAbsolutePath(), destination.getAbsolutePath());
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
