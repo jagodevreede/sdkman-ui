@@ -19,9 +19,11 @@
   "methods":[
     {"name":"notifyDidBecomeActive","parameterTypes":[] }, 
     {"name":"notifyDidFinishLaunching","parameterTypes":[] }, 
+    {"name":"notifyDidResignActive","parameterTypes":[] }, 
     {"name":"notifyOpenFiles","parameterTypes":["java.lang.String[]"] }, 
     {"name":"notifyWillBecomeActive","parameterTypes":[] }, 
-    {"name":"notifyWillFinishLaunching","parameterTypes":[] }
+    {"name":"notifyWillFinishLaunching","parameterTypes":[] }, 
+    {"name":"notifyWillResignActive","parameterTypes":[] }
   ]
 },
 {
