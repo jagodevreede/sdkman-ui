@@ -20,7 +20,7 @@ public class NativeImageFileCheckerTest {
      * specific files
      */
     @ParameterizedTest
-    @ValueSource(strings = {"osx"})
+    @ValueSource(strings = {"osx", "linux"})
     void checkResourceFilesSame(String toCheck) throws IOException {
         try (var windowsResouce = TestHelper.class.getClassLoader().getResourceAsStream("META-INF/native-image-windows/resource-config.json"); var toTestResouce = TestHelper.class.getClassLoader().getResourceAsStream("META-INF/native-image-" + toCheck + "/resource-config.json")) {
             var windowsMap = new Gson().fromJson(new String(windowsResouce.readAllBytes(), StandardCharsets.UTF_8), Map.class);
@@ -45,7 +45,7 @@ public class NativeImageFileCheckerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"osx"})
+    @ValueSource(strings = {"osx", "linux"})
     void checkReflectFilesSame(String toCheck) throws IOException {
         try (var windowsResouce = TestHelper.class.getClassLoader().getResourceAsStream("META-INF/native-image-windows/reflect-config.json"); var toTestResouce = TestHelper.class.getClassLoader().getResourceAsStream("META-INF/native-image-" + toCheck + "/reflect-config.json")) {
             var windowsMap = new Gson().fromJson(new String(windowsResouce.readAllBytes(), StandardCharsets.UTF_8), List.class);

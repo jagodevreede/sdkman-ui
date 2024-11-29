@@ -133,7 +133,8 @@
   "queryAllDeclaredMethods":true,
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
-    {"name":"openConfig","parameterTypes":[] }
+    {"name":"openConfig","parameterTypes":[] },
+    {"name":"startUpdate","parameterTypes":[] }
   ]
 },
 {
@@ -177,6 +178,9 @@
     {"name":"boot","parameterTypes":[] }, 
     {"name":"findModule","parameterTypes":["java.lang.String"] }
   ]
+},
+{
+  "name":"java.lang.Runnable"
 },
 {
   "name":"java.lang.String"
