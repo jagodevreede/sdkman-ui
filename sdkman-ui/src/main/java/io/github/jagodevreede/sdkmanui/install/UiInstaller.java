@@ -25,10 +25,7 @@ public abstract class UiInstaller {
         if (OsHelper.isWindows()) {
             return Optional.of(new WindowsInstaller());
         }
-        if (OsHelper.isMac()) {
-            return Optional.of(new ShellInstaller());
-        }
-        return Optional.empty();
+        return Optional.of(new ShellInstaller());
     }
 
     abstract public void updateScriptAndVersion();

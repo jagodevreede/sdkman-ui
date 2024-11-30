@@ -28,10 +28,7 @@ public abstract class AutoUpdater {
         if (OsHelper.isWindows()) {
             return Optional.of(new AutoUpdaterWindows());
         }
-        if (OsHelper.hasShell()) {
-            return Optional.of(new AutoUpdaterShell());
-        }
-        return Optional.empty();
+        return Optional.of(new AutoUpdaterShell());
     }
 
     /**
