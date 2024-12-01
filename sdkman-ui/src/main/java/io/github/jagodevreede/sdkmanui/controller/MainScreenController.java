@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
@@ -56,7 +57,7 @@ import java.util.regex.Pattern;
 import static io.github.jagodevreede.sdkmanui.view.Images.appIcon;
 
 public class MainScreenController implements Initializable {
-    private static MainScreenController INSTANCE = getInstance();
+    private static MainScreenController INSTANCE;
     private static final Logger logger = LoggerFactory.getLogger(MainScreenController.class);
     private final SdkManApi api = ServiceRegistry.INSTANCE.getApi();
     private final PopupView popupView = ServiceRegistry.INSTANCE.getPopupView();
@@ -137,20 +138,7 @@ public class MainScreenController implements Initializable {
                         .stream()
                         .filter(j -> !showInstalledOnly.isSelected() || j.installed())
                         .filter(j -> !showAvailableOnly.isSelected() || j.available())
-                        .filter(j -> {
-                            if (searchField == null || searchField.getText() == null || searchField.getText()
-                                    .isBlank()) {
-                                return true;
-                            } else {
-                                final boolean vendorMatchesSearch = j.vendor() != null && Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE)
-                                        .matcher(j.vendor())
-                                        .find();
-                                final boolean identifierMatchesSearch = j.identifier() != null && Pattern.compile(Pattern.quote(searchField.getText()), Pattern.CASE_INSENSITIVE)
-                                        .matcher(j.identifier())
-                                        .find();
-                                return vendorMatchesSearch || identifierMatchesSearch;
-                            }
-                        })
+                        .filter(this::isCandidateVersionIncludedInSearch)
                         .toList();
                 Platform.runLater(() -> {
                     showAvailableOnly.setVisible(sdkManUiPreferences.keepDownloadsAvailable);
@@ -181,6 +169,36 @@ public class MainScreenController implements Initializable {
         });
     }
 
+
+    boolean isCandidateVersionIncludedInSearch(CandidateVersion j) {
+        if (searchField == null) {
+            return true;
+        }
+        return isCandidateVersionIncludedInSearch(searchField.getText(), j);
+    }
+
+    // Default scope so we can unit test this more easily
+    boolean isCandidateVersionIncludedInSearch(String searchTerm, CandidateVersion j) {
+        if (searchTerm == null || searchTerm.isBlank()) {
+            return true;
+        } else {
+            String[] searchStrings = searchTerm.trim().split("\\s");
+            return Arrays.stream(searchStrings).allMatch(s -> {
+                Pattern searchPattern = Pattern.compile(Pattern.quote(s), Pattern.CASE_INSENSITIVE);
+                final boolean vendorMatchesSearch = j.vendor() != null && searchPattern
+                        .matcher(j.vendor())
+                        .find();
+                final boolean identifierMatchesSearch = j.identifier() != null && searchPattern
+                        .matcher(j.identifier())
+                        .find();
+                final boolean versionMatchesSearch = j.version() != null && searchPattern
+                        .matcher(j.version())
+                        .find();
+                return vendorMatchesSearch || identifierMatchesSearch || versionMatchesSearch;
+            });
+        }
+    }
+
     private void createColumns() {
         TableColumn<VersionView, String> vendorCol = getTableColumn("Vendor", "vendor");
         vendorCol.setPrefWidth(105.0);
@@ -197,7 +215,6 @@ public class MainScreenController implements Initializable {
 
         table.getColumns().clear();
         if ("java".equals(selectedCandidate)) {
-
             table.getColumns().addAll(vendorCol, versionCol, identifierCol, installedCol);
         } else {
             table.getColumns().addAll(versionCol, installedCol);
