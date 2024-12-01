@@ -71,6 +71,10 @@
   "name":"com.sun.glass.ui.View"
 },
 {
+  "name":"com.sun.glass.ui.mac.MacAccessible",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.sun.javafx.font.coretext.CTFactory",
   "methods":[{"name":"getFactory","parameterTypes":[] }]
 },
@@ -488,11 +492,6 @@
     {"name":"setColumnIndex","parameterTypes":["javafx.scene.Node","java.lang.Integer"] }, 
     {"name":"setColumnSpan","parameterTypes":["javafx.scene.Node","java.lang.Integer"] }, 
     {"name":"setRowIndex","parameterTypes":["javafx.scene.Node","java.lang.Integer"] }
-  ],
-  "queriedMethods":[
-    {"name":"getColumnIndex","parameterTypes":["javafx.scene.Node"] },
-    {"name":"getColumnSpan","parameterTypes":["javafx.scene.Node"] },
-    {"name":"getRowIndex","parameterTypes":["javafx.scene.Node"] }
   ]
 },
 {

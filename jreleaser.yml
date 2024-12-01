@@ -44,5 +44,5 @@ distributions:
         platform: 'osx-x86_64'
       - path: '{{artifactsDir}}/sdkman-ui-linux_x86_64-{{projectVersion}}.zip'
         platform: 'linux-x86_64'
-#      - path: '{{artifactsDir}}/sdkman-ui-osx_aarch64-{{projectVersion}}.zip'
-#        platform: 'osx_aarch64'
+      - path: '{{artifactsDir}}/sdkman-ui-osx_aarch64-{{projectVersion}}.zip'
+        platform: 'osx_aarch64'

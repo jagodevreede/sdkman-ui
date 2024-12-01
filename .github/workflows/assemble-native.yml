@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-13, windows-latest, ubuntu-latest ]
+        os: [ macos-13, windows-latest, ubuntu-latest, macos-latest ]
         jdk_arch: [ x86_64, aarch64 ]
         exclude:
           - os: macos-13
