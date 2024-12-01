@@ -176,6 +176,10 @@
                     <nativeImageArgs>--install-exit-handlers</nativeImageArgs>
                     <mainClass>${main.class}</mainClass>
                     <enableSWRendering>true</enableSWRendering>
+                    <releaseConfiguration>
+                        <description>A GUI for SDKman</description>
+                        <vendor>Jago de Vreede @ github</vendor>
+                    </releaseConfiguration>
                 </configuration>
             </plugin>
         </plugins>
