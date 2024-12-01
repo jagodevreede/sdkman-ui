@@ -478,7 +478,10 @@
 {
   "name":"javafx.scene.control.TextInputControl",
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"setText","parameterTypes":["java.lang.String"] }]
+  "methods":[
+    {"name":"setPromptText","parameterTypes":["java.lang.String"] },
+    {"name":"setText","parameterTypes":["java.lang.String"] }
+  ]
 },
 {
   "name":"javafx.scene.effect.Effect"

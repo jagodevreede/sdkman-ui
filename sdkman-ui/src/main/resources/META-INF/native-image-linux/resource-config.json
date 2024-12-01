@@ -15,16 +15,16 @@
     }, 
     {
       "pattern":"\\Qsdkui.sh\\E"
-    },
+    }, 
     {
       "pattern":"\\Qsimplelogger.properties\\E"
     }, 
     {
       "pattern":"\\Qtemplate/bash_shell\\E"
-    },
+    }, 
     {
       "pattern":"\\Qupdate.sh\\E"
-    },
+    }, 
     {
       "pattern":"\\Qversion.txt\\E"
     }

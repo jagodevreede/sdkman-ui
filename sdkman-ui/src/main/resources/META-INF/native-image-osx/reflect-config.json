@@ -44,6 +44,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.sun.crypto.provider.HmacCore$HmacSHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.sun.crypto.provider.HmacCore$HmacSHA384",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -53,15 +57,6 @@
 },
 {
   "name":"com.sun.glass.ui.Application"
-},
-{
-  "name":"com.sun.glass.ui.CommonDialogs$ExtensionFilter"
-},
-{
-  "name":"com.sun.glass.ui.CommonDialogs$FileChooserResult"
-},
-{
-  "name":"com.sun.glass.ui.EventLoop"
 },
 {
   "name":"com.sun.glass.ui.Menu"
@@ -116,10 +111,6 @@
 },
 {
   "name":"com.sun.prism.shader.FillPgram_LinearGradient_PAD_Loader",
-  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
-},
-{
-  "name":"com.sun.prism.shader.Mask_TextureSuper_Loader",
   "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
 },
 {
@@ -257,6 +248,9 @@
   ]
 },
 {
+  "name":"java.nio.Buffer"
+},
+{
   "name":"java.nio.ByteBuffer",
   "methods":[{"name":"order","parameterTypes":["java.nio.ByteOrder"] }]
 },
@@ -272,6 +266,12 @@
 },
 {
   "name":"java.security.SecureRandomParameters"
+},
+{
+  "name":"java.security.interfaces.ECPrivateKey"
+},
+{
+  "name":"java.security.interfaces.ECPublicKey"
 },
 {
   "name":"java.security.interfaces.RSAPrivateKey"
@@ -431,7 +431,10 @@
 {
   "name":"javafx.scene.control.TextInputControl",
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"setText","parameterTypes":["java.lang.String"] }]
+  "methods":[
+    {"name":"setPromptText","parameterTypes":["java.lang.String"] }, 
+    {"name":"setText","parameterTypes":["java.lang.String"] }
+  ]
 },
 {
   "name":"javafx.scene.effect.Effect"
@@ -487,8 +490,8 @@
     {"name":"setRowIndex","parameterTypes":["javafx.scene.Node","java.lang.Integer"] }
   ],
   "queriedMethods":[
-    {"name":"getColumnIndex","parameterTypes":["javafx.scene.Node"] }, 
-    {"name":"getColumnSpan","parameterTypes":["javafx.scene.Node"] }, 
+    {"name":"getColumnIndex","parameterTypes":["javafx.scene.Node"] },
+    {"name":"getColumnSpan","parameterTypes":["javafx.scene.Node"] },
     {"name":"getRowIndex","parameterTypes":["javafx.scene.Node"] }
   ]
 },

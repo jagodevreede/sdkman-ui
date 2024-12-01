@@ -51,7 +51,7 @@
    <children>
       <AnchorPane layoutY="41.0" prefHeight="539.0" prefWidth="221.0" styleClass="sidebar">
          <children>
-            <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="10.0" layoutY="503.0" onMouseClicked="#openConfig" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="10.0" layoutY="505.0" onMouseClicked="#openConfig" pickOnBounds="true" preserveRatio="true">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -59,26 +59,6 @@
                   <Image url="@images/settings-icon.png" />
                </image>
             </ImageView>
-            <Pane fx:id="updatePane" layoutX="6.0" layoutY="3.0" onMouseClicked="#startUpdate" prefHeight="43.0" prefWidth="215.0" visible="false">
-               <children>
-                  <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="2.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
-                     <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                     </cursor>
-                     <image>
-                        <Image url="@images/update.png" />
-                     </image>
-                  </ImageView>
-                  <Label fx:id="updateLabel" layoutX="31.0" layoutY="9.0" text="Update to vXX.XX.XX is available" textFill="WHITE">
-                     <font>
-                        <Font size="12.0" />
-                     </font>
-                  </Label>
-               </children>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Pane>
             <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="38.0" prefHeight="462.0" prefWidth="208.0" vbarPolicy="ALWAYS">
               <content>
                 <AnchorPane fx:id="candidateListPane" minHeight="0.0" minWidth="0.0" prefHeight="128.0" prefWidth="184.0" styleClass="scroll-pane">
@@ -127,6 +107,27 @@
                   </AnchorPane>
               </content>
             </ScrollPane>
+            <TextField fx:id="searchCandidate" layoutX="14.0" layoutY="12.0" prefHeight="26.0" prefWidth="177.0" promptText="Search for candiate" />
+            <Pane fx:id="updatePane" layoutX="40.0" layoutY="500.0" onMouseClicked="#startUpdate" prefHeight="35.0" prefWidth="177.0">
+               <children>
+                  <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="2.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor>
+                     <image>
+                        <Image url="@images/update.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="updateLabel" layoutX="31.0" layoutY="9.0" text="Update v8.10.8 is available" textFill="WHITE">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Pane>
          </children>
       </AnchorPane>
       <ImageView fitHeight="43.0" fitWidth="208.0" layoutX="1.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
@@ -136,15 +137,14 @@
       </ImageView>
       <AnchorPane layoutX="215.0" prefHeight="83.0" prefWidth="585.0">
          <children>
-            <Label fx:id="global_version_label" layoutX="14.0" layoutY="25.0" text="Global version:" />
-            <Label fx:id="selected_item_label" layoutX="14.0" layoutY="6.0" text="N/A" />
+            <Label fx:id="global_version_label" layoutX="10.0" layoutY="25.0" text="Global version:" />
+            <Label fx:id="selected_item_label" layoutX="10.0" layoutY="6.0" text="N/A" />
             <CheckBox fx:id="showInstalledOnly" layoutX="430.0" layoutY="3.0" mnemonicParsing="false" text="Show installed only" />
             <CheckBox fx:id="showAvailableOnly" layoutX="430.0" layoutY="23.0" mnemonicParsing="false" text="Show available only" />
-            <TextField fx:id="searchField" layoutX="65.0" layoutY="48.0" prefHeight="25.0" prefWidth="356.0" text="" />
-            <Label layoutX="13.0" layoutY="52.0" text="Search:" />
+            <TextField fx:id="searchField" layoutX="10.0" layoutY="44.0" prefHeight="26.0" prefWidth="411.0" promptText="Search for a version" text="" />
          </children>
       </AnchorPane>
-      <TableView fx:id="table" layoutX="221.0" layoutY="81.0" prefHeight="501.0" prefWidth="579.0">
+      <TableView fx:id="table" layoutX="221.0" layoutY="74.0" prefHeight="506.0" prefWidth="579.0">
         <columns>
         </columns>
       </TableView>

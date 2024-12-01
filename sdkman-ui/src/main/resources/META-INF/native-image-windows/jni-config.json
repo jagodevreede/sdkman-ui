@@ -414,11 +414,44 @@
 },
 {
   "name":"java.util.HashMap",
+  "methods":[
+    {"name":"<init>","parameterTypes":[] },
+    {"name":"containsKey","parameterTypes":["java.lang.Object"] },
+    {"name":"get","parameterTypes":["java.lang.Object"] },
+    {"name":"put","parameterTypes":["java.lang.Object","java.lang.Object"] }
+  ]
+},
+{
+  "name":"java.util.HashSet",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"java.util.Iterator",
+  "methods":[
+    {"name":"hasNext","parameterTypes":[] },
+    {"name":"next","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.util.List",
+  "methods":[{"name":"add","parameterTypes":["java.lang.Object"] }]
+},
+{
   "name":"java.util.Map",
-  "methods":[{"name":"put","parameterTypes":["java.lang.Object","java.lang.Object"] }]
+  "methods":[
+    {"name":"containsKey","parameterTypes":["java.lang.Object"] },
+    {"name":"get","parameterTypes":["java.lang.Object"] },
+    {"name":"keySet","parameterTypes":[] },
+    {"name":"put","parameterTypes":["java.lang.Object","java.lang.Object"] }
+  ]
+},
+{
+  "name":"java.util.Set",
+  "methods":[
+    {"name":"add","parameterTypes":["java.lang.Object"] },
+    {"name":"size","parameterTypes":[] },
+    {"name":"toArray","parameterTypes":["java.lang.Object[]"] }
+  ]
 },
 {
   "name":"javafx.scene.paint.Color",

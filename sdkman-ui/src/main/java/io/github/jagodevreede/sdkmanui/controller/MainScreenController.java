@@ -23,6 +23,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
@@ -30,12 +31,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -51,8 +57,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static io.github.jagodevreede.sdkmanui.view.Images.appIcon;
 
@@ -62,6 +70,7 @@ public class MainScreenController implements Initializable {
     private final SdkManApi api = ServiceRegistry.INSTANCE.getApi();
     private final PopupView popupView = ServiceRegistry.INSTANCE.getPopupView();
     private final SdkManUiPreferences sdkManUiPreferences = ServiceRegistry.INSTANCE.getSdkManUiPreferences();
+    private List<Candidate> allCandidateList = new ArrayList<>();
     @FXML
     TableView<VersionView> table;
     @FXML
@@ -74,6 +83,8 @@ public class MainScreenController implements Initializable {
     CheckBox showAvailableOnly;
     @FXML
     TextField searchField;
+    @FXML
+    TextField searchCandidate;
     @FXML
     ProgressIndicator progressSpinner;
     @FXML
@@ -88,6 +99,7 @@ public class MainScreenController implements Initializable {
     Label toastLabel;
 
     private final PauseTransition searchFieldPause = new PauseTransition(Duration.millis(300));
+    private final PauseTransition searchCandidatePause = new PauseTransition(Duration.millis(300));
     private ObservableList<VersionView> tableData;
     private String selectedCandidate;
     private Stage stage;
@@ -115,9 +127,13 @@ public class MainScreenController implements Initializable {
             sdkManUiPreferences.saveQuite();
             loadData();
         });
+        searchFieldPause.setOnFinished(event -> loadData());
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchFieldPause.setOnFinished(event -> loadData());
             searchFieldPause.playFromStart();
+        });
+        searchCandidatePause.setOnFinished(event -> loadCandidates());
+        searchCandidate.textProperty().addListener((observable, oldValue, newValue) -> {
+            searchCandidatePause.playFromStart();
         });
     }
 
@@ -169,7 +185,6 @@ public class MainScreenController implements Initializable {
         });
     }
 
-
     boolean isCandidateVersionIncludedInSearch(CandidateVersion j) {
         if (searchField == null) {
             return true;
@@ -185,15 +200,10 @@ public class MainScreenController implements Initializable {
             String[] searchStrings = searchTerm.trim().split("\\s");
             return Arrays.stream(searchStrings).allMatch(s -> {
                 Pattern searchPattern = Pattern.compile(Pattern.quote(s), Pattern.CASE_INSENSITIVE);
-                final boolean vendorMatchesSearch = j.vendor() != null && searchPattern
-                        .matcher(j.vendor())
+                final boolean vendorMatchesSearch = j.vendor() != null && searchPattern.matcher(j.vendor()).find();
+                final boolean identifierMatchesSearch = j.identifier() != null && searchPattern.matcher(j.identifier())
                         .find();
-                final boolean identifierMatchesSearch = j.identifier() != null && searchPattern
-                        .matcher(j.identifier())
-                        .find();
-                final boolean versionMatchesSearch = j.version() != null && searchPattern
-                        .matcher(j.version())
-                        .find();
+                final boolean versionMatchesSearch = j.version() != null && searchPattern.matcher(j.version()).find();
                 return vendorMatchesSearch || identifierMatchesSearch || versionMatchesSearch;
             });
         }
@@ -359,37 +369,72 @@ public class MainScreenController implements Initializable {
     }
 
     public void setCandidates(List<Candidate> candidateList) {
-        List<Candidate> candidates = new ArrayList<>(candidateList);
+        this.allCandidateList = candidateList;
+        loadCandidates();
+    }
+
+    private void loadCandidates() {
+        List<Candidate> candidates = allCandidateList.stream()
+                .filter(this::isCandidateVisibleFilter)
+                .collect(Collectors.toList());
         final double prefHeight = 30.0;
         final double prefPadding = 5.0;
         int count = 0;
-        candidateListPane.setPrefHeight((prefHeight + prefPadding) * candidateList.size() + 5.0);
+        candidateListPane.setPrefHeight((prefHeight + prefPadding) * candidates.size() + 5.0);
         candidateListPane.getChildren().clear();
         List<String> localInstalledCandidates = api.getLocalInstalledCandidates();
         for (String candidateId : localInstalledCandidates) {
-            Candidate candidate = candidates.stream()
+            Candidate candidate = allCandidateList.stream()
                     .filter(c -> c.id().equals(candidateId))
                     .findFirst()
                     .orElse(new Candidate(candidateId, candidateId, ""));
-            addCandateToScrollPane(candidate, count, prefHeight, prefPadding);
-            count++;
+            if (isCandidateVisibleFilter(candidate)) {
+                addCandidateToScrollPane(candidate, count, prefHeight, prefPadding, 0);
+                count++;
+            }
         }
+
+        addNotInstalledSeparator(count, prefHeight, prefPadding);
 
         for (Candidate candidate : candidates) {
             if (localInstalledCandidates.contains(candidate.id())) {
                 // We already added it
                 continue;
             }
-            addCandateToScrollPane(candidate, count, prefHeight, prefPadding);
+            addCandidateToScrollPane(candidate, count, prefHeight, prefPadding, 15);
             count++;
         }
     }
 
-    private void addCandateToScrollPane(Candidate candidate, int count, double prefHeight, double prefPadding) {
+    private boolean isCandidateVisibleFilter(Candidate c) {
+        if (searchCandidate == null || searchCandidate.getText().isEmpty()) {
+            return true;
+        }
+        return c.name().toLowerCase(Locale.ROOT).contains(searchCandidate.getText().trim().toLowerCase(Locale.ROOT));
+    }
+
+    private void addNotInstalledSeparator(int count, double prefHeight, double prefPadding) {
+        Separator separator = new Separator(Orientation.HORIZONTAL);
+        separator.setPrefWidth(185.0);
+        separator.setLayoutY((count * (prefHeight + prefPadding)) + 5);
+        candidateListPane.getChildren().add(separator);
+        Label notInstalledLabel = new Label(" Not installed:");
+        notInstalledLabel.setLayoutY((count * (prefHeight + prefPadding)) - 3);
+        notInstalledLabel.setTextFill(Color.WHITE);
+        notInstalledLabel.setPrefWidth(78);
+        notInstalledLabel.setBackground(new Background(new BackgroundFill(Color.valueOf("#151f32"), CornerRadii.EMPTY, Insets.EMPTY)));
+        notInstalledLabel.setLayoutX((double) (185 - 70) / 2);
+        Tooltip tooltip = new Tooltip("Below are all candidates that are not installed on your system.");
+        tooltip.setShowDelay(Duration.millis(10));
+        notInstalledLabel.setTooltip(tooltip);
+        candidateListPane.getChildren().add(notInstalledLabel);
+    }
+
+    private void addCandidateToScrollPane(Candidate candidate, int count, double prefHeight, double prefPadding, double heightOffset) {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setLayoutX(4.0);
-        hBox.setLayoutY(count * (prefHeight + prefPadding));
+        hBox.setLayoutY((count * (prefHeight + prefPadding)) + heightOffset);
         hBox.setPrefHeight(prefHeight);
         hBox.setPrefWidth(175.0);
         hBox.getStyleClass().add("sidebar-button");
@@ -447,6 +492,7 @@ public class MainScreenController implements Initializable {
                 stage.show();
                 stage.getIcons().add(appIcon);
                 controller.setStage(stage);
+                controller.table.requestFocus();
                 INSTANCE = controller;
             } catch (IOException e) {
                 throw new RuntimeException(e);
