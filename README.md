@@ -68,6 +68,20 @@ Download the latest version with the correct cpu type (x86_64 or aarch64) and ex
 osx will complain about unable to verify developer identity, click ok and then go to privacy & security settings under
 system settings and click "Open Anyway". Then follow on screen instructions.
 
+### Linux
+
+First install [SDKMAN](https://sdkman.io/) if you have not already done so. as SDKman UI relies on SDKMAN.
+
+Download the latest version with the correct cpu type (x86_64 or aarch64) and extract the zip, then run the `sdkman-ui`
+from the terminal. If you run it without a terminal it will freeze up.
+
+#### Arch linux notes
+
+If the application loads but without text, then you might need to install the following package
+
+  sudo pacman -S ttf-dejavu
+
+
 ## build steps:
 
 - `sdk u java 22.1.0.1.r17-gln` or manually install from https://github.com/gluonhq/graal/releases
