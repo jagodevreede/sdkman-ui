@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.jagodevreede</groupId>
         <artifactId>sdkman-ui-root</artifactId>
-        <version>0.3.1-SNAPSHOT</version>
+        <version>0.3.0</version>
     </parent>
 
     <artifactId>sdkman-api</artifactId>
