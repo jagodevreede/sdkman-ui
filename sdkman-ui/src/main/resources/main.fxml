@@ -108,7 +108,7 @@
               </content>
             </ScrollPane>
             <TextField fx:id="searchCandidate" layoutX="14.0" layoutY="12.0" prefHeight="26.0" prefWidth="177.0" promptText="Search for candiate" />
-            <Pane fx:id="updatePane" layoutX="40.0" layoutY="500.0" onMouseClicked="#startUpdate" prefHeight="35.0" prefWidth="177.0">
+            <Pane fx:id="updatePane" layoutX="40.0" layoutY="500.0" onMouseClicked="#startUpdate" prefHeight="35.0" prefWidth="177.0" visible="false">
                <children>
                   <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="2.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                      <cursor>
