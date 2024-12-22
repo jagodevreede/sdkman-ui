@@ -94,8 +94,13 @@ If the application loads but without text, then you might need to install the fo
 
 Prerequisites: See https://www.graalvm.org/latest/reference-manual/native-image/#prerequisites
 
-To update native reflections `gluonfx:runagent`
-`./mvnw gluonfx:build -f sdkman-ui`
+- To update native reflections `./mvnw gluonfx:runagent -f sdkman-ui`
+- then run a build: `./mvnw gluonfx:build -f sdkman-ui`
+
+If you encounter a `linker command failed` then you need to do the following instead of the `gluonfx:build`
+- `./mvnw gluonfx:compile -f sdkman-ui`
+- `find . -name libjnidispatch.a -type f -delete`
+- `./mvnw gluonfx:link -f sdkman-ui`
 
 Jlink:
 
