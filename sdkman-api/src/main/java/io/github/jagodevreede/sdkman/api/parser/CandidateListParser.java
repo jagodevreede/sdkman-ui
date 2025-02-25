@@ -15,13 +15,13 @@ public final class CandidateListParser {
     }
 
     public static List<Candidate> parse(String response) {
-        // NB: on windows the regular expression parser fails.
+        // NB: on windows, we use SdkManOutputTextParser, because RegexTextParser (using regex) fails.
 
         if (isWindows()) {
             return SdkManOutputTextParser.parse(response);
         }
 
-        return LinuxTextParser.parse(response);
+        return RegexTextParser.parse(response);
     }
 
     static class SdkManOutputTextParser {
@@ -92,7 +92,7 @@ public final class CandidateListParser {
         return System.getProperty("os.name").toLowerCase().contains("windows");
     }
 
-    private static class LinuxTextParser {
+    private static class RegexTextParser {
         private static final Pattern CANDIDATE_PATTERN = Pattern.compile("---\\n(.+?)\\(.*?\\n\\n(.*?)\\$ sdk install(.*?)\\n", Pattern.MULTILINE | Pattern.DOTALL);
 
         public static List<Candidate> parse(String response) {
