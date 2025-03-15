@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class CandidateListParser {
-    private static final Pattern CANDIDATE_PATTERN = Pattern.compile("---\\n(.+?)\\(.*?\\n\\n(.*?)\\$ sdk install(.*?)\\n", Pattern.MULTILINE | Pattern.DOTALL);
+    private static final Pattern CANDIDATE_PATTERN = Pattern.compile("---\\r*\\n(.+?)\\(.*?\\r*\\n\\r*\\n(.*?)\\$ sdk install(.*?)\\r*\\n", Pattern.MULTILINE | Pattern.DOTALL);
 
     private CandidateListParser() {
     }
