@@ -42,6 +42,10 @@ public class ConfigScreenController implements Initializable {
     Button closeConfigButton;
     @FXML
     CheckBox checkBoxKeepDownloadsAvailable;
+    @FXML
+    CheckBox checkBoxAutomaticallyConfigurePaths;
+    @FXML
+    CheckBox checkBoxAutomaticallyConfigureHome;
 
     @Override
     public void initialize(final URL url, final ResourceBundle resourceBundle) {
@@ -59,6 +63,8 @@ public class ConfigScreenController implements Initializable {
         final String tarExecutablePropertyPath = properties.getProperty("tarExecutable");
         final boolean canCreateSymlink = Boolean.parseBoolean(properties.getProperty("canCreateSymlink"));
         final boolean keepDownloadsAvailable = Boolean.parseBoolean(properties.getProperty("keepDownloadsAvailable", "true"));
+        final boolean autoConfigurePaths = Boolean.parseBoolean(properties.getProperty("autoConfigurePaths", "true"));
+        final boolean autoConfigureHome = Boolean.parseBoolean(properties.getProperty("autoConfigureHome", "true"));
 
         zipExecutablePath.setText(zipExecutablePropertyPath);
         unzipExecutablePath.setText(unzipExecutablePropertyPath);
@@ -71,6 +77,9 @@ public class ConfigScreenController implements Initializable {
         }
         checkBoxKeepDownloadsAvailable.setSelected(keepDownloadsAvailable);
         checkBoxKeepDownloadsAvailable.setTooltip(new Tooltip("Keep downloads available in SDKMAN_HOME/archives when they are extracted,\nthis will require more diskpace."));
+
+        checkBoxAutomaticallyConfigurePaths.setSelected(autoConfigurePaths);
+        checkBoxAutomaticallyConfigureHome.setSelected(autoConfigureHome);
     }
 
     public void browseZipExecutablePath() {
@@ -112,6 +121,8 @@ public class ConfigScreenController implements Initializable {
         sdkManUiPreferences.unzipExecutable = unzipExecutablePath.getText();
         sdkManUiPreferences.tarExecutable = tarExecutablePath.getText();
         sdkManUiPreferences.keepDownloadsAvailable = checkBoxKeepDownloadsAvailable.isSelected();
+        sdkManUiPreferences.autoConfigureHome = checkBoxAutomaticallyConfigureHome.isSelected();
+        sdkManUiPreferences.autoConfigurePaths = checkBoxAutomaticallyConfigurePaths.isSelected();
 
         try {
             sdkManUiPreferences.save();

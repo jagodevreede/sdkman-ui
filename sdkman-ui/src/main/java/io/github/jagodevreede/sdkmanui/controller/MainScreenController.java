@@ -290,18 +290,36 @@ public class MainScreenController implements Initializable {
     }
 
     private void checkIfEnvironmentIsConfigured(String candidate) {
+        StringBuilder toastMessage = new StringBuilder();
         // Only on windows, check if the environment is configured
         if (OsHelper.isWindows() && hasInstalledVersion()) {
             if (!api.hasCandidateEnvironmentPathConfigured(candidate)) {
-                Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate, candidate + " is not in the environment (path variable) yet, do you want to add it?", () -> {
-                    api.configureWindowsEnvironment(candidate);
-                }));
+                if (sdkManUiPreferences.autoConfigurePaths) {
+                    api.configureEnvironmentHome(candidate);
+                    toastMessage.append(candidate).append(" is added to the path");
+                } else {
+                    Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate, candidate + " is not in the environment (path variable) yet, do you want to add it?", () -> {
+                        api.configureWindowsEnvironment(candidate);
+                    }));
+                }
             }
             if (!api.hasCandidateEnvironmentHomeConfigured(candidate)) {
-                Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate, candidate.toUpperCase() + "_HOME is not in the environment yet, do you want to add it?", () -> {
+                if (sdkManUiPreferences.autoConfigureHome) {
                     api.configureEnvironmentHome(candidate);
-                }));
+                    if (!toastMessage.isEmpty()) {
+                        toastMessage.append(" and ");
+                    }
+                    toastMessage.append(candidate.toUpperCase()).append("_HOME is configured");
+                } else {
+                    Platform.runLater(() -> popupView.showConfirmation("Configure environment for " + candidate, candidate.toUpperCase() + "_HOME is not in the environment yet, do you want to add it?", () -> {
+                        api.configureEnvironmentHome(candidate);
+                    }));
+                }
             }
+        }
+        if (!toastMessage.isEmpty()) {
+            toastMessage.append(" automatically");
+            showToast(toastMessage.toString());
         }
     }
 

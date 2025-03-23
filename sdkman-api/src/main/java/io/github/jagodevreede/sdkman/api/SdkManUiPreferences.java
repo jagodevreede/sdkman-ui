@@ -18,6 +18,8 @@ public class SdkManUiPreferences {
     public boolean showInstalled;
     public boolean showAvailable;
     public boolean keepDownloadsAvailable;
+    public boolean autoConfigurePaths;
+    public boolean autoConfigureHome;
 
     private static SdkManUiPreferences load() throws IOException {
         PROPERTY_LOCATION.getParentFile().mkdirs();
@@ -36,6 +38,8 @@ public class SdkManUiPreferences {
         uiPreferences.showInstalled = Boolean.parseBoolean(properties.getProperty("showInstalled", "false"));
         uiPreferences.showAvailable = Boolean.parseBoolean(properties.getProperty("showAvailable", "false"));
         uiPreferences.keepDownloadsAvailable = Boolean.parseBoolean(properties.getProperty("keepDownloadsAvailable", "true"));
+        uiPreferences.autoConfigurePaths = Boolean.parseBoolean(properties.getProperty("autoConfigurePaths", "true"));
+        uiPreferences.autoConfigureHome = Boolean.parseBoolean(properties.getProperty("autoConfigureHome", "true"));
         return uiPreferences;
     }
 
@@ -69,6 +73,8 @@ public class SdkManUiPreferences {
         properties.setProperty("showInstalled", String.valueOf(showInstalled));
         properties.setProperty("showAvailable", String.valueOf(showAvailable));
         properties.setProperty("keepDownloadsAvailable", String.valueOf(keepDownloadsAvailable));
+        properties.setProperty("autoConfigurePaths", String.valueOf(autoConfigurePaths));
+        properties.setProperty("autoConfigureHome", String.valueOf(autoConfigureHome));
         properties.store(new FileOutputStream(PROPERTY_LOCATION), null);
     }
 }
