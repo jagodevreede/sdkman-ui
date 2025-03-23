@@ -289,6 +289,20 @@ public class MainScreenController implements Initializable {
         loadData(() -> checkIfEnvironmentIsConfigured(selectedCandidate));
     }
 
+    private void checkIfOnlyOneVersionIsAvailable(String selectedCandidate) {
+        try {
+            List<CandidateVersion> updatedVersions = api.getVersions(selectedCandidate)
+                    .stream()
+                    .filter(CandidateVersion::installed)
+                    .toList();
+            if (updatedVersions.size() == 1) {
+                api.changeGlobal(selectedCandidate, updatedVersions.get(0).identifier());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void checkIfEnvironmentIsConfigured(String candidate) {
         StringBuilder toastMessage = new StringBuilder();
         // Only on windows, check if the environment is configured
@@ -336,6 +350,7 @@ public class MainScreenController implements Initializable {
             api.install(identifier, version);
             Platform.runLater(() -> {
                 progressWindow.alert().close();
+                checkIfOnlyOneVersionIsAvailable(selectedCandidate);
                 loadData(() -> checkIfEnvironmentIsConfigured(selectedCandidate));
             });
         });
