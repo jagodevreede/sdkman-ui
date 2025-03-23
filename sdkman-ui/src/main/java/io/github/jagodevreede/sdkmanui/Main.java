@@ -111,10 +111,10 @@ public class Main extends Application {
 
     private void setApplicationIconImage(Stage stage) {
         if (!OsHelper.isMac()) {
-            // Only for mac other os are not needed
             stage.getIcons().add(appIcon);
             return;
         }
+        // Only for mac other os are not needed, as they obey the stage set icons
         Thread loaderThread = new Thread(() -> {
             // This code does not work in graal native, see https://github.com/oracle/graal/issues/8273
             try {
