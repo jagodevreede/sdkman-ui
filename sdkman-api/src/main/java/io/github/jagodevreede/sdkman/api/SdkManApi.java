@@ -145,8 +145,10 @@ public class SdkManApi {
         }
         File currentFolder = new File(baseFolder, "candidates" + separator + candidate + separator + "current");
         if (SdkManUiPreferences.getInstance().canCreateSymlink) {
-            if (currentFolder.exists()) {
-                currentFolder.delete();
+            if (currentFolder.exists() || Files.isSymbolicLink(currentFolder.toPath())) {
+                if (!currentFolder.delete()) {
+                    logger.warn("Unable to delete current folder: " + currentFolder.getAbsolutePath());
+                }
             }
             Files.createSymbolicLink(currentFolder.toPath(), toFolder.toPath());
         } else {
