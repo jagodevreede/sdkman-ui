@@ -1,10 +1,7 @@
 # sdkman-ui
 
-This project aims to offer a (cross-platform) Graphical User Interface for [SDKMAN](https://sdkman.io/).
-
-> [!NOTE]  
-> Primary focus for now is to create a UI for windows. Osx for intel is available arm will be added later. Linux x86
-> will be next.
+This project aims to offer a (cross-platform) Graphical User Interface for [SDKMAN](https://sdkman.io/), with the
+primary focus on windows. However, other OS ports are working as well.
 
 ## Screenshots
 
@@ -54,6 +51,13 @@ Download the latest version and extract the zip, then run the `sdkman-ui.exe`. A
 it should be available from the commandline as `sdkui`.
 
 Also see the following [video](https://www.youtube.com/watch?v=oyYtHrihThk)
+
+#### Windows troubleshooting
+
+If you get the error that the `vcruntime140.dll` file is missing, then the download and install the appropriate version for your os of the Visual C++ redistributable package:
+
+- x86: [vc_redist.x86.exe](https://aka.ms/vs/16/release/vc_redist.x86.exe)
+- x64: [vc_redist.x64.exe](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 
 #### Symlinks
 
