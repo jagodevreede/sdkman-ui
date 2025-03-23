@@ -11,6 +11,10 @@ import java.util.Optional;
 
 public final class FileUtil {
     public static void deleteRecursively(File f) throws IOException {
+        if (Files.isSymbolicLink(f.toPath())) {
+            f.delete();
+            return;
+        }
         if (!f.exists()) {
             return;
         }

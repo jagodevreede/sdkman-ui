@@ -305,12 +305,24 @@ public class SdkManApi {
 
     public void uninstall(String identifier, String version) {
         File candidateFolder = new File(baseFolder, "candidates" + separator + identifier + separator + version);
-        if (candidateFolder.exists()) {
-            try {
-                FileUtil.deleteRecursively(candidateFolder);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        try {
+            String currentVersion = resolveCurrentVersion(identifier);
+            if (currentVersion != null && currentVersion.equals(version)) {
+                FileUtil.deleteRecursively(new File(baseFolder, "candidates" + separator + identifier + separator + "current"));
             }
+            if (candidateFolder.exists()) {
+                FileUtil.deleteRecursively(candidateFolder);
+            }
+            List<CandidateVersion> updatedVersions = getVersions(identifier)
+                    .stream()
+                    .filter(CandidateVersion::installed)
+                    .toList();
+            if (updatedVersions.isEmpty()) {
+                File currentCandidateFolder = new File(baseFolder, "candidates" + separator + identifier);
+                FileUtil.deleteRecursively(currentCandidateFolder);
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -451,6 +463,8 @@ public class SdkManApi {
         if (!archiveFolder.exists()) {
             return List.of();
         }
-        return Stream.of(Objects.requireNonNull(archiveFolder.list((dir, name) -> new File(dir, name).isDirectory()))).sorted().toList();
+        return Stream.of(Objects.requireNonNull(archiveFolder.list((dir, name) -> new File(dir, name).isDirectory())))
+                .sorted()
+                .toList();
     }
 }
