@@ -32,7 +32,7 @@
         <jna-platform.version>5.17.0</jna-platform.version>
         <gson.version>2.12.1</gson.version>
         <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
-        <formatter-maven-plugin.version>2.24.1</formatter-maven-plugin.version>
+        <formatter-maven-plugin.version>2.26.0</formatter-maven-plugin.version>
     </properties>
 
     <build>
