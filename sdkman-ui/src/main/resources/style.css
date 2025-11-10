@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('fonts/Inter-VariableFont_opsz.ttf');
+}
+
+.root {
+    -fx-font-family: 'Inter', 'DejaVu Sans', 'sans-serif', 'FreeSans';
+}
+
 .sidebar {
     -fx-background-color: #151f32;
     -fx-background-radius: 0 50px 0 0;

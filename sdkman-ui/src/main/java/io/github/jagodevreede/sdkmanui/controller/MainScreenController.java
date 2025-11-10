@@ -452,11 +452,12 @@ public class MainScreenController implements Initializable {
         separator.setLayoutY((count * (prefHeight + prefPadding)) + 5);
         candidateListPane.getChildren().add(separator);
         Label notInstalledLabel = new Label(" Not installed:");
+        final int labelWidth = 90;
         notInstalledLabel.setLayoutY((count * (prefHeight + prefPadding)) - 3);
         notInstalledLabel.setTextFill(Color.WHITE);
-        notInstalledLabel.setPrefWidth(78);
+        notInstalledLabel.setPrefWidth(labelWidth);
         notInstalledLabel.setBackground(new Background(new BackgroundFill(Color.valueOf("#151f32"), CornerRadii.EMPTY, Insets.EMPTY)));
-        notInstalledLabel.setLayoutX((double) (185 - 70) / 2);
+        notInstalledLabel.setLayoutX((double) (185 - labelWidth) / 2);
         Tooltip tooltip = new Tooltip("Below are all candidates that are not installed on your system.");
         tooltip.setShowDelay(Duration.millis(10));
         notInstalledLabel.setTooltip(tooltip);

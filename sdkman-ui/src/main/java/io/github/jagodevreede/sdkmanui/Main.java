@@ -8,6 +8,7 @@ import io.github.jagodevreede.sdkmanui.service.GlobalExceptionHandler;
 import io.github.jagodevreede.sdkmanui.service.ServiceRegistry;
 import io.github.jagodevreede.sdkmanui.updater.AutoUpdater;
 import javafx.application.Application;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Font.loadFont(getClass().getResource("/fonts/Inter-VariableFont_opsz.ttf").toExternalForm(), 10);
+        if (Font.getFontNames().stream()
+                .noneMatch(f -> f.startsWith("Inter"))) {
+            logger.warn("Font Inter not found. Using default Font.");
+        }
         Parameters params = getParameters();
         List<String> paramatersList = params.getRaw();
         if (paramatersList.contains("--no-console")) {
