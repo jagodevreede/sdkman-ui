@@ -31,11 +31,17 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Font.loadFont(getClass().getResource("/fonts/Inter-VariableFont_opsz.ttf").toExternalForm(), 10);
+        Font font = Font.loadFont(getClass().getResource("/fonts/Inter-VariableFont_opsz.ttf").toExternalForm(), 10);
+        if (font == null) {
+            logger.error("Font inter not loaded");
+        }
         if (Font.getFontNames().stream()
                 .noneMatch(f -> f.startsWith("Inter"))) {
             logger.warn("Font Inter not found. Using default Font.");
         }
+        Font.getFontNames().stream().forEach(fontName -> {
+            logger.info("Found font name: " + fontName);
+        });
         Parameters params = getParameters();
         List<String> paramatersList = params.getRaw();
         if (paramatersList.contains("--no-console")) {
