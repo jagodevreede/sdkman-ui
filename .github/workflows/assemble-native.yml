@@ -59,7 +59,9 @@ jobs:
       - name: "Checkout ${{ github.event.inputs.build-sha }}"
         uses: actions/checkout@v4
         with:
-          ref: 'main'
+          # Use the build-sha input if provided by the caller, otherwise fall back to the triggering ref.
+          # For reusable workflows the input is available as `inputs.build-sha`.
+          ref: ${{ inputs.build-sha != '' && inputs.build-sha || github.ref }}
           fetch-depth: 0
 
       - name: Cache local Maven repository

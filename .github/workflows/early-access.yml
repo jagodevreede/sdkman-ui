@@ -47,14 +47,18 @@ jobs:
 
   assemble:
     needs: [ precheck ]
-    if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT') && ${{ github.ref == 'refs/heads/main' }}
+    # Run assemble when the version is a snapshot; allow the branch/ref that triggered the push
+    if: endsWith(needs.precheck.outputs.VERSION, '-SNAPSHOT')
     uses: jagodevreede/sdkman-ui/.github/workflows/assemble-native.yml@main
     with:
       project-version: ${{ needs.precheck.outputs.VERSION }}
+      # Pass the ref/sha of the workflow run so the reusable workflow checks out this branch
+      # For push events, github.ref points to the full ref (e.g., refs/heads/feature-branch)
+      build-sha: ${{ github.ref }}
 
   release-early-access:
     needs: [ precheck, assemble ]
-    if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
+    if: endsWith(needs.precheck.outputs.VERSION, '-SNAPSHOT')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
