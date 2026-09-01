@@ -44,6 +44,11 @@ public class SdkManApi {
     private static Logger logger = LoggerFactory.getLogger(SdkManApi.class);
 
     public static final String BASE_URL = "https://api.sdkman.io/2";
+    /**
+     * Downloads are served by a separate broker since August 2026, the legacy {@code BASE_URL + "/broker/download"}
+     * endpoint does not know about versions published since then, see https://github.com/sdkman/sdkman-cli/issues/1557
+     */
+    public static final String BROKER_URL = "https://broker.sdkman.io";
     public static final Duration DEFAUL_CACHE_DURATION = Duration.of(1, ChronoUnit.HOURS);
     public static final String DEFAULT_SDKMAN_HOME = System.getProperty("user.home") + separator + ".sdkman";
     private static final String exportCommand = OsHelper.isWindows() ? "set " : "export ";
@@ -293,7 +298,7 @@ public class SdkManApi {
 
     public DownloadTask download(String identifier, String version) {
         File finalArchiveFile = new File(baseFolder, "archives" + separator + identifier + "-" + version + ".zip");
-        String url = BASE_URL + "/broker/download/" + identifier + "/" + version + "/" + getPlatformName();
+        String url = BROKER_URL + "/download/" + identifier + "/" + version + "/" + getPlatformName();
         File tempFile = new File(baseFolder, "tmp" + separator + identifier + "-" + version + ".bin");
         return new DownloadTask(url, tempFile, finalArchiveFile, identifier + "-" + version);
     }
