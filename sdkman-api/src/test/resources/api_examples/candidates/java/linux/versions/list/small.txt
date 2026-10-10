@@ -1,13 +1,13 @@
 ================================================================================
 Available Java Versions for Linux 64bit
 ================================================================================
- Vendor        | Use | Version      | Dist    | Status     | Identifier
+ Vendor         | Use | Version            | Identifier
 --------------------------------------------------------------------------------
- Corretto      |     | 22           | amzn    |            | 22-amzn
-               |     | 21.0.2       | amzn    |            | 21.0.2-amzn
- Dragonwell    |     | 17.0.10      | albba   |            | 17.0.10-albba
- Zulu          |     | 22           | zulu    |            | 22-zulu
-               |     | 22.crac      | zulu    |            | 22.crac-zulu
+ Corretto       |     | 27.0.0.0+33        | 27.0.0.0+33-amzn
+                |     | 26.0.2             | 26.0.2-amzn
+ Dragonwell     |     | 17.0.10            | 17.0.10-albba
+ Zulu           |     | 22                   | 22-zulu
+                |     | 21.0.2             | 21.0.2-zulu
 ================================================================================
 Omit Identifier to install default version 21.0.2-tem:
     $ sdk install java

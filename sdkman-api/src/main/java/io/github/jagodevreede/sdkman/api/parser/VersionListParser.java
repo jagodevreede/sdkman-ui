@@ -10,16 +10,68 @@ import java.util.stream.Collectors;
 public class VersionListParser {
     private static final String VENDOR_HEADER_NAME = "Vendor";
 
-    private static final Pattern JAVA_VERSION_PATTERN = Pattern.compile("(.*?)\\|(.*?)\\|(.*?)\\|(.*?)\\|(.*?)\\|(.*)");
+    private static final Pattern JAVA_VERSION_6COLUMN_PATTERN = Pattern.compile("(.*?)\\|(.*?)\\|(.*?)\\|(.*?)\\|(.*?)\\|(.*)");
+    private static final Pattern JAVA_VERSION_4COLUMN_PATTERN = Pattern.compile("(.*?)\\|(.*?)\\|(.*?)\\|(.*)");
     private static final Pattern OTHER_VERSION_PATTERN = Pattern.compile("(.+?)\\s+(.+?)\\s+(.+?)\\s");
 
     public static List<CandidateVersion> parse(String response) {
-        var matcher = JAVA_VERSION_PATTERN.matcher(response);
-        if (matcher.find()) {
-            return parseJava(response);
+        if (parseJava6Column(response) != null) {
+            return parseJava6Column(response);
+        }
+        if (parseJava4Column(response) != null) {
+            return parseJava4Column(response);
         }
         var result = parseOther(response);
         result.sort(CandidateVersion::compareTo);
+        return result;
+    }
+
+    private static List<CandidateVersion> parseJava6Column(String response) {
+        var matcher = JAVA_VERSION_6COLUMN_PATTERN.matcher(response);
+        if (!matcher.find()) {
+            return null;
+        }
+        var result = new ArrayList<CandidateVersion>();
+        String lastVendor = null;
+        while (matcher.find()) {
+            String vendor = matcher.group(1).trim();
+            if (VENDOR_HEADER_NAME.equals(vendor)) {
+                continue;
+            }
+            if (!vendor.trim().isEmpty()) {
+                lastVendor = vendor;
+            } else {
+                vendor = lastVendor;
+            }
+            String version = matcher.group(3).trim();
+            String dist = matcher.group(4).trim();
+            String identifier = matcher.group(6).trim();
+            result.add(new CandidateVersion(vendor, version, dist, identifier, false, false));
+        }
+        return result;
+    }
+
+    private static List<CandidateVersion> parseJava4Column(String response) {
+        var matcher = JAVA_VERSION_4COLUMN_PATTERN.matcher(response);
+        if (!matcher.find()) {
+            return null;
+        }
+        var result = new ArrayList<CandidateVersion>();
+        String lastVendor = null;
+        while (matcher.find()) {
+            String vendor = matcher.group(1).trim();
+            if (VENDOR_HEADER_NAME.equals(vendor)) {
+                continue;
+            }
+            if (!vendor.trim().isEmpty()) {
+                lastVendor = vendor;
+            } else {
+                vendor = lastVendor;
+            }
+            String version = matcher.group(3).trim();
+            String identifier = matcher.group(4).trim();
+            result.add(new CandidateVersion(vendor, version, null, identifier, false, false));
+        }
         return result;
     }
 
@@ -45,27 +97,5 @@ public class VersionListParser {
     private static String removeHeader(String response) {
         // remove first 3 lines as the header is always in the first 3 lines
         return response.lines().skip(3).collect(Collectors.joining("\n"));
-    }
-
-    private static List<CandidateVersion> parseJava(String response) {
-        var result = new ArrayList<CandidateVersion>();
-        var matcher = JAVA_VERSION_PATTERN.matcher(response);
-        String lastVendor = null;
-        while (matcher.find()) {
-            String vendor = matcher.group(1).trim();
-            if (VENDOR_HEADER_NAME.equals(vendor)) {
-                continue;
-            }
-            if (!vendor.trim().isEmpty()) {
-                lastVendor = vendor;
-            } else {
-                vendor = lastVendor;
-            }
-            String version = matcher.group(3).trim();
-            String dist = matcher.group(4).trim();
-            String identifier = matcher.group(6).trim();
-            result.add(new CandidateVersion(vendor, version, dist, identifier, false, false));
-        }
-        return result;
     }
 }
