@@ -40,6 +40,10 @@ public class DownloadTask implements CancelableTask {
         tempFile.delete();
     }
 
+    public String getUrl() {
+        return url;
+    }
+
     public void download() {
         if (destination.exists()) {
             logger.debug("File already exists: {}", destination.getAbsolutePath());
